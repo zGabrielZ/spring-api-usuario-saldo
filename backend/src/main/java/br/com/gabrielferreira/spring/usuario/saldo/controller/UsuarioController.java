@@ -33,4 +33,10 @@ public class UsuarioController {
         Usuario usuario = usuarioService.buscarPorId(id);
         return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarPorID(@PathVariable Long id){
+        usuarioService.deletarPorId(id);
+        return ResponseEntity.noContent().build();
+    }
 }

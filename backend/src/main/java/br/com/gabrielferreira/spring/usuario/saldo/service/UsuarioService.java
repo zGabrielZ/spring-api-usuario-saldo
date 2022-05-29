@@ -34,6 +34,11 @@ public class UsuarioService {
         return optionalUsuario.get();
     }
 
+    public void deletarPorId(Long id){
+        Usuario usuario = buscarPorId(id);
+        usuarioRepositorio.deleteById(usuario.getId());
+    }
+
     private void verificarEmail(String email){
         Optional<Usuario> optionalUsuario = usuarioRepositorio.findByEmail(email);
         if(optionalUsuario.isPresent()){
