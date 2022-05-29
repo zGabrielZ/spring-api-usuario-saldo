@@ -2,6 +2,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.service;
 
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioUpdateDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.UsuarioNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
@@ -23,6 +24,13 @@ public class UsuarioService {
                 , usuarioFormDTO.getSenha(), usuarioFormDTO.getCpf(), usuarioFormDTO.getDataNascimento());
         verificarEmail(usuario.getEmail());
         verificarCpf(usuario.getCpf());
+        return usuarioRepositorio.save(usuario);
+    }
+
+    public Usuario atualizar(Long id,UsuarioUpdateDTO usuarioUpdateDTO){
+        Usuario usuario = buscarPorId(id);
+        usuario.setNome(usuarioUpdateDTO.getNome());
+        usuario.setDataNascimento(usuarioUpdateDTO.getDataNascimento());
         return usuarioRepositorio.save(usuario);
     }
 

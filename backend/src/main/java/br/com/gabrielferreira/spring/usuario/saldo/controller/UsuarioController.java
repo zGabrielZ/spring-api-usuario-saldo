@@ -2,6 +2,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioUpdateDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,11 @@ public class UsuarioController {
     public ResponseEntity<Void> deletarPorID(@PathVariable Long id){
         usuarioService.deletarPorId(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioViewDTO> atualizarDados(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO){
+        Usuario usuario = usuarioService.atualizar(id,usuarioUpdateDTO);
+        return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
     }
 }
