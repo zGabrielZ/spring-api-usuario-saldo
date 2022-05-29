@@ -34,4 +34,11 @@ public class InterceptadorController {
         ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Bad Request",e.getMessage(),new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
+
+    @ExceptionHandler(UsuarioNaoEncontrado.class)
+    public ResponseEntity<ErroPadrao> usuarioNaoEncontrada(UsuarioNaoEncontrado e){
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Not Found",e.getMessage(),new ArrayList<>());
+        return ResponseEntity.status(httpStatus).body(erroPadrao);
+    }
 }

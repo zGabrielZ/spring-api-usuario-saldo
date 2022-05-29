@@ -3,6 +3,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.service;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.UsuarioNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,14 @@ public class UsuarioService {
         verificarEmail(usuario.getEmail());
         verificarCpf(usuario.getCpf());
         return usuarioRepositorio.save(usuario);
+    }
+
+    public Usuario buscarPorId(Long id){
+        Optional<Usuario> optionalUsuario = usuarioRepositorio.findById(id);
+        if(optionalUsuario.isEmpty()){
+            throw new UsuarioNaoEncontrado("Usuário não foi encontrado, verifique o id informado.");
+        }
+        return optionalUsuario.get();
     }
 
     private void verificarEmail(String email){

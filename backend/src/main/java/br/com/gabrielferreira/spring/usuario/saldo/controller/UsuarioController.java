@@ -5,10 +5,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -29,5 +26,11 @@ public class UsuarioController {
         Usuario usuario = usuarioService.inserir(usuarioFormDTO);
         URI uri = uriComponentsBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
         return ResponseEntity.created(uri).body(new UsuarioViewDTO(usuario));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioViewDTO> buscarPorId(@PathVariable Long id){
+        Usuario usuario = usuarioService.buscarPorId(id);
+        return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
     }
 }
