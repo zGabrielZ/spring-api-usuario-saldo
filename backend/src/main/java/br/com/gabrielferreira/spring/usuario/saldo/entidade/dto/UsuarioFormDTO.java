@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -33,6 +30,7 @@ public class UsuarioFormDTO implements Serializable {
     @CPF(message = "CPF inválido.")
     private String cpf;
 
+    @PastOrPresent(message = "Data nascimento não pode ser futura.")
     @NotNull(message = "Data nascimento não pode ser vazio.")
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;

@@ -1,12 +1,13 @@
 package br.com.gabrielferreira.spring.usuario.saldo.exception;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -16,7 +17,8 @@ import java.util.List;
 public class ErroPadrao implements Serializable {
     private static final long serialVersionUID = -2107726998936765804L;
 
-    private LocalDate dataErro;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime dataErro;
     private Integer status;
     private String erro;
     private String mensagem;

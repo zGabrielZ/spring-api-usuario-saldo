@@ -6,8 +6,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,14 @@ public class InterceptadorController {
         }
 
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDate.now(),httpStatus.value(),"Bad Request","Erros encontrados após realizar a requisição",erroFormularios);
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Bad Request","Erros encontrados após realizar a requisição",erroFormularios);
+        return ResponseEntity.status(httpStatus).body(erroPadrao);
+    }
+
+    @ExceptionHandler(ExcecaoPersonalizada.class)
+    public ResponseEntity<ErroPadrao> excessaoPersonalizada(ExcecaoPersonalizada e){
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Bad Request",e.getMessage(),new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 }
