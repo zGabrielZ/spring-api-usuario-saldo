@@ -8,6 +8,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.exception.UsuarioNaoEncontrad
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -16,13 +17,17 @@ public class UsuarioService {
 
     private final UsuarioRepositorio usuarioRepositorio;
 
-    public UsuarioService(UsuarioRepositorio usuarioRepositorio){
+    private final PasswordEncoder passwordEncoder;
+
+    public UsuarioService(UsuarioRepositorio usuarioRepositorio, PasswordEncoder passwordEncoder) {
         this.usuarioRepositorio = usuarioRepositorio;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Usuario inserir(UsuarioFormDTO usuarioFormDTO){
+        String senhaCriptografada = passwordEncoder.encode(usuarioFormDTO.getSenha());
         Usuario usuario = new Usuario(null,usuarioFormDTO.getNome(), usuarioFormDTO.getEmail()
-                , usuarioFormDTO.getSenha(), usuarioFormDTO.getCpf(), usuarioFormDTO.getDataNascimento());
+                , senhaCriptografada, usuarioFormDTO.getCpf(), usuarioFormDTO.getDataNascimento());
         verificarEmail(usuario.getEmail());
         verificarCpf(usuario.getCpf());
         return usuarioRepositorio.save(usuario);
@@ -59,9 +64,9 @@ public class UsuarioService {
         }
     }
 
-    private void verificarCpf(String cpf){
+    private void verificarCpf(String cpf) {
         Optional<Usuario> optionalUsuario = usuarioRepositorio.findByCpf(cpf);
-        if(optionalUsuario.isPresent()){
+        if (optionalUsuario.isPresent()) {
             throw new ExcecaoPersonalizada("Este CPF já foi cadastrado.");
         }
     }
