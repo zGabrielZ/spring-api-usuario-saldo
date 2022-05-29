@@ -1,5 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.entidade.dto;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.io.Serializable;
@@ -18,6 +19,8 @@ public class UsuarioViewDTO implements Serializable {
     private String nome;
     private String email;
     private String cpf;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
 
     public UsuarioViewDTO(Usuario usuario){

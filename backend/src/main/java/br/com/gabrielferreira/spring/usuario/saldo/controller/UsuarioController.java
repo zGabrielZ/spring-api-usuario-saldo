@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -21,7 +23,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioViewDTO> inserir(@RequestBody UsuarioFormDTO usuarioFormDTO){
+    public ResponseEntity<UsuarioViewDTO> inserir(@Valid @RequestBody UsuarioFormDTO usuarioFormDTO){
         Usuario usuario = usuarioService.inserir(usuarioFormDTO);
         return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
     }
