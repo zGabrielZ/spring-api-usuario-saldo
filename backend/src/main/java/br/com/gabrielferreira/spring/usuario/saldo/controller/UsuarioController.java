@@ -4,13 +4,18 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioUpdateDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -45,5 +50,22 @@ public class UsuarioController {
     public ResponseEntity<UsuarioViewDTO> atualizarDados(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO){
         Usuario usuario = usuarioService.atualizar(id,usuarioUpdateDTO);
         return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<UsuarioViewDTO>> listagem(
+            @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
+            @RequestParam(value = "quantidadePagina", required = false, defaultValue = "5") Integer quantidadeRegistro,
+            @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
+            @RequestParam(value = "ordenar", required = false, defaultValue = "nome") String ordenar
+    ){
+        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
+        if(optionalDirecao.isEmpty()){
+            throw new ExcecaoPersonalizada("A direção informada está incorreta, informe DESC ou ASC");
+        }
+
+        PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
+        Page<Usuario> usuarios = usuarioService.listagem(pageRequest);
+        return ResponseEntity.ok().body(UsuarioViewDTO.converterParaDto(usuarios));
     }
 }

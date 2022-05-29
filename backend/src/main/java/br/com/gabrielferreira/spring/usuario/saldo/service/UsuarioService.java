@@ -6,8 +6,9 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioUpdateDTO
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.UsuarioNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -32,6 +33,10 @@ public class UsuarioService {
         usuario.setNome(usuarioUpdateDTO.getNome());
         usuario.setDataNascimento(usuarioUpdateDTO.getDataNascimento());
         return usuarioRepositorio.save(usuario);
+    }
+
+    public Page<Usuario> listagem(Pageable pageable){
+        return usuarioRepositorio.findAll(pageable);
     }
 
     public Usuario buscarPorId(Long id){

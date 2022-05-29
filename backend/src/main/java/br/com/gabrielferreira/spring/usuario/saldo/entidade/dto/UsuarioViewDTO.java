@@ -2,6 +2,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.entidade.dto;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.data.domain.Page;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -29,6 +30,10 @@ public class UsuarioViewDTO implements Serializable {
         this.email = usuario.getEmail();
         this.cpf = usuario.getCpf();
         this.dataNascimento = usuario.getDataNascimento();
+    }
+
+    public static Page<UsuarioViewDTO> converterParaDto(Page<Usuario> usuarios){
+        return  usuarios.map(UsuarioViewDTO::new);
     }
 
 }
