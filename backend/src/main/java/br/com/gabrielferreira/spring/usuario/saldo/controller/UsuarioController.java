@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -80,5 +81,11 @@ public class UsuarioController {
     public ResponseEntity<List<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id){
         List<Saldo> saldos = saldoService.saldosPorUsuario(id);
         return ResponseEntity.ok().body(SaldoViewDTO.listParaDto(saldos));
+    }
+
+    @GetMapping("/saldo-total/{id}")
+    public ResponseEntity<BigDecimal> saldoTotalPorUsuario(@PathVariable Long id){
+        BigDecimal saldoTotal = saldoService.saldoTotalPorUsuario(id);
+        return ResponseEntity.ok().body(saldoTotal);
     }
 }

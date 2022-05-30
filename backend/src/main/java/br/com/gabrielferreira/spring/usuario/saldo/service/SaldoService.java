@@ -39,6 +39,15 @@ public class SaldoService {
         return saldos;
     }
 
+    public BigDecimal saldoTotalPorUsuario(Long idUsuario){
+        List<Saldo> saldos = saldosPorUsuario(idUsuario);
+        BigDecimal valorTotal = BigDecimal.ZERO;
+        for(Saldo saldo : saldos){
+            valorTotal = valorTotal.add(saldo.getDeposito());
+        }
+        return valorTotal;
+    }
+
     private void verificarDeposito(BigDecimal deposito){
         if(deposito.doubleValue() <= 0.0){
             throw new ExcecaoPersonalizada("O déposito não pode ser menor ou igual ao 0.");
