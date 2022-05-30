@@ -4,7 +4,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioUpdateDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
-import br.com.gabrielferreira.spring.usuario.saldo.exception.UsuarioNaoEncontrado;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +47,7 @@ public class UsuarioService {
     public Usuario buscarPorId(Long id){
         Optional<Usuario> optionalUsuario = usuarioRepositorio.findById(id);
         if(optionalUsuario.isEmpty()){
-            throw new UsuarioNaoEncontrado("Usuário não foi encontrado, verifique o id informado.");
+            throw new RecursoNaoEncontrado("Usuário não foi encontrado, verifique o id informado.");
         }
         return optionalUsuario.get();
     }

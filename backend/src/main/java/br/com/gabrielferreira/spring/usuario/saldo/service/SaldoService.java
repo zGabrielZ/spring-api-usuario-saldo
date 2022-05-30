@@ -4,10 +4,12 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaldoRepositorio;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class SaldoService {
@@ -26,6 +28,15 @@ public class SaldoService {
         Saldo saldo = new Saldo(null,saldoFormDTO.getDeposito(),saldoFormDTO.getDataDeposito(),usuario);
         verificarDeposito(saldo.getDeposito());
         return saldoRepositorio.save(saldo);
+    }
+
+    public List<Saldo> saldosPorUsuario(Long idUsuario){
+        Usuario usuario = usuarioService.buscarPorId(idUsuario);
+        List<Saldo> saldos = usuario.getSaldos();
+        if(saldos.isEmpty()){
+            throw new RecursoNaoEncontrado("Nenhum saldo foi encontrado para o usuário " + usuario.getNome());
+        }
+        return saldos;
     }
 
     private void verificarDeposito(BigDecimal deposito){

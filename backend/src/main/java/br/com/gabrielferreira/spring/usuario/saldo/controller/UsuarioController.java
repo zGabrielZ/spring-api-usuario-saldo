@@ -1,10 +1,13 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
+import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioUpdateDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
+import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -23,8 +27,11 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    private final SaldoService saldoService;
+
+    public UsuarioController(UsuarioService usuarioService, SaldoService saldoService) {
         this.usuarioService = usuarioService;
+        this.saldoService = saldoService;
     }
 
     @PostMapping
@@ -67,5 +74,11 @@ public class UsuarioController {
         PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
         Page<Usuario> usuarios = usuarioService.listagem(pageRequest);
         return ResponseEntity.ok().body(UsuarioViewDTO.converterParaDto(usuarios));
+    }
+
+    @GetMapping("/saldos/{id}")
+    public ResponseEntity<List<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id){
+        List<Saldo> saldos = saldoService.saldosPorUsuario(id);
+        return ResponseEntity.ok().body(SaldoViewDTO.listParaDto(saldos));
     }
 }

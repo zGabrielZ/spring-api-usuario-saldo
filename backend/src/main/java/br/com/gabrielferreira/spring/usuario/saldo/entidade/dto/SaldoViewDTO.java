@@ -6,6 +6,8 @@ import lombok.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -27,6 +29,10 @@ public class SaldoViewDTO implements Serializable {
         this.id = saldo.getId();
         this.deposito = saldo.getDeposito();
         this.dataDeposito = saldo.getDataDeposito();
+    }
+
+    public static List<SaldoViewDTO> listParaDto(List<Saldo> saldos){
+        return saldos.stream().map(SaldoViewDTO::new).collect(Collectors.toList());
     }
 
 }
