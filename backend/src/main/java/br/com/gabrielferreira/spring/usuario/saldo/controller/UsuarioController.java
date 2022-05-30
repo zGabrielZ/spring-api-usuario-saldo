@@ -85,7 +85,7 @@ public class UsuarioController {
 
     @GetMapping("/saldo-total/{id}")
     public ResponseEntity<BigDecimal> saldoTotalPorUsuario(@PathVariable Long id){
-        BigDecimal saldoTotal = saldoService.saldoTotalPorUsuario(id);
+        BigDecimal saldoTotal = usuarioService.buscarPorId(id).getSaldoTotal();
         return ResponseEntity.ok().body(saldoTotal);
     }
 }

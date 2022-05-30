@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,9 @@ public class Usuario implements Serializable {
     @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.EAGER,mappedBy = "usuario")
     private List<Saldo> saldos = new ArrayList<>();
 
+    @Column(name = "saldo_total")
+    private BigDecimal saldoTotal;
+
     public Usuario(Long id, String nome, String email, String senha, String cpf, LocalDate dataNascimento) {
         this.id = id;
         this.nome = nome;
@@ -47,5 +51,9 @@ public class Usuario implements Serializable {
         this.senha = senha;
         this.cpf = cpf;
         this.dataNascimento = dataNascimento;
+    }
+
+    public void adicionarSaldo(Saldo saldo){
+        this.saldos.add(saldo);
     }
 }

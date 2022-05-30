@@ -23,11 +23,19 @@ public class SaldoService {
         this.usuarioService = usuarioService;
     }
 
-    public Saldo inserir(SaldoFormDTO saldoFormDTO){
+    public Saldo depositar(SaldoFormDTO saldoFormDTO){
         Usuario usuario = usuarioService.buscarPorId(saldoFormDTO.getIdUsuario());
         Saldo saldo = new Saldo(null,saldoFormDTO.getDeposito(),saldoFormDTO.getDataDeposito(),usuario);
         verificarDeposito(saldo.getDeposito());
-        return saldoRepositorio.save(saldo);
+
+        saldoRepositorio.save(saldo);
+        usuario.adicionarSaldo(saldo);
+
+        BigDecimal valorTotal = saldoTotalPorUsuario(usuario);
+        usuarioService.atualizarSaldoTotal(usuario,valorTotal);
+
+
+        return saldo;
     }
 
     public List<Saldo> saldosPorUsuario(Long idUsuario){
@@ -39,8 +47,8 @@ public class SaldoService {
         return saldos;
     }
 
-    public BigDecimal saldoTotalPorUsuario(Long idUsuario){
-        List<Saldo> saldos = saldosPorUsuario(idUsuario);
+    public BigDecimal saldoTotalPorUsuario(Usuario usuario){
+        List<Saldo> saldos = usuario.getSaldos();
         BigDecimal valorTotal = BigDecimal.ZERO;
         for(Saldo saldo : saldos){
             valorTotal = valorTotal.add(saldo.getDeposito());

@@ -1,5 +1,4 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
-
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioUpdateDTO;
@@ -10,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -55,6 +56,10 @@ public class UsuarioService {
     public void deletarPorId(Long id){
         Usuario usuario = buscarPorId(id);
         usuarioRepositorio.deleteById(usuario.getId());
+    }
+    public void atualizarSaldoTotal(Usuario usuario, BigDecimal valor){
+        usuario.setSaldoTotal(valor);
+        usuarioRepositorio.save(usuario);
     }
 
     private void verificarEmail(String email){
