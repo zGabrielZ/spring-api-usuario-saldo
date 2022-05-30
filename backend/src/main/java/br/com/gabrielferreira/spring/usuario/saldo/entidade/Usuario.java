@@ -13,6 +13,8 @@ import java.util.List;
 @Table(name = "USUARIO")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
