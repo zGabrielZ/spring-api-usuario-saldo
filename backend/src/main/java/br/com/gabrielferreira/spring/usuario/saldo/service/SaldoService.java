@@ -2,6 +2,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.service;
 
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SacarFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
@@ -36,6 +37,13 @@ public class SaldoService {
 
 
         return saldo;
+    }
+
+    public BigDecimal sacar(SacarFormDTO sacarFormDTO){
+        Usuario usuario = usuarioService.buscarPorId(sacarFormDTO.getIdUsuario());
+        BigDecimal saldoTotal = usuario.getSaldoTotal().subtract(sacarFormDTO.getQuantidade());
+        usuarioService.atualizarSaldoTotal(usuario,saldoTotal);
+        return saldoTotal;
     }
 
     public List<Saldo> saldosPorUsuario(Long idUsuario){

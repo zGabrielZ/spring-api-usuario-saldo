@@ -1,14 +1,18 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
+import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SacarFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SacarViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.net.URI;
 
 @RestController
@@ -26,5 +30,11 @@ public class SaldoController {
         Saldo saldo = saldoService.depositar(saldoFormDTO);
         URI uri = uriComponentsBuilder.path("/saldos/{id}").buildAndExpand(saldo.getId()).toUri();
         return ResponseEntity.created(uri).body(new SaldoViewDTO(saldo));
+    }
+
+    @PostMapping("/sacar")
+    public ResponseEntity<SacarViewDTO> sacarSaldoPorUsuario(@Valid @RequestBody SacarFormDTO sacarFormDTO){
+        BigDecimal saldoTotal = saldoService.sacar(sacarFormDTO);
+        return new ResponseEntity<>(new SacarViewDTO(saldoTotal), HttpStatus.CREATED);
     }
 }
