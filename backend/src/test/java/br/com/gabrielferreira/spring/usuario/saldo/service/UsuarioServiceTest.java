@@ -233,13 +233,14 @@ class UsuarioServiceTest {
 
         // Mock para retornar os dados de cima
         PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"nome");
-        when(usuarioRepositorio.findAll(pageRequest)).thenReturn(listParaPage(usuarios));
+        when(usuarioRepositorio.findAll(pageRequest)).thenReturn(listParaPage(usuarios,pageRequest));
 
         // Execução
         Page<Usuario> usuarioPage = usuarioService.listagem(pageRequest);
 
         // Verificação
         assertThat(usuarioPage.getTotalElements()).isEqualTo(3);
+        assertThat(usuarioPage.getTotalPages()).isEqualTo(2);
         assertThat(usuarioPage.isEmpty()).isFalse();
 
     }
@@ -253,7 +254,7 @@ class UsuarioServiceTest {
         return UsuarioUpdateDTO.builder().nome("José Pereira").dataNascimento(LocalDate.parse("1998-12-26")).build();
     }
 
-    private Page<Usuario> listParaPage(List<Usuario> usuarios){
-        return new PageImpl<>(usuarios);
+    private Page<Usuario> listParaPage(List<Usuario> usuarios, PageRequest pageRequest){
+        return new PageImpl<>(usuarios,pageRequest,usuarios.size());
     }
 }
