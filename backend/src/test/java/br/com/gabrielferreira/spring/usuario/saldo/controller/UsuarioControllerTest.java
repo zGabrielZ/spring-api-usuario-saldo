@@ -38,6 +38,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -257,6 +258,23 @@ class UsuarioControllerTest {
                 .andExpect(jsonPath("size",equalTo(2)))
                 .andExpect(jsonPath("totalPages",equalTo(3)))
                 .andExpect(jsonPath("empty",equalTo(false)));
+    }
+
+    @Test
+    @DisplayName("Listagem de usuários não deveria retornar status 200 quando informar a direção errada.")
+    void naoDeveListarUsuariosPaginados() throws Exception{
+        // Cenário
+        // Paginação
+        String query = API + "?pagina=0&quantidadeRegistro=10&direcao=TESTE&ordenar=ordenar";
+
+        // Criar uma requisição via get
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(query).accept(JSON_MEDIATYPE).contentType(JSON_MEDIATYPE);
+
+        // Verificando
+        mockMvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("mensagem",equalTo("A direção informada está incorreta, informe DESC ou ASC")));
     }
 
     @Test
