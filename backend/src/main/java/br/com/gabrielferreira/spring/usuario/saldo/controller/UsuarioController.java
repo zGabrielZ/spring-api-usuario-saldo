@@ -2,10 +2,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioUpdateDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.*;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -84,8 +80,8 @@ public class UsuarioController {
     }
 
     @GetMapping("/saldo-total/{id}")
-    public ResponseEntity<BigDecimal> saldoTotalPorUsuario(@PathVariable Long id){
+    public ResponseEntity<SaldoTotalViewDTO> saldoTotalPorUsuario(@PathVariable Long id){
         Usuario usuario = usuarioService.buscarPorId(id);
-        return ResponseEntity.ok().body(usuario.getSaldoTotal());
+        return ResponseEntity.ok().body(new SaldoTotalViewDTO(usuario.getSaldoTotal()));
     }
 }
