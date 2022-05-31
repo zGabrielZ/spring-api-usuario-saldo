@@ -63,7 +63,7 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity<Page<UsuarioViewDTO>> listagem(
             @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
-            @RequestParam(value = "quantidadePagina", required = false, defaultValue = "5") Integer quantidadeRegistro,
+            @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
             @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
             @RequestParam(value = "ordenar", required = false, defaultValue = "nome") String ordenar
     ){
@@ -85,7 +85,7 @@ public class UsuarioController {
 
     @GetMapping("/saldo-total/{id}")
     public ResponseEntity<BigDecimal> saldoTotalPorUsuario(@PathVariable Long id){
-        BigDecimal saldoTotal = usuarioService.buscarPorId(id).getSaldoTotal();
-        return ResponseEntity.ok().body(saldoTotal);
+        Usuario usuario = usuarioService.buscarPorId(id);
+        return ResponseEntity.ok().body(usuario.getSaldoTotal());
     }
 }

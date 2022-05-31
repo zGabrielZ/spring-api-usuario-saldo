@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "SALDO")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "usuario")
