@@ -1,5 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.entidade.dto;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
@@ -22,6 +23,7 @@ public class SaldoFormDTO implements Serializable {
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     @NotNull(message = "Data do déposito não pode ser vazio.")
+    @Future(message = "Data de déposito não pode ser passada.")
     private LocalDateTime dataDeposito;
 
     @NotNull(message = "Usuário não pode ser vazio.")
@@ -31,6 +33,13 @@ public class SaldoFormDTO implements Serializable {
         this.deposito = saldo.getDeposito();
         this.dataDeposito = saldo.getDataDeposito();
         this.idUsuario = saldo.getUsuario().getId();
+    }
+
+    public BigDecimal getDeposito(){
+        if(BigDecimal.ZERO.compareTo(this.deposito) >= 0){
+            throw new ExcecaoPersonalizada("O déposito não pode ser menor ou igual ao 0.");
+        }
+        return this.deposito;
     }
 
 }

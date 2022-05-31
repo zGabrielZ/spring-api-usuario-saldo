@@ -27,7 +27,6 @@ public class SaldoService {
     public Saldo depositar(SaldoFormDTO saldoFormDTO){
         Usuario usuario = usuarioService.buscarPorId(saldoFormDTO.getIdUsuario());
         Saldo saldo = new Saldo(null,saldoFormDTO.getDeposito(),saldoFormDTO.getDataDeposito(),usuario);
-        verificarDeposito(saldo.getDeposito());
 
         saldoRepositorio.save(saldo);
         usuario.adicionarSaldo(saldo);
@@ -65,20 +64,14 @@ public class SaldoService {
         return valorTotal;
     }
 
-    private void verificarDeposito(BigDecimal deposito){
-        if(deposito.doubleValue() <= 0.0){
-            throw new ExcecaoPersonalizada("O déposito não pode ser menor ou igual ao 0.");
-        }
-    }
-
     private void verificarSaque(BigDecimal saldoTotal){
-        if(saldoTotal == null || saldoTotal.equals(BigDecimal.ZERO)){
+        if(saldoTotal == null || saldoTotal.compareTo(BigDecimal.ZERO) == 0){
             throw new ExcecaoPersonalizada("Não é possível sacar sem nenhum valor.");
         }
     }
 
     private BigDecimal saldoTotalUsuario(BigDecimal saldoTotal, BigDecimal quantidade){
-        if(quantidade.doubleValue() > saldoTotal.doubleValue()){
+        if(quantidade.compareTo(saldoTotal) > 0){
             throw new ExcecaoPersonalizada("Não é possível sacar pois o saldo total é " + saldoTotal);
         }
         return saldoTotal.subtract(quantidade);
