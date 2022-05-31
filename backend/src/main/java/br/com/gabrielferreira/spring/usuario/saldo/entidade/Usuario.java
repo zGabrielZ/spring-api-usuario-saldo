@@ -46,6 +46,9 @@ public class Usuario implements Serializable {
     @Column(name = "saldo_total")
     private BigDecimal saldoTotal;
 
+    @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "usuario")
+    private List<Saque> saques = new ArrayList<>();
+
     public Usuario(Long id, String nome, String email, String senha, String cpf, LocalDate dataNascimento) {
         this.id = id;
         this.nome = nome;
@@ -57,5 +60,9 @@ public class Usuario implements Serializable {
 
     public void adicionarSaldo(Saldo saldo){
         this.saldos.add(saldo);
+    }
+
+    public void adicionarSaque(Saque saque){
+        this.saques.add(saque);
     }
 }
