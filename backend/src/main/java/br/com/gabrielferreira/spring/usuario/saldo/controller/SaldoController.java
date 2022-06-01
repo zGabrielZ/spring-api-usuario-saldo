@@ -6,6 +6,10 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SacarViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +21,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/saldos")
+@Api("Saldo API")
 public class SaldoController {
 
     private final SaldoService saldoService;
@@ -25,6 +30,13 @@ public class SaldoController {
         this.saldoService = saldoService;
     }
 
+    @ApiOperation("Inserir um saldo para o usuário")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201,message = "Inseriu um déposito para o usuário"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+            @ApiResponse(code = 404,message = "Usuário não foi encontrado")
+    })
     @PostMapping("/depositar")
     public ResponseEntity<SaldoViewDTO> depositar(@Valid @RequestBody SaldoFormDTO saldoFormDTO, UriComponentsBuilder uriComponentsBuilder){
         Saldo saldo = saldoService.depositar(saldoFormDTO);
@@ -32,6 +44,13 @@ public class SaldoController {
         return ResponseEntity.created(uri).body(new SaldoViewDTO(saldo));
     }
 
+    @ApiOperation("Saque de um saldo total do usuário")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201,message = "Sacou um valor do saldo total do usuário"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+            @ApiResponse(code = 404,message = "Usuário não foi encontrado")
+    })
     @PostMapping("/sacar")
     public ResponseEntity<SacarViewDTO> sacarSaldoPorUsuario(@Valid @RequestBody SacarFormDTO sacarFormDTO){
         BigDecimal saldoTotal = saldoService.sacar(sacarFormDTO);
