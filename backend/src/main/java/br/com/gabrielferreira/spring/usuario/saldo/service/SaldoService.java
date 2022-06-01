@@ -33,7 +33,7 @@ public class SaldoService {
         Usuario usuario = usuarioService.buscarPorId(saldoFormDTO.getIdUsuario());
         Saldo saldo = new Saldo(null,saldoFormDTO.getDeposito(),saldoFormDTO.getDataDeposito(),usuario);
 
-        saldoRepositorio.save(saldo);
+        saldo = saldoRepositorio.save(saldo);
         usuario.adicionarSaldo(saldo);
 
         BigDecimal valorTotal = saldoTotalPorUsuario(usuario);
