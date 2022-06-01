@@ -1,0 +1,20 @@
+version: "3.0"
+services:
+  postgresdb:
+   image: postgres:14.3
+   container_name: postgresdb
+   environment:
+     - TZ=America/Sao_Paulo
+     - POSTGRES_USER=gabriel
+     - POSTGRES_PASSWORD=gabriel
+     - POSTGRES_DB=usuario_saldos
+   ports:
+     - 5000:5432
+   restart: always
+   volumes:
+     - ./vol-db:/var/lib/postgres
+   networks:
+     - backend
+networks:
+  backend:
+    driver: bridge
