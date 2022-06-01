@@ -7,7 +7,6 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaldoRepositorio;
-import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,16 +32,14 @@ class SaldoServiceTest {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     private SaldoRepositorio saldoRepositorio;
-    private SaqueRepositorio saqueRepositorio;
     private UsuarioService usuarioService;
     private SaldoService saldoService;
 
     @BeforeEach
     void criarInstancias(){
         saldoRepositorio = mock(SaldoRepositorio.class);
-        saqueRepositorio = mock(SaqueRepositorio.class);
         usuarioService = mock(UsuarioService.class);
-        saldoService = new SaldoService(saldoRepositorio,usuarioService,saqueRepositorio);
+        saldoService = new SaldoService(saldoRepositorio,usuarioService);
     }
 
     @Test

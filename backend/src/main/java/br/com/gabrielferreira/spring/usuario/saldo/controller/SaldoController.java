@@ -6,6 +6,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SacarViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
+import br.com.gabrielferreira.spring.usuario.saldo.service.SaqueService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -26,8 +27,10 @@ public class SaldoController {
 
     private final SaldoService saldoService;
 
-    public SaldoController(SaldoService saldoService) {
+    private final SaqueService saqueService;
+    public SaldoController(SaldoService saldoService, SaqueService saqueService) {
         this.saldoService = saldoService;
+        this.saqueService = saqueService;
     }
 
     @ApiOperation("Inserir um saldo para o usuário")
@@ -53,7 +56,7 @@ public class SaldoController {
     })
     @PostMapping("/sacar")
     public ResponseEntity<SacarViewDTO> sacarSaldoPorUsuario(@Valid @RequestBody SacarFormDTO sacarFormDTO){
-        BigDecimal saldoTotal = saldoService.sacar(sacarFormDTO);
+        BigDecimal saldoTotal = saqueService.sacar(sacarFormDTO);
         return new ResponseEntity<>(new SacarViewDTO(saldoTotal), HttpStatus.CREATED);
     }
 }
