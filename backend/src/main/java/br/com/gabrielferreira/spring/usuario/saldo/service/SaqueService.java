@@ -8,6 +8,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 public class SaqueService {
@@ -25,7 +26,7 @@ public class SaqueService {
         verificarSaque(usuario.getSaldoTotal());
         BigDecimal saldoTotalAtual = saldoTotalUsuario(usuario.getSaldoTotal(),sacarFormDTO.getQuantidade());
 
-        Saque saque = new Saque(null,sacarFormDTO.getQuantidade(),usuario);
+        Saque saque = new Saque(null,sacarFormDTO.getQuantidade(),LocalDateTime.now(),usuario);
         saqueRepositorio.save(saque);
         usuario.adicionarSaque(saque);
 

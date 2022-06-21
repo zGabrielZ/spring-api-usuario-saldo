@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "SAQUE")
 @Getter
@@ -25,6 +27,9 @@ public class Saque implements Serializable {
 
     @Column(name = "valor",nullable = false)
     private BigDecimal valor;
+
+    @Column(name = "data_saque", nullable = false)
+    private LocalDateTime dataSaque;
 
     @JoinColumn(name = "usuario_id",foreignKey = @ForeignKey(name="usuario_saque_fk"))
     @ManyToOne
