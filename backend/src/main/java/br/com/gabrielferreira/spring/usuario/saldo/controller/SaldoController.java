@@ -4,7 +4,6 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
-import br.com.gabrielferreira.spring.usuario.saldo.service.SaqueService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -24,10 +23,8 @@ public class SaldoController {
 
     private final SaldoService saldoService;
 
-    private final SaqueService saqueService;
-    public SaldoController(SaldoService saldoService, SaqueService saqueService) {
+    public SaldoController(SaldoService saldoService) {
         this.saldoService = saldoService;
-        this.saqueService = saqueService;
     }
 
     @ApiOperation("Inserir um saldo para o usuário")

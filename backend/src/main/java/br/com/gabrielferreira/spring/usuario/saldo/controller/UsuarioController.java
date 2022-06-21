@@ -1,6 +1,7 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
+import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saque;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.*;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
@@ -145,5 +146,11 @@ public class UsuarioController {
     public ResponseEntity<SacarViewDTO> sacarSaldoPorUsuario(@Valid @RequestBody SacarFormDTO sacarFormDTO){
         BigDecimal saldoTotal = saqueService.sacar(sacarFormDTO);
         return new ResponseEntity<>(new SacarViewDTO(saldoTotal), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/saques/{id}")
+    public ResponseEntity<List<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id){
+        List<Saque> saques = saqueService.saquesPorUsuario(id);
+        return ResponseEntity.ok().body(SaqueViewDTO.converterParaDto(saques));
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class SaqueService {
@@ -34,6 +35,11 @@ public class SaqueService {
         usuarioService.atualizarSaldoTotal(usuario,saldoTotalAtual);
 
         return saldoTotalAtual;
+    }
+
+    public List<Saque> saquesPorUsuario(Long idUsuario){
+        Usuario usuario = usuarioService.buscarPorId(idUsuario);
+        return saqueRepositorio.buscarPorUsuario(usuario.getId());
     }
 
     private void verificarSaque(BigDecimal saldoTotal){
