@@ -1,0 +1,41 @@
+version: "3.3"
+services:
+  spring-usuarios-saldos:
+    build: .
+    container_name: spring-usuarios-saldos
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - API_DATABASE_URL=${API_DATABASE_URL}
+      - API_DATABASE_USERNAME=${API_DATABASE_USERNAME}
+      - API_DATABASE_PASSWORD=${API_DATABASE_PASSWORD}
+      - API_DATABASE_DDL_AUTO=${API_DATABASE_DDL_AUTO}
+      - API_DATABASE_DIALECT=${API_DATABASE_DIALECT}
+      - API_DATABASE_SHOW_SQL=${API_DATABASE_SHOW_SQL}
+      - API_DATABASE_FORMAT_SQL=${API_DATABASE_FORMAT_SQL}
+    ports:
+      - "8282:8080"
+    networks:
+      - compose-bridge
+    restart: always
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14.3
+    container_name: db
+    environment:
+      - TZ=${TZ}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "6000:5432"
+    restart: always
+    volumes:
+      - ./volume_postgres:/var/lib/postgresql/data
+    networks:
+      - compose-bridge
+
+networks:
+  compose-bridge:
+    driver: bridge
