@@ -36,9 +36,18 @@ public class UsuarioService {
 
     public Usuario atualizar(Long id,UsuarioUpdateDTO usuarioUpdateDTO){
         Usuario usuario = buscarPorId(id);
-        usuario.setNome(usuarioUpdateDTO.getNome());
-        usuario.setDataNascimento(usuarioUpdateDTO.getDataNascimento());
-        return usuarioRepositorio.save(usuario);
+
+        if(!usuario.getEmail().equals(usuarioUpdateDTO.getEmail())){
+            verificarEmail(usuarioUpdateDTO.getEmail());
+        }
+
+        if(!usuario.getCpf().equals(usuarioUpdateDTO.getCpf())){
+            verificarCpf(usuarioUpdateDTO.getCpf());
+        }
+
+        dtoParaEntidade(usuario,usuarioUpdateDTO);
+        usuario = usuarioRepositorio.save(usuario);
+        return usuario;
     }
 
     public Page<Usuario> listagem(Pageable pageable){
@@ -74,6 +83,14 @@ public class UsuarioService {
         if (optionalUsuario.isPresent()) {
             throw new ExcecaoPersonalizada("Este CPF já foi cadastrado.");
         }
+    }
+
+    private void dtoParaEntidade(Usuario usuario,UsuarioUpdateDTO usuarioUpdateDTO){
+        usuario.setNome(usuarioUpdateDTO.getNome());
+        usuario.setEmail(usuarioUpdateDTO.getEmail());
+        usuario.setCpf(usuarioUpdateDTO.getCpf());
+        usuario.setSenha(usuarioUpdateDTO.getSenha());
+        usuario.setDataNascimento(usuarioUpdateDTO.getDataNascimento());
     }
 
 }
