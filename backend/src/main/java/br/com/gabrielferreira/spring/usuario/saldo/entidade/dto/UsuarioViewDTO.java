@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.data.domain.Page;
 
+import javax.swing.text.MaskFormatter;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -34,12 +35,23 @@ public class UsuarioViewDTO implements Serializable {
         this.id = usuario.getId();
         this.nome = usuario.getNome();
         this.email = usuario.getEmail();
-        this.cpf = usuario.getCpf();
+        this.cpf = mascaraCpf(usuario.getCpf());
         this.dataNascimento = usuario.getDataNascimento();
     }
 
     public static Page<UsuarioViewDTO> converterParaDto(Page<Usuario> usuarios){
         return  usuarios.map(UsuarioViewDTO::new);
+    }
+
+    private String mascaraCpf(String cpf){
+       try {
+           MaskFormatter cpfFormatacao = new MaskFormatter("###.###.###-##");
+           cpfFormatacao.setValueContainsLiteralCharacters(false);
+           return cpfFormatacao.valueToString(cpf);
+       } catch (Exception e){
+           e.printStackTrace();
+       }
+       return null;
     }
 
 }
