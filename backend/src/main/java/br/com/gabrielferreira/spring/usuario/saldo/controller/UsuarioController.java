@@ -5,6 +5,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.*;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
+import br.com.gabrielferreira.spring.usuario.saldo.service.SaqueService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -32,9 +34,12 @@ public class UsuarioController {
 
     private final SaldoService saldoService;
 
-    public UsuarioController(UsuarioService usuarioService, SaldoService saldoService) {
+    private final SaqueService saqueService;
+
+    public UsuarioController(UsuarioService usuarioService, SaldoService saldoService, SaqueService saqueService) {
         this.usuarioService = usuarioService;
         this.saldoService = saldoService;
+        this.saqueService = saqueService;
     }
 
     @ApiOperation("Inserir um usuário")
@@ -127,5 +132,18 @@ public class UsuarioController {
     public ResponseEntity<SaldoTotalViewDTO> saldoTotalPorUsuario(@PathVariable Long id){
         Usuario usuario = usuarioService.buscarPorId(id);
         return ResponseEntity.ok().body(new SaldoTotalViewDTO(usuario.getSaldoTotal()));
+    }
+
+    @ApiOperation("Saque de um saldo total do usuário")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201,message = "Sacou um valor do saldo total do usuário"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+            @ApiResponse(code = 404,message = "Usuário não foi encontrado")
+    })
+    @PostMapping("/sacar")
+    public ResponseEntity<SacarViewDTO> sacarSaldoPorUsuario(@Valid @RequestBody SacarFormDTO sacarFormDTO){
+        BigDecimal saldoTotal = saqueService.sacar(sacarFormDTO);
+        return new ResponseEntity<>(new SacarViewDTO(saldoTotal), HttpStatus.CREATED);
     }
 }

@@ -1,8 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SacarFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SacarViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.net.URI;
 
 @RestController
@@ -47,16 +44,4 @@ public class SaldoController {
         return ResponseEntity.created(uri).body(new SaldoViewDTO(saldo));
     }
 
-    @ApiOperation("Saque de um saldo total do usuário")
-    @ResponseStatus(code = HttpStatus.CREATED)
-    @ApiResponses(value = {
-            @ApiResponse(code = 201,message = "Sacou um valor do saldo total do usuário"),
-            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
-            @ApiResponse(code = 404,message = "Usuário não foi encontrado")
-    })
-    @PostMapping("/sacar")
-    public ResponseEntity<SacarViewDTO> sacarSaldoPorUsuario(@Valid @RequestBody SacarFormDTO sacarFormDTO){
-        BigDecimal saldoTotal = saqueService.sacar(sacarFormDTO);
-        return new ResponseEntity<>(new SacarViewDTO(saldoTotal), HttpStatus.CREATED);
-    }
 }
