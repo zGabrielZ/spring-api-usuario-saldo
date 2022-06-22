@@ -10,10 +10,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
 public class UsuarioViewDTO implements Serializable {
 
     private static final long serialVersionUID = -2398120816295097002L;

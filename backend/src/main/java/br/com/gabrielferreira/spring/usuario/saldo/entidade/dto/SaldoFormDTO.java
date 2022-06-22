@@ -1,5 +1,4 @@
 package br.com.gabrielferreira.spring.usuario.saldo.entidade.dto;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class SaldoFormDTO implements Serializable {
 
     private static final long serialVersionUID = -2398120816295097002L;
@@ -34,12 +32,6 @@ public class SaldoFormDTO implements Serializable {
     @ApiModelProperty(value = "ID do usuário", example = "1")
     @NotNull(message = "Usuário não pode ser vazio.")
     private Long idUsuario;
-
-    public SaldoFormDTO(Saldo saldo){
-        this.deposito = saldo.getDeposito();
-        this.dataDeposito = saldo.getDataDeposito();
-        this.idUsuario = saldo.getUsuario().getId();
-    }
 
     public BigDecimal getDeposito(){
         if(BigDecimal.ZERO.compareTo(this.deposito) >= 0){

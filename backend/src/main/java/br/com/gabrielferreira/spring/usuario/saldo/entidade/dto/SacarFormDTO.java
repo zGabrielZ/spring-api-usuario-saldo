@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class SacarFormDTO implements Serializable {
 
     private static final long serialVersionUID = -7136821550686871414L;

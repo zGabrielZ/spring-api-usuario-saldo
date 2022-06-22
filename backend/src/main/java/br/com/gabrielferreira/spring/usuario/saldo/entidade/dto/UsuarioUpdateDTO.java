@@ -1,5 +1,4 @@
 package br.com.gabrielferreira.spring.usuario.saldo.entidade.dto;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -14,7 +13,6 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class UsuarioUpdateDTO implements Serializable {
 
     private static final long serialVersionUID = -2398120816295097002L;
@@ -43,13 +41,5 @@ public class UsuarioUpdateDTO implements Serializable {
     @NotNull(message = "Data nascimento não pode ser vazio.")
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
-
-    public UsuarioUpdateDTO(Usuario usuario){
-        this.nome = usuario.getNome();
-        this.email = usuario.getEmail();
-        this.senha = usuario.getSenha();
-        this.cpf = usuario.getCpf();
-        this.dataNascimento = usuario.getDataNascimento();
-    }
 
 }

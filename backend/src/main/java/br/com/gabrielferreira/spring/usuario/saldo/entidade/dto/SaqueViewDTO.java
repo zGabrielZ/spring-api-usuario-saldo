@@ -10,11 +10,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
 public class SaqueViewDTO implements Serializable {
 
     private static final long serialVersionUID = -7136821550686871414L;

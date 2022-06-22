@@ -11,10 +11,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
 public class SaldoViewDTO implements Serializable {
 
     private static final long serialVersionUID = -2398120816295097002L;
