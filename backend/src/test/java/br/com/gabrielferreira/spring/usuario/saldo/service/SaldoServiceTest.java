@@ -108,8 +108,11 @@ class SaldoServiceTest {
         saldos.forEach(usuario::adicionarSaldo);
         when(usuarioService.buscarPorId(idUsuarioPesquisar)).thenReturn(usuario);
 
-        // Executando
+        // Mock para retornar os saldos por usuário
         PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"dataDeposito");
+        when(saldoRepositorio.buscarPorUsuario(idUsuarioPesquisar,pageRequest)).thenReturn(saldos);
+
+        // Executando
         Page<Saldo> saldosResultados = saldoService.saldosPorUsuario(idUsuarioPesquisar,pageRequest);
 
         // Verificando

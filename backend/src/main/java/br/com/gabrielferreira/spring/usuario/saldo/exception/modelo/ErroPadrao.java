@@ -1,6 +1,4 @@
 package br.com.gabrielferreira.spring.usuario.saldo.exception.modelo;
-
-import br.com.gabrielferreira.spring.usuario.saldo.exception.modelo.ErroFormulario;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

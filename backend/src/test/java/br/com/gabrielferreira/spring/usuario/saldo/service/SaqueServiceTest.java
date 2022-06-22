@@ -108,7 +108,7 @@ class SaqueServiceTest {
         // Mock para retornar saldos do usuários
         List<Saque> saques = saqueCriados(usuario);
         PageRequest pageRequest = PageRequest.of(0,1, Sort.Direction.DESC,"dataSaque");
-        when(saqueRepositorio.buscarPorUsuario(anyLong(),pageRequest)).thenReturn(saques);
+        when(saqueRepositorio.buscarPorUsuario(idUsuarioPesquisar,pageRequest)).thenReturn(saques);
 
         // Executando
         Page<Saque> saquesResultados = saqueService.saquesPorUsuario(idUsuarioPesquisar,pageRequest);

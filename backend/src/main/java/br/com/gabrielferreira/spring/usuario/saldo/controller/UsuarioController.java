@@ -83,6 +83,7 @@ public class UsuarioController {
     @ResponseStatus(code = HttpStatus.OK)
     @ApiResponses(value = {
             @ApiResponse(code = 200,message = "Atualizou um usuário"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
             @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
     })
     @PutMapping("/{id}")
