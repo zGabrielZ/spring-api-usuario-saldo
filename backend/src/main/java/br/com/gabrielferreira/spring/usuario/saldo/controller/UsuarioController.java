@@ -113,16 +113,16 @@ public class UsuarioController {
         return ResponseEntity.ok().body(UsuarioViewDTO.converterParaDto(usuarios));
     }
 
-    @ApiOperation("Lista de saldos por usuário")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200,message = "Retornou uma lista de saldos"),
-            @ApiResponse(code = 404,message = "Usuário ou nenhum saldo foi encontrado"),
-    })
-    @GetMapping("/saldos/{id}")
-    public ResponseEntity<List<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id){
-        List<Saldo> saldos = saldoService.saldosPorUsuario(id);
-        return ResponseEntity.ok().body(SaldoViewDTO.listParaDto(saldos));
-    }
+//    @ApiOperation("Lista de saldos por usuário")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200,message = "Retornou uma lista de saldos"),
+//            @ApiResponse(code = 404,message = "Usuário ou nenhum saldo foi encontrado"),
+//    })
+//    @GetMapping("/saldos/{id}")
+//    public ResponseEntity<List<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id){
+//        List<Saldo> saldos = saldoService.saldosPorUsuario(id);
+//        return ResponseEntity.ok().body(SaldoViewDTO.listParaDto(saldos));
+//    }
 
     @ApiOperation("Saldo total do usuário")
     @ApiResponses(value = {

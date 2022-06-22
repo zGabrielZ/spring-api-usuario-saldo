@@ -4,6 +4,9 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaldoRepositorio;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -35,13 +38,9 @@ public class SaldoService {
         return saldo;
     }
 
-    public List<Saldo> saldosPorUsuario(Long idUsuario){
+    public Page<Saldo> saldosPorUsuario(Long idUsuario, PageRequest pageRequest){
         Usuario usuario = usuarioService.buscarPorId(idUsuario);
-        List<Saldo> saldos = usuario.getSaldos();
-        if(saldos.isEmpty()){
-            throw new RecursoNaoEncontrado("Nenhum saldo foi encontrado para o usuário " + usuario.getNome());
-        }
-        return saldos;
+        return new PageImpl<>(usuario.getSaldos(),pageRequest,usuario.getSaldos().size());
     }
 
     public BigDecimal saldoTotalPorUsuario(Usuario usuario){
