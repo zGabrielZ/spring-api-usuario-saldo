@@ -40,7 +40,7 @@ public class UsuarioViewDTO implements Serializable {
     }
 
     public static Page<UsuarioViewDTO> converterParaDto(Page<Usuario> usuarios){
-        return  usuarios.map(UsuarioViewDTO::new);
+        return usuarios.map(UsuarioViewDTO::new);
     }
 
     private String mascaraCpf(String cpf){

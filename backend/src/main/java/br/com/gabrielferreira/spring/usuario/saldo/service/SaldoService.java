@@ -39,7 +39,12 @@ public class SaldoService {
 
     public Page<Saldo> saldosPorUsuario(Long idUsuario, PageRequest pageRequest){
         Usuario usuario = usuarioService.buscarPorId(idUsuario);
-        return new PageImpl<>(usuario.getSaldos(),pageRequest,usuario.getSaldos().size());
+        List<Saldo> saldos = saldoRepositorio.buscarPorUsuario(usuario.getId(),pageRequest);
+
+        int inicioConsulta = (int) pageRequest.getOffset();
+        int finalConsulta = Math.min(inicioConsulta + pageRequest.getPageSize(),saldos.size());
+
+        return new PageImpl<>(saldos.subList(inicioConsulta,finalConsulta),pageRequest,saldos.size());
     }
 
     public BigDecimal saldoTotalPorUsuario(Usuario usuario){

@@ -1,9 +1,12 @@
 package br.com.gabrielferreira.spring.usuario.saldo.entidade.dto;
 
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
+import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.data.domain.Page;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,8 +38,8 @@ public class SaldoViewDTO implements Serializable {
         this.dataDeposito = saldo.getDataDeposito();
     }
 
-    public static List<SaldoViewDTO> listParaDto(List<Saldo> saldos){
-        return saldos.stream().map(SaldoViewDTO::new).collect(Collectors.toList());
+    public static Page<SaldoViewDTO> converterParaDto(Page<Saldo> saldos){
+        return  saldos.map(SaldoViewDTO::new);
     }
 
 }

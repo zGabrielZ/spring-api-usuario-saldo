@@ -19,11 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -105,7 +105,7 @@ public class UsuarioController {
     ){
         Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
         if(optionalDirecao.isEmpty()){
-            throw new ExcecaoPersonalizada("A direção informada está incorreta, informe DESC ou ASC");
+            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
         }
 
         PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
@@ -113,16 +113,28 @@ public class UsuarioController {
         return ResponseEntity.ok().body(UsuarioViewDTO.converterParaDto(usuarios));
     }
 
-//    @ApiOperation("Lista de saldos por usuário")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200,message = "Retornou uma lista de saldos"),
-//            @ApiResponse(code = 404,message = "Usuário ou nenhum saldo foi encontrado"),
-//    })
-//    @GetMapping("/saldos/{id}")
-//    public ResponseEntity<List<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id){
-//        List<Saldo> saldos = saldoService.saldosPorUsuario(id);
-//        return ResponseEntity.ok().body(SaldoViewDTO.listParaDto(saldos));
-//    }
+    @ApiOperation("Lista de saldos por usuário")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "Retornou uma lista de saldos"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+    })
+    @GetMapping("/saldos/{id}")
+    public ResponseEntity<Page<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id,
+          @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
+          @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
+          @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
+          @RequestParam(value = "ordenar", required = false, defaultValue = "deposito") String ordenar){
+
+        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
+        if(optionalDirecao.isEmpty()){
+            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
+        }
+
+        PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
+        Page<Saldo> saldos = saldoService.saldosPorUsuario(id,pageRequest);
+        return ResponseEntity.ok(SaldoViewDTO.converterParaDto(saldos));
+    }
+
 
     @ApiOperation("Saldo total do usuário")
     @ApiResponses(value = {
@@ -148,9 +160,24 @@ public class UsuarioController {
         return new ResponseEntity<>(new SacarViewDTO(saldoTotal), HttpStatus.CREATED);
     }
 
-//    @GetMapping("/saques/{id}")
-//    public ResponseEntity<List<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id){
-//        List<Saque> saques = saqueService.saquesPorUsuario(id);
-//        return ResponseEntity.ok().body(SaqueViewDTO.converterParaDto(saques));
-//    }
+    @ApiOperation("Lista de saques por usuário")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "Retornou uma lista de saques"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+    })
+    @GetMapping("/saques/{id}")
+    public ResponseEntity<Page<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id,
+        @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
+        @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
+        @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
+        @RequestParam(value = "ordenar", required = false, defaultValue = "valor") String ordenar){
+
+        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
+        if(optionalDirecao.isEmpty()){
+            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
+        }
+        PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
+        Page<Saque> saques = saqueService.saquesPorUsuario(id,pageRequest);
+        return ResponseEntity.ok().body(SaqueViewDTO.converterParaDto(saques));
+    }
 }

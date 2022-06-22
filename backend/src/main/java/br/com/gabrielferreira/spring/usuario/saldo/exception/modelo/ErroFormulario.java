@@ -1,4 +1,4 @@
-package br.com.gabrielferreira.spring.usuario.saldo.exception;
+package br.com.gabrielferreira.spring.usuario.saldo.exception.modelo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

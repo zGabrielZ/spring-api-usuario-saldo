@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -59,7 +60,7 @@ public class UsuarioService {
     public Usuario buscarPorId(Long id){
         Optional<Usuario> optionalUsuario = usuarioRepositorio.findById(id);
         if(optionalUsuario.isEmpty()){
-            throw new RecursoNaoEncontrado("Usuário não foi encontrado, verifique o id informado.");
+            throw new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem());
         }
         return optionalUsuario.get();
     }
@@ -76,14 +77,14 @@ public class UsuarioService {
     private void verificarEmail(String email){
         Optional<Usuario> optionalUsuario = usuarioRepositorio.findByEmail(email);
         if(optionalUsuario.isPresent()){
-            throw new ExcecaoPersonalizada("Este e-mail já foi cadastrado.");
+            throw new ExcecaoPersonalizada(EMAIL_CADASTRADO.getMensagem());
         }
     }
 
     private void verificarCpf(String cpf) {
         Optional<Usuario> optionalUsuario = usuarioRepositorio.findByCpf(cpf);
         if (optionalUsuario.isPresent()) {
-            throw new ExcecaoPersonalizada("Este CPF já foi cadastrado.");
+            throw new ExcecaoPersonalizada(CPF_CADASTRADO.getMensagem());
         }
     }
 

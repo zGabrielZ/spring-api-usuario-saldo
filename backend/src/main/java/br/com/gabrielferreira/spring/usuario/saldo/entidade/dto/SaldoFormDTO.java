@@ -4,6 +4,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizad
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -42,7 +43,7 @@ public class SaldoFormDTO implements Serializable {
 
     public BigDecimal getDeposito(){
         if(BigDecimal.ZERO.compareTo(this.deposito) >= 0){
-            throw new ExcecaoPersonalizada("O déposito não pode ser menor ou igual ao 0.");
+            throw new ExcecaoPersonalizada(DEPOSITO_MENOR_IGUAL_ZERO.getMensagem());
         }
         return this.deposito;
     }

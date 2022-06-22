@@ -1,5 +1,9 @@
-package br.com.gabrielferreira.spring.usuario.saldo.exception;
+package br.com.gabrielferreira.spring.usuario.saldo.exception.hanlder;
 
+import br.com.gabrielferreira.spring.usuario.saldo.exception.modelo.ErroFormulario;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.modelo.ErroPadrao;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -24,21 +28,21 @@ public class InterceptadorController {
         }
 
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Bad Request","Erros encontrados após realizar a requisição",erroFormularios);
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Verifque os erros","Erros encontrados após realizar a requisição",erroFormularios);
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 
     @ExceptionHandler(ExcecaoPersonalizada.class)
     public ResponseEntity<ErroPadrao> excessaoPersonalizada(ExcecaoPersonalizada e){
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Bad Request",e.getMessage(),new ArrayList<>());
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Ocorreu um erro",e.getMessage(),new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 
     @ExceptionHandler(RecursoNaoEncontrado.class)
-    public ResponseEntity<ErroPadrao> usuarioNaoEncontrada(RecursoNaoEncontrado e){
+    public ResponseEntity<ErroPadrao> entidadeNaoEncontrada(RecursoNaoEncontrado e){
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Not Found",e.getMessage(),new ArrayList<>());
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Entidade não encontrada",e.getMessage(),new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 }

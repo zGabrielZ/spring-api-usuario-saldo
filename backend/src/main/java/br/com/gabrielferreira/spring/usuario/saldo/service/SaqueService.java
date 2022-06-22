@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -42,19 +43,23 @@ public class SaqueService {
 
     public Page<Saque> saquesPorUsuario(Long idUsuario, PageRequest pageRequest){
         Usuario usuario = usuarioService.buscarPorId(idUsuario);
-        List<Saque> saques = saqueRepositorio.buscarPorUsuario(usuario.getId());
-        return new PageImpl<>(saques,pageRequest,saques.size());
+        List<Saque> saques = saqueRepositorio.buscarPorUsuario(usuario.getId(),pageRequest);
+
+        int inicioConsulta = (int) pageRequest.getOffset();
+        int finalConsulta = Math.min(inicioConsulta + pageRequest.getPageSize(),saques.size());
+
+        return new PageImpl<>(saques.subList(inicioConsulta,finalConsulta),pageRequest,saques.size());
     }
 
     private void verificarSaque(BigDecimal saldoTotal){
         if(saldoTotal == null || saldoTotal.compareTo(BigDecimal.ZERO) == 0){
-            throw new ExcecaoPersonalizada("Não é possível sacar sem nenhum valor.");
+            throw new ExcecaoPersonalizada(SAQUE_NAO_ENCONTRADO.getMensagem());
         }
     }
 
     private BigDecimal saldoTotalUsuario(BigDecimal saldoTotal, BigDecimal quantidade){
         if(quantidade.compareTo(saldoTotal) > 0){
-            throw new ExcecaoPersonalizada("Não é possível sacar pois o saldo total é " + saldoTotal);
+            throw new ExcecaoPersonalizada(SALDO_TOTAL_USUARIO.getMensagem() + saldoTotal);
         }
         return saldoTotal.subtract(quantidade);
     }

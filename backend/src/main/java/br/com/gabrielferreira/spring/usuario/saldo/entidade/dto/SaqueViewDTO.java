@@ -3,11 +3,11 @@ package br.com.gabrielferreira.spring.usuario.saldo.entidade.dto;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saque;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.data.domain.Page;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -30,8 +30,8 @@ public class SaqueViewDTO implements Serializable {
         this.valor = saque.getValor();
     }
 
-    public static List<SaqueViewDTO> converterParaDto(List<Saque> saques){
-        return saques.stream().map(SaqueViewDTO::new).collect(Collectors.toList());
+    public static Page<SaqueViewDTO> converterParaDto(Page<Saque> saques){
+        return saques.map(SaqueViewDTO::new);
     }
 
 }
