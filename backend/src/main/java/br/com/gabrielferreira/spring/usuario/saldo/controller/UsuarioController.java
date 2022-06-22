@@ -148,9 +148,9 @@ public class UsuarioController {
         return new ResponseEntity<>(new SacarViewDTO(saldoTotal), HttpStatus.CREATED);
     }
 
-    @GetMapping("/saques/{id}")
-    public ResponseEntity<List<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id){
-        List<Saque> saques = saqueService.saquesPorUsuario(id);
-        return ResponseEntity.ok().body(SaqueViewDTO.converterParaDto(saques));
-    }
+//    @GetMapping("/saques/{id}")
+//    public ResponseEntity<List<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id){
+//        List<Saque> saques = saqueService.saquesPorUsuario(id);
+//        return ResponseEntity.ok().body(SaqueViewDTO.converterParaDto(saques));
+//    }
 }

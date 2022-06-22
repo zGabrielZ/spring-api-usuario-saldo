@@ -5,6 +5,9 @@ import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SacarFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -37,9 +40,10 @@ public class SaqueService {
         return saldoTotalAtual;
     }
 
-    public List<Saque> saquesPorUsuario(Long idUsuario){
+    public Page<Saque> saquesPorUsuario(Long idUsuario, PageRequest pageRequest){
         Usuario usuario = usuarioService.buscarPorId(idUsuario);
-        return saqueRepositorio.buscarPorUsuario(usuario.getId());
+        List<Saque> saques = saqueRepositorio.buscarPorUsuario(usuario.getId());
+        return new PageImpl<>(saques,pageRequest,saques.size());
     }
 
     private void verificarSaque(BigDecimal saldoTotal){
