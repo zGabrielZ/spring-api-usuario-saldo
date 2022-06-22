@@ -40,7 +40,7 @@ public class Usuario implements Serializable {
     @Column(name = "data_nascimento",nullable = false)
     private LocalDate dataNascimento;
 
-    @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.EAGER,mappedBy = "usuario")
+    @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "usuario")
     private List<Saldo> saldos = new ArrayList<>();
 
     @Column(name = "saldo_total")
