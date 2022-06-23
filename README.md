@@ -10,6 +10,7 @@
 - Banco de dados H2 (Memória)
 - Banco de dados PostgreSQL
 - Swagger (Documentação)
+- Docker
 
 # Endpoints do usuário
 
