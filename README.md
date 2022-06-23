@@ -16,7 +16,7 @@
 ### POST/usuarios
 Esse endpoint é responsável realizar uma inserção de um usuário.
 
-#### Parametros 
+#### Parâmetros 
 
 cpf : CPF do usuário
 
@@ -97,7 +97,7 @@ Bad Request ! 400.
 ### PUT/usuarios/{id}
 Esse endpoint é responsável realizar uma atualização de um usuário.
 
-#### Parametros 
+#### Parâmetros 
 
 cpf : CPF do usuário
 
@@ -155,3 +155,169 @@ Esse endpoint é responsável realizar uma consulta de um usuário.
 Ok ! 200.
 
 Not Found ! 404.
+
+### POST/usuarios/sacar
+Esse endpoint é responsável realizar um saque de um usuário.
+
+#### Parâmetros 
+
+idUsuario : ID do usuário
+
+quantidade : Quantidade do valor que o usuário quer sacar
+
+#### Exemplo 
+
+```
+{
+  "idUsuario": 1,
+  "quantidade": 400
+}
+```
+
+##### Respostas
+Created ! 201.
+
+Bad Request ! 400.
+
+Not Found ! 404.
+
+### GET/usuarios/saques/{id}
+Esse endpoint é responsável retornar uma lista de saques de um usuário.
+
+#### Exemplo de retorno
+
+```
+{
+  "content": [
+    {
+      "dataSaque": "26/06/2022 12:00:00",
+      "valor": 500
+    }
+  ],
+  "empty": true,
+  "first": true,
+  "last": true,
+  "number": 0,
+  "numberOfElements": 0,
+  "pageable": {
+    "offset": 0,
+    "pageNumber": 0,
+    "pageSize": 0,
+    "paged": true,
+    "sort": {
+      "empty": true,
+      "sorted": true,
+      "unsorted": true
+    },
+    "unpaged": true
+  },
+  "size": 0,
+  "sort": {
+    "empty": true,
+    "sorted": true,
+    "unsorted": true
+  },
+  "totalElements": 0,
+  "totalPages": 0
+}
+```
+
+##### Respostas
+OK ! 200.
+
+Bad Request ! 400.
+
+### GET/usuarios/saldos/{id}
+Esse endpoint é responsável retornar uma lista de saldos de um usuário.
+
+#### Exemplo de retorno
+
+```
+{
+  "content": [
+    {
+      "dataDeposito": "26/06/2022 12:00:00",
+      "deposito": 500,
+      "id": 1
+    }
+  ],
+  "empty": true,
+  "first": true,
+  "last": true,
+  "number": 0,
+  "numberOfElements": 0,
+  "pageable": {
+    "offset": 0,
+    "pageNumber": 0,
+    "pageSize": 0,
+    "paged": true,
+    "sort": {
+      "empty": true,
+      "sorted": true,
+      "unsorted": true
+    },
+    "unpaged": true
+  },
+  "size": 0,
+  "sort": {
+    "empty": true,
+    "sorted": true,
+    "unsorted": true
+  },
+  "totalElements": 0,
+  "totalPages": 0
+}
+```
+
+##### Respostas
+OK ! 200.
+
+Bad Request ! 400.
+
+### GET/usuarios/saldo-total/{id}
+Esse endpoint é responsável retornar saldo total de um usuário.
+
+#### Exemplo de retorno
+
+```
+{
+  "saldoTotal": 500
+}
+```
+
+##### Respostas
+OK ! 200.
+
+Not Found ! 404.
+
+# Endpoints do saldo
+
+### POST/saldos/depositar
+Esse endpoint é responsável realizar um depósito de um usuário.
+
+#### Parâmetros 
+
+dataDeposito : Data depósito de um usuário
+
+deposito : Valor do depósito de um usuário
+
+idUsuario : ID de um usuário
+
+#### Exemplo 
+
+```
+{
+  "dataDeposito": "26/06/2022 12:00:00",
+  "deposito": 500,
+  "idUsuario": 1
+}
+```
+
+##### Respostas
+Created ! 201.
+
+Bad Request ! 400.
+
+
+Not Found ! 404.
+
