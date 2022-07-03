@@ -43,12 +43,7 @@ public class UsuarioService {
             verificarEmail(usuarioUpdateDTO.getEmail());
         }
 
-        String cpfFormatado = formataCpf(usuarioUpdateDTO.getCpf());
-        if(!usuario.getCpf().equals(cpfFormatado)){
-            verificarCpf(cpfFormatado);
-        }
-
-        dtoParaEntidade(usuario,usuarioUpdateDTO,cpfFormatado);
+        dtoParaEntidade(usuario,usuarioUpdateDTO);
         usuario = usuarioRepositorio.save(usuario);
         return usuario;
     }
@@ -88,10 +83,9 @@ public class UsuarioService {
         }
     }
 
-    private void dtoParaEntidade(Usuario usuario,UsuarioUpdateDTO usuarioUpdateDTO, String cpfFormatado){
+    private void dtoParaEntidade(Usuario usuario,UsuarioUpdateDTO usuarioUpdateDTO){
         usuario.setNome(usuarioUpdateDTO.getNome());
         usuario.setEmail(usuarioUpdateDTO.getEmail());
-        usuario.setCpf(cpfFormatado);
         usuario.setSenha(passwordEncoder.encode(usuarioUpdateDTO.getSenha()));
         usuario.setDataNascimento(usuarioUpdateDTO.getDataNascimento());
     }

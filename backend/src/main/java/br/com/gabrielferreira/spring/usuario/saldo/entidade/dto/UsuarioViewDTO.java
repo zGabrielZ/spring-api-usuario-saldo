@@ -20,7 +20,7 @@ public class UsuarioViewDTO implements Serializable {
     private String nome;
     @ApiModelProperty(value = "E-mail do usuário",example = "ferreiragabriel2612@gmail.com")
     private String email;
-    @ApiModelProperty(value = "CPF do usuário", example = "84269756071")
+    @ApiModelProperty(value = "CPF do usuário", example = "741.792.450-60")
     private String cpf;
 
     @ApiModelProperty(value = "Data de nascimento do usuário", example = "26/12/1997")

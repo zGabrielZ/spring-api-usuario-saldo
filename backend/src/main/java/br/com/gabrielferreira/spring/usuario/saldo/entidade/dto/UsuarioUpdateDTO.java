@@ -2,7 +2,6 @@ package br.com.gabrielferreira.spring.usuario.saldo.entidade.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -30,11 +29,6 @@ public class UsuarioUpdateDTO implements Serializable {
     @ApiModelProperty(value = "Senha do usuário", example = "123")
     @NotBlank(message = "Senha não pode ser vazio.")
     private String senha;
-
-    @ApiModelProperty(value = "CPF do usuário", example = "84269756071")
-    @NotBlank(message = "CPF não pode ser vazio.")
-    @CPF(message = "CPF inválido.")
-    private String cpf;
 
     @ApiModelProperty(value = "Data nascimento do usuário", example = "31/12/1990")
     @PastOrPresent(message = "Data nascimento não pode ser futura.")
