@@ -1,6 +1,7 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -16,5 +17,9 @@ public class SaldoDTOFactory implements Serializable {
         saldoViewDTO.setDeposito(saldo.getDeposito());
         saldoViewDTO.setDataDeposito(saldo.getDataDeposito());
         return saldoViewDTO;
+    }
+
+    public Page<SaldoViewDTO> toPageSaldoViewDTO(Page<Saldo> saldos){
+        return saldos.map(this::toSaldoViewDTO);
     }
 }

@@ -1,5 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
@@ -108,27 +109,27 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuarios);
     }
 
-//    @ApiOperation("Lista de saldos por usuário")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200,message = "Retornou uma lista de saldos"),
-//            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
-//    })
-//    @GetMapping("/saldos/{id}")
-//    public ResponseEntity<Page<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id,
-//                                                                      @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
-//                                                                      @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-//                                                                      @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
-//                                                                      @RequestParam(value = "ordenar", required = false, defaultValue = "deposito") String ordenar){
-//
-//        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
-//        if(optionalDirecao.isEmpty()){
-//            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
-//        }
-//
-//        PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
-//        Page<Saldo> saldos = saldoService.saldosPorUsuario(id,pageRequest);
-//        return ResponseEntity.ok(SaldoViewDTO.converterParaDto(saldos));
-//    }
+    @ApiOperation("Lista de saldos por usuário")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "Retornou uma lista de saldos"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+    })
+    @GetMapping("/saldos/{id}")
+    public ResponseEntity<Page<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id,
+        @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
+        @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
+        @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
+        @RequestParam(value = "ordenar", required = false, defaultValue = "deposito") String ordenar){
+
+        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
+        if(optionalDirecao.isEmpty()){
+            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
+        }
+
+        PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
+        Page<SaldoViewDTO> saldos = saldoService.saldosPorUsuario(id,pageRequest);
+        return ResponseEntity.ok(saldos);
+    }
 
 
 //    @ApiOperation("Saldo total do usuário")

@@ -40,15 +40,11 @@ public class SaldoService {
         return saldoDTOFactory.toSaldoViewDTO(saldo);
     }
 
-    public Page<Saldo> saldosPorUsuario(Long idUsuario, PageRequest pageRequest){
-        //Usuario usuario = usuarioService.buscarPorId(idUsuario);
-        //List<Saldo> saldos = saldoRepositorio.buscarPorUsuario(usuario.getId(),pageRequest);
+    public Page<SaldoViewDTO> saldosPorUsuario(Long idUsuario, PageRequest pageRequest){
+        UsuarioViewDTO usuario = usuarioService.buscarPorId(idUsuario);
+        Page<Saldo> saldos = saldoRepositorio.buscarPorUsuario(usuario.getId(),pageRequest);
 
-        //int inicioConsulta = (int) pageRequest.getOffset();
-        //int finalConsulta = Math.min(inicioConsulta + pageRequest.getPageSize(),saldos.size());
-
-        return null;
-        //return new PageImpl<>(saldos.subList(inicioConsulta,finalConsulta),pageRequest,saldos.size());
+        return saldoDTOFactory.toPageSaldoViewDTO(saldos);
     }
 
     public BigDecimal saldoTotalPorUsuario(Long idUsuario){
