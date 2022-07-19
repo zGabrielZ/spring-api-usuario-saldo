@@ -16,15 +16,17 @@ import org.springframework.stereotype.Service;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepositorio usuarioRepositorio;
+
     private final PasswordEncoder passwordEncoder;
+
     private final UsuarioEntidadeFactory usuarioEntidadeFactory;
+
     private final UsuarioDTOFactory usuarioDTOFactory;
 
     public UsuarioViewDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
@@ -39,37 +41,38 @@ public class UsuarioService {
         return usuarioDTOFactory.toUsuarioViewDTO(usuario);
     }
 
-    public Usuario atualizar(Long id,UsuarioUpdateDTO usuarioUpdateDTO){
-        Usuario usuario = buscarPorId(id);
-
-        if(!usuario.getEmail().equals(usuarioUpdateDTO.getEmail())){
-            verificarEmail(usuarioUpdateDTO.getEmail());
-        }
-
-        dtoParaEntidade(usuario,usuarioUpdateDTO);
-        usuario = usuarioRepositorio.save(usuario);
-        return usuario;
+    public UsuarioViewDTO buscarPorId(Long id){
+        return usuarioDTOFactory.toUsuarioViewDTO(buscarUsuario(id));
     }
+
+//    public Usuario atualizar(Long id,UsuarioUpdateDTO usuarioUpdateDTO){
+//        Usuario usuario = buscarPorId(id);
+//
+//        if(!usuario.getEmail().equals(usuarioUpdateDTO.getEmail())){
+//            verificarEmail(usuarioUpdateDTO.getEmail());
+//        }
+//
+//        dtoParaEntidade(usuario,usuarioUpdateDTO);
+//        usuario = usuarioRepositorio.save(usuario);
+//        return usuario;
+//    }
 
     public Page<Usuario> listagem(Pageable pageable){
         return usuarioRepositorio.findAll(pageable);
     }
 
-    public Usuario buscarPorId(Long id){
-        Optional<Usuario> optionalUsuario = usuarioRepositorio.findById(id);
-        if(optionalUsuario.isEmpty()){
-            throw new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem());
-        }
-        return optionalUsuario.get();
-    }
 
-    public void deletarPorId(Long id){
-        Usuario usuario = buscarPorId(id);
-        usuarioRepositorio.deleteById(usuario.getId());
-    }
+//    public void deletarPorId(Long id){
+//        Usuario usuario = buscarPorId(id);
+//        usuarioRepositorio.deleteById(usuario.getId());
+//    }
     public void atualizarSaldoTotal(Usuario usuario, BigDecimal valor){
         usuario.setSaldoTotal(valor);
         usuarioRepositorio.save(usuario);
+    }
+
+    private Usuario buscarUsuario(Long id){
+        return usuarioRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
     private void verificarEmail(String email){

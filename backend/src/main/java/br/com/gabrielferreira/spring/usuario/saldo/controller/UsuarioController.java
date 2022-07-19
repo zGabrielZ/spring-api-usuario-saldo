@@ -34,9 +34,10 @@ import java.util.Optional;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-    private final SaldoService saldoService;
-    private final SaqueService saqueService;
 
+    private final SaldoService saldoService;
+
+    private final SaqueService saqueService;
 
     @ApiOperation("Inserir um usuário")
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -51,28 +52,28 @@ public class UsuarioController {
         return ResponseEntity.created(uri).body(usuario);
     }
 
-//    @ApiOperation("Buscar usuário por ID")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200,message = "Retornou um usuário"),
-//            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
-//    })
-//    @GetMapping("/{id}")
-//    public ResponseEntity<UsuarioViewDTO> buscarPorId(@PathVariable Long id){
-//        Usuario usuario = usuarioService.buscarPorId(id);
-//        return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
-//    }
-
-    @ApiOperation("Deletar usuário por ID")
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @ApiOperation("Buscar usuário por ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 204,message = "Deletou um usuário"),
+            @ApiResponse(code = 200,message = "Retornou um usuário"),
             @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarPorId(@PathVariable Long id){
-        usuarioService.deletarPorId(id);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioViewDTO> buscarPorId(@PathVariable Long id){
+        UsuarioViewDTO usuario = usuarioService.buscarPorId(id);
+        return ResponseEntity.ok().body(usuario);
     }
+
+//    @ApiOperation("Deletar usuário por ID")
+//    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 204,message = "Deletou um usuário"),
+//            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
+//    })
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deletarPorId(@PathVariable Long id){
+//        usuarioService.deletarPorId(id);
+//        return ResponseEntity.noContent().build();
+//    }
 
 //    @ApiOperation("Atualizar usuário")
 //    @ResponseStatus(code = HttpStatus.OK)
@@ -132,16 +133,16 @@ public class UsuarioController {
     }
 
 
-    @ApiOperation("Saldo total do usuário")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200,message = "Retornou um saldo total do usuário"),
-            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
-    })
-    @GetMapping("/saldo-total/{id}")
-    public ResponseEntity<SaldoTotalViewDTO> saldoTotalPorUsuario(@PathVariable Long id){
-        Usuario usuario = usuarioService.buscarPorId(id);
-        return ResponseEntity.ok().body(new SaldoTotalViewDTO(usuario.getSaldoTotal()));
-    }
+//    @ApiOperation("Saldo total do usuário")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200,message = "Retornou um saldo total do usuário"),
+//            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
+//    })
+//    @GetMapping("/saldo-total/{id}")
+//    public ResponseEntity<SaldoTotalViewDTO> saldoTotalPorUsuario(@PathVariable Long id){
+//        Usuario usuario = usuarioService.buscarPorId(id);
+//        return ResponseEntity.ok().body(new SaldoTotalViewDTO(usuario.getSaldoTotal()));
+//    }
 
     @ApiOperation("Saque de um saldo total do usuário")
     @ResponseStatus(code = HttpStatus.CREATED)

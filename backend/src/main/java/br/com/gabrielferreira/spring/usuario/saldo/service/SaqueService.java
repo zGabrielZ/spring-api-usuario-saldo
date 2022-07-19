@@ -27,28 +27,30 @@ public class SaqueService {
     }
 
     public BigDecimal sacar(SacarFormDTO sacarFormDTO){
-        Usuario usuario = usuarioService.buscarPorId(sacarFormDTO.getIdUsuario());
-        verificarSaque(usuario.getSaldoTotal());
-        BigDecimal saldoTotalAtual = saldoTotalUsuario(usuario.getSaldoTotal(),sacarFormDTO.getQuantidade());
+        //Usuario usuario = usuarioService.buscarPorId(sacarFormDTO.getIdUsuario());
+        //verificarSaque(usuario.getSaldoTotal());
+        //BigDecimal saldoTotalAtual = saldoTotalUsuario(usuario.getSaldoTotal(),sacarFormDTO.getQuantidade());
 
         //Saque saque = new Saque(null,sacarFormDTO.getQuantidade(),LocalDateTime.now(),usuario);
         //saqueRepositorio.save(saque);
         //usuario.adicionarSaque(saque);
 
 
-        usuarioService.atualizarSaldoTotal(usuario,saldoTotalAtual);
+        //usuarioService.atualizarSaldoTotal(usuario,saldoTotalAtual);
 
-        return saldoTotalAtual;
+        return null;
+        //return saldoTotalAtual;
     }
 
     public Page<Saque> saquesPorUsuario(Long idUsuario, PageRequest pageRequest){
-        Usuario usuario = usuarioService.buscarPorId(idUsuario);
-        List<Saque> saques = saqueRepositorio.buscarPorUsuario(usuario.getId(),pageRequest);
+        //Usuario usuario = usuarioService.buscarPorId(idUsuario);
+        //List<Saque> saques = saqueRepositorio.buscarPorUsuario(usuario.getId(),pageRequest);
 
-        int inicioConsulta = (int) pageRequest.getOffset();
-        int finalConsulta = Math.min(inicioConsulta + pageRequest.getPageSize(),saques.size());
+        //int inicioConsulta = (int) pageRequest.getOffset();
+        //int finalConsulta = Math.min(inicioConsulta + pageRequest.getPageSize(),saques.size());
 
-        return new PageImpl<>(saques.subList(inicioConsulta,finalConsulta),pageRequest,saques.size());
+        return null;
+        //return new PageImpl<>(saques.subList(inicioConsulta,finalConsulta),pageRequest,saques.size());
     }
 
     private void verificarSaque(BigDecimal saldoTotal){

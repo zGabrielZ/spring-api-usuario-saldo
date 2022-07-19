@@ -24,27 +24,28 @@ public class SaldoService {
     }
 
     public Saldo depositar(SaldoFormDTO saldoFormDTO){
-        Usuario usuario = usuarioService.buscarPorId(saldoFormDTO.getIdUsuario());
+        //Usuario usuario = usuarioService.buscarPorId(saldoFormDTO.getIdUsuario());
         //Saldo saldo = new Saldo(null,saldoFormDTO.getDeposito(),saldoFormDTO.getDataDeposito(),usuario);
 
         //saldo = saldoRepositorio.save(saldo);
        // usuario.adicionarSaldo(saldo);
 
-        BigDecimal valorTotal = saldoTotalPorUsuario(usuario);
-        usuarioService.atualizarSaldoTotal(usuario,valorTotal);
+        //BigDecimal valorTotal = saldoTotalPorUsuario(usuario);
+        //usuarioService.atualizarSaldoTotal(usuario,valorTotal);
 
         return null;
         //return saldo;
     }
 
     public Page<Saldo> saldosPorUsuario(Long idUsuario, PageRequest pageRequest){
-        Usuario usuario = usuarioService.buscarPorId(idUsuario);
-        List<Saldo> saldos = saldoRepositorio.buscarPorUsuario(usuario.getId(),pageRequest);
+        //Usuario usuario = usuarioService.buscarPorId(idUsuario);
+        //List<Saldo> saldos = saldoRepositorio.buscarPorUsuario(usuario.getId(),pageRequest);
 
-        int inicioConsulta = (int) pageRequest.getOffset();
-        int finalConsulta = Math.min(inicioConsulta + pageRequest.getPageSize(),saldos.size());
+        //int inicioConsulta = (int) pageRequest.getOffset();
+        //int finalConsulta = Math.min(inicioConsulta + pageRequest.getPageSize(),saldos.size());
 
-        return new PageImpl<>(saldos.subList(inicioConsulta,finalConsulta),pageRequest,saldos.size());
+        return null;
+        //return new PageImpl<>(saldos.subList(inicioConsulta,finalConsulta),pageRequest,saldos.size());
     }
 
     public BigDecimal saldoTotalPorUsuario(Usuario usuario){
