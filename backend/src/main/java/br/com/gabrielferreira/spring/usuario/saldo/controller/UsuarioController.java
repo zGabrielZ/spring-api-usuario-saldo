@@ -63,30 +63,30 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuario);
     }
 
-//    @ApiOperation("Deletar usuário por ID")
-//    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 204,message = "Deletou um usuário"),
-//            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
-//    })
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deletarPorId(@PathVariable Long id){
-//        usuarioService.deletarPorId(id);
-//        return ResponseEntity.noContent().build();
-//    }
+    @ApiOperation("Deletar usuário por ID")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @ApiResponses(value = {
+            @ApiResponse(code = 204,message = "Deletou um usuário"),
+            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarPorId(@PathVariable Long id){
+        usuarioService.deletarPorId(id);
+        return ResponseEntity.noContent().build();
+    }
 
-//    @ApiOperation("Atualizar usuário")
-//    @ResponseStatus(code = HttpStatus.OK)
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200,message = "Atualizou um usuário"),
-//            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
-//            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
-//    })
-//    @PutMapping("/{id}")
-//    public ResponseEntity<UsuarioViewDTO> atualizarDados(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO){
-//        Usuario usuario = usuarioService.atualizar(id,usuarioUpdateDTO);
-//        return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
-//    }
+    @ApiOperation("Atualizar usuário")
+    @ResponseStatus(code = HttpStatus.OK)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "Atualizou um usuário"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioViewDTO> atualizarDados(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateFormDTO usuarioUpdateFormDTO){
+        UsuarioViewDTO usuario = usuarioService.atualizar(id, usuarioUpdateFormDTO);
+        return ResponseEntity.ok().body(usuario);
+    }
 
 //    @ApiOperation(value = "Lista de usuários")
 //    @ApiResponses(value = {

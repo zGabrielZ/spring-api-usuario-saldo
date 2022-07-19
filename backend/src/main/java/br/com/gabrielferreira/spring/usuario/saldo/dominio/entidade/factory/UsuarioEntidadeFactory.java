@@ -1,5 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioInsertFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,14 @@ public class UsuarioEntidadeFactory implements Serializable {
         usuario.setCpf(usuarioInsertFormDTO.getCpf());
         usuario.setDataNascimento(usuarioInsertFormDTO.getDataNascimento());
         usuario.setSaldoTotal(BigDecimal.ZERO);
+        return usuario;
+    }
+
+    public Usuario toUsuarioUpdateEntidade(UsuarioUpdateFormDTO usuarioUpdateFormDTO, Usuario usuario){
+        usuario.setSenha(usuarioUpdateFormDTO.getSenha());
+        usuario.setNome(usuarioUpdateFormDTO.getNome());
+        usuario.setEmail(usuarioUpdateFormDTO.getEmail());
+        usuario.setDataNascimento(usuarioUpdateFormDTO.getDataNascimento());
         return usuario;
     }
 }

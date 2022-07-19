@@ -7,12 +7,9 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class UsuarioUpdateDTO implements Serializable {
+@Data
+@lombok.Generated
+public class UsuarioUpdateFormDTO implements Serializable {
 
     private static final long serialVersionUID = -2398120816295097002L;
 

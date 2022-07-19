@@ -6,7 +6,7 @@
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.SacarFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioFormDTO;
-//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioUpdateDTO;
+//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioUpdateFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 //import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 //import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
@@ -209,7 +209,7 @@
 //    @DisplayName("Atualizar usuário deveria retornar status 200 quando informar o id de um usuário já cadastrado e o atributo na qual quer atualizar.")
 //    void deveAtualizarUsuario() throws Exception{
 //        // Cenário
-//        UsuarioUpdateDTO usuarioUpdateDTO = criarUsuarioUpdateDTO();
+//        UsuarioUpdateFormDTO usuarioUpdateDTO = criarUsuarioUpdateDTO();
 //
 //        // Mock para retornar um valor quando for atualizar
 //        Usuario usuario = Usuario.builder().id(1L).nome("Gabriel Ferreira").dataNascimento(LocalDate.parse("1997-12-26"))
@@ -413,8 +413,8 @@
 //                .cpf("33356983040").dataNascimento(LocalDate.parse("1997-12-26")).build();
 //    }
 //
-//    private UsuarioUpdateDTO criarUsuarioUpdateDTO(){
-//        return UsuarioUpdateDTO.builder().nome("Gabriel Ferreira").email("ferreiragabriel2612@gmail.com").senha("123")
+//    private UsuarioUpdateFormDTO criarUsuarioUpdateDTO(){
+//        return UsuarioUpdateFormDTO.builder().nome("Gabriel Ferreira").email("ferreiragabriel2612@gmail.com").senha("123")
 //                .cpf("33356983040").dataNascimento(LocalDate.parse("1997-12-26")).build();
 //    }
 //

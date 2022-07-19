@@ -2,7 +2,7 @@
 //
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioFormDTO;
-//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioUpdateDTO;
+//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioUpdateFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 //import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 //import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
@@ -115,7 +115,7 @@
 //        doReturn(Optional.of(usuario)).when(usuarioRepositorio).findById(idPesquisar);
 //
 //        // Mock para retornar com o valor atualizado
-//        UsuarioUpdateDTO usuarioUpdateDTO = criarUsuarioUpdateFormDTO();
+//        UsuarioUpdateFormDTO usuarioUpdateDTO = criarUsuarioUpdateFormDTO();
 //        Usuario usuarioAtualizado = Usuario.builder().id(usuario.getId())
 //                .nome(usuarioUpdateDTO.getNome()).dataNascimento(usuarioUpdateDTO.getDataNascimento()).email(usuarioUpdateDTO.getEmail())
 //                .cpf(usuarioUpdateDTO.getCpf()).senha(usuarioUpdateDTO.getSenha()).build();
@@ -143,7 +143,7 @@
 //        when(usuarioRepositorio.findById(idPesquisar)).thenReturn(Optional.empty());
 //
 //        // Executando e verificando
-//        UsuarioUpdateDTO usuarioUpdateDTO = criarUsuarioUpdateFormDTO();
+//        UsuarioUpdateFormDTO usuarioUpdateDTO = criarUsuarioUpdateFormDTO();
 //        assertThrows(RecursoNaoEncontrado.class, () -> usuarioService.atualizar(idPesquisar,usuarioUpdateDTO));
 //    }
 //
@@ -255,8 +255,8 @@
 //                .cpf("33356983040").dataNascimento(LocalDate.parse("1997-12-26")).build();
 //    }
 //
-//    private UsuarioUpdateDTO criarUsuarioUpdateFormDTO(){
-//        return UsuarioUpdateDTO.builder().nome("Gabriel Ferreira").dataNascimento(LocalDate.parse("1997-12-26"))
+//    private UsuarioUpdateFormDTO criarUsuarioUpdateFormDTO(){
+//        return UsuarioUpdateFormDTO.builder().nome("Gabriel Ferreira").dataNascimento(LocalDate.parse("1997-12-26"))
 //                .email("ferreiragabriel2612@gmail.com").senha("123456").cpf("86988014047").build();
 //    }
 //
