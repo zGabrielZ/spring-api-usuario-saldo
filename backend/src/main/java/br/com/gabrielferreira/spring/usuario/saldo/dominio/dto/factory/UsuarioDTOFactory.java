@@ -2,6 +2,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory;
 
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -19,5 +20,9 @@ public class UsuarioDTOFactory implements Serializable {
         usuarioViewDTO.setDataNascimento(usuario.getDataNascimento());
         usuarioViewDTO.setCpf(usuario.getCpf());
         return usuarioViewDTO;
+    }
+
+    public Page<UsuarioViewDTO> toPageUsuario(Page<Usuario> usuarios){
+        return usuarios.map(this::toUsuarioViewDTO);
     }
 }

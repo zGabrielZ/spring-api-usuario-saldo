@@ -62,8 +62,8 @@ public class UsuarioService {
         return usuarioDTOFactory.toUsuarioViewDTO(usuario);
     }
 
-    public Page<Usuario> listagem(Pageable pageable){
-        return usuarioRepositorio.findAll(pageable);
+    public Page<UsuarioViewDTO> listagem(Pageable pageable){
+        return usuarioDTOFactory.toPageUsuario(usuarioRepositorio.findAll(pageable));
     }
 
     public void atualizarSaldoTotal(Usuario usuario, BigDecimal valor){
