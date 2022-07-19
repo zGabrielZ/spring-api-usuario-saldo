@@ -1,4 +1,4 @@
-package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto;
+package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;

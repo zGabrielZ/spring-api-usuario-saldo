@@ -1,9 +1,8 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.*;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaqueService;
@@ -23,7 +22,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Optional;
 

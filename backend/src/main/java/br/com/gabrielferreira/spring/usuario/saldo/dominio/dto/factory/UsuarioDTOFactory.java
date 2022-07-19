@@ -1,6 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory;
 
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;

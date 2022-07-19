@@ -1,12 +1,12 @@
 //package br.com.gabrielferreira.spring.usuario.saldo.controller;
 //
-//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioInsertFormDTO;
+//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.SacarFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioFormDTO;
-//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioUpdateFormDTO;
+//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 //import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 //import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;

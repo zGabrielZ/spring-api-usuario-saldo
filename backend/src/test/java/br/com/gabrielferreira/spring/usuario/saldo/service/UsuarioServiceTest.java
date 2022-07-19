@@ -2,7 +2,7 @@
 //
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioFormDTO;
-//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioUpdateFormDTO;
+//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 //import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 //import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
