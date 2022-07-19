@@ -1,4 +1,4 @@
-package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto;
+package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,11 +10,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
+@lombok.Generated
 public class SaldoFormDTO implements Serializable {
 
     private static final long serialVersionUID = -2398120816295097002L;

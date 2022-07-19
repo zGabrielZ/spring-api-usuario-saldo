@@ -1,4 +1,4 @@
-package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto;
+package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;

@@ -2,7 +2,7 @@
 //
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
-//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.SaldoFormDTO;
+//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

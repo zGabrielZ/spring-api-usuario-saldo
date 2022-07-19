@@ -13,4 +13,6 @@ public interface SaqueRepositorio extends JpaRepository<Saque,Long> {
 
     @Query("SELECT s FROM Saque s join s.usuario u where u.id = :idUsuario")
     List<Saque> buscarPorUsuario(@Param("idUsuario") Long idUsuario, Pageable pageable);
+
+    List<Saque> findByUsuarioId(Long idUsuario);
 }

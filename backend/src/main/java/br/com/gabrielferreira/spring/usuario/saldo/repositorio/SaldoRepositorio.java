@@ -14,4 +14,6 @@ public interface SaldoRepositorio extends JpaRepository<Saldo,Long> {
 
     @Query("SELECT s FROM Saldo s join s.usuario u where u.id = :idUsuario")
     List<Saldo> buscarPorUsuario(@Param("idUsuario") Long idUsuario, Pageable pageable);
+
+    List<Saldo> findByUsuarioId(Long idUsuario);
 }

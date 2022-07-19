@@ -66,7 +66,8 @@ public class UsuarioService {
         return usuarioDTOFactory.toPageUsuario(usuarioRepositorio.findAll(pageable));
     }
 
-    public void atualizarSaldoTotal(Usuario usuario, BigDecimal valor){
+    public void atualizarSaldoTotal(Long id, BigDecimal valor){
+        Usuario usuario = buscarUsuario(id);
         usuario.setSaldoTotal(valor);
         usuarioRepositorio.save(usuario);
     }
