@@ -1,4 +1,4 @@
-package br.com.gabrielferreira.spring.usuario.saldo.entidade;
+package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade;
 
 import lombok.*;
 
@@ -9,14 +9,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@lombok.Generated
 @Entity
 @Table(name = "USUARIO")
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Usuario implements Serializable {
 
@@ -32,31 +28,22 @@ public class Usuario implements Serializable {
 
     @Column(name = "email",nullable = false)
     private String email;
+
     @Column(name = "senha",nullable = false)
     private String senha;
 
     @Column(name = "cpf",nullable = false)
     private String cpf;
+
     @Column(name = "data_nascimento",nullable = false)
     private LocalDate dataNascimento;
-
     @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "usuario")
     private List<Saldo> saldos = new ArrayList<>();
 
     @Column(name = "saldo_total")
     private BigDecimal saldoTotal;
-
     @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "usuario")
     private List<Saque> saques = new ArrayList<>();
-
-    public Usuario(Long id, String nome, String email, String senha, String cpf, LocalDate dataNascimento) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-        this.cpf = cpf;
-        this.dataNascimento = dataNascimento;
-    }
 
     public void adicionarSaldo(Saldo saldo){
         this.saldos.add(saldo);

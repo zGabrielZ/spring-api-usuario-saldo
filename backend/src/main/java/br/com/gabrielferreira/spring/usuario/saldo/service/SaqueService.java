@@ -1,8 +1,8 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saque;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SacarFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.SacarFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
 import org.springframework.data.domain.Page;
@@ -31,9 +31,9 @@ public class SaqueService {
         verificarSaque(usuario.getSaldoTotal());
         BigDecimal saldoTotalAtual = saldoTotalUsuario(usuario.getSaldoTotal(),sacarFormDTO.getQuantidade());
 
-        Saque saque = new Saque(null,sacarFormDTO.getQuantidade(),LocalDateTime.now(),usuario);
-        saqueRepositorio.save(saque);
-        usuario.adicionarSaque(saque);
+        //Saque saque = new Saque(null,sacarFormDTO.getQuantidade(),LocalDateTime.now(),usuario);
+        //saqueRepositorio.save(saque);
+        //usuario.adicionarSaque(saque);
 
 
         usuarioService.atualizarSaldoTotal(usuario,saldoTotalAtual);

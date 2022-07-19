@@ -1,10 +1,14 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioUpdateDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioInsertFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.UsuarioDTOFactory;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.UsuarioUpdateDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.UsuarioEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,25 +19,24 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepositorio usuarioRepositorio;
-
     private final PasswordEncoder passwordEncoder;
+    private final UsuarioEntidadeFactory usuarioEntidadeFactory;
+    private final UsuarioDTOFactory usuarioDTOFactory;
 
-    public UsuarioService(UsuarioRepositorio usuarioRepositorio, PasswordEncoder passwordEncoder) {
-        this.usuarioRepositorio = usuarioRepositorio;
-        this.passwordEncoder = passwordEncoder;
-    }
+    public UsuarioViewDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
+        usuarioInsertFormDTO.setCpf(limparMascaraCpf(usuarioInsertFormDTO.getCpf()));
 
-    public Usuario inserir(UsuarioFormDTO usuarioFormDTO){
-        String senhaCriptografada = passwordEncoder.encode(usuarioFormDTO.getSenha());
-        String cpfFormatado = formataCpf(usuarioFormDTO.getCpf());
-        Usuario usuario = new Usuario(null,usuarioFormDTO.getNome(), usuarioFormDTO.getEmail()
-                , senhaCriptografada, cpfFormatado, usuarioFormDTO.getDataNascimento());
-        verificarEmail(usuario.getEmail());
-        verificarCpf(usuario.getCpf());
-        return usuarioRepositorio.save(usuario);
+        verificarEmail(usuarioInsertFormDTO.getEmail());
+        verificarCpf(usuarioInsertFormDTO.getCpf());
+
+        usuarioInsertFormDTO.setSenha(passwordEncoder.encode(usuarioInsertFormDTO.getSenha()));
+
+        Usuario usuario = usuarioRepositorio.save(usuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO));
+        return usuarioDTOFactory.toUsuarioViewDTO(usuario);
     }
 
     public Usuario atualizar(Long id,UsuarioUpdateDTO usuarioUpdateDTO){
@@ -70,17 +73,15 @@ public class UsuarioService {
     }
 
     private void verificarEmail(String email){
-        Optional<Usuario> optionalUsuario = usuarioRepositorio.findByEmail(email);
-        if(optionalUsuario.isPresent()){
+        usuarioRepositorio.findByEmail(email).ifPresent(usuario -> {
             throw new ExcecaoPersonalizada(EMAIL_CADASTRADO.getMensagem());
-        }
+        });
     }
 
     private void verificarCpf(String cpf) {
-        Optional<Usuario> optionalUsuario = usuarioRepositorio.findByCpf(cpf);
-        if (optionalUsuario.isPresent()) {
+        usuarioRepositorio.findByCpf(cpf).ifPresent(usuario -> {
             throw new ExcecaoPersonalizada(CPF_CADASTRADO.getMensagem());
-        }
+        });
     }
 
     private void dtoParaEntidade(Usuario usuario,UsuarioUpdateDTO usuarioUpdateDTO){
@@ -90,7 +91,7 @@ public class UsuarioService {
         usuario.setDataNascimento(usuarioUpdateDTO.getDataNascimento());
     }
 
-    private String formataCpf(String cpf){
+    private String limparMascaraCpf(String cpf){
         cpf = cpf.replace(".","");
         cpf = cpf.replace("-","");
         return cpf;

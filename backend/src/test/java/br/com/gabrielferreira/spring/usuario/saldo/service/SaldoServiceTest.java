@@ -1,9 +1,9 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saque;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaldoRepositorio;
 import static org.assertj.core.api.Assertions.*;

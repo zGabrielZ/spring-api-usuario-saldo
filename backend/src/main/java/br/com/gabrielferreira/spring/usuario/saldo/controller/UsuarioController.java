@@ -1,9 +1,9 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saque;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.*;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.*;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaqueService;
@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,20 +29,14 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
+@RequiredArgsConstructor
 @Api("Usuário API")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-
     private final SaldoService saldoService;
-
     private final SaqueService saqueService;
 
-    public UsuarioController(UsuarioService usuarioService, SaldoService saldoService, SaqueService saqueService) {
-        this.usuarioService = usuarioService;
-        this.saldoService = saldoService;
-        this.saqueService = saqueService;
-    }
 
     @ApiOperation("Inserir um usuário")
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -50,22 +45,22 @@ public class UsuarioController {
             @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
     })
     @PostMapping
-    public ResponseEntity<UsuarioViewDTO> inserir(@Valid @RequestBody UsuarioFormDTO usuarioFormDTO, UriComponentsBuilder uriComponentsBuilder){
-        Usuario usuario = usuarioService.inserir(usuarioFormDTO);
+    public ResponseEntity<UsuarioViewDTO> inserir(@Valid @RequestBody UsuarioInsertFormDTO usuarioInsertFormDTO, UriComponentsBuilder uriComponentsBuilder){
+        UsuarioViewDTO usuario = usuarioService.inserir(usuarioInsertFormDTO);
         URI uri = uriComponentsBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
-        return ResponseEntity.created(uri).body(new UsuarioViewDTO(usuario));
+        return ResponseEntity.created(uri).body(usuario);
     }
 
-    @ApiOperation("Buscar usuário por ID")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200,message = "Retornou um usuário"),
-            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<UsuarioViewDTO> buscarPorId(@PathVariable Long id){
-        Usuario usuario = usuarioService.buscarPorId(id);
-        return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
-    }
+//    @ApiOperation("Buscar usuário por ID")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200,message = "Retornou um usuário"),
+//            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
+//    })
+//    @GetMapping("/{id}")
+//    public ResponseEntity<UsuarioViewDTO> buscarPorId(@PathVariable Long id){
+//        Usuario usuario = usuarioService.buscarPorId(id);
+//        return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
+//    }
 
     @ApiOperation("Deletar usuário por ID")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -79,40 +74,40 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @ApiOperation("Atualizar usuário")
-    @ResponseStatus(code = HttpStatus.OK)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200,message = "Atualizou um usuário"),
-            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
-            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<UsuarioViewDTO> atualizarDados(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO){
-        Usuario usuario = usuarioService.atualizar(id,usuarioUpdateDTO);
-        return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
-    }
+//    @ApiOperation("Atualizar usuário")
+//    @ResponseStatus(code = HttpStatus.OK)
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200,message = "Atualizou um usuário"),
+//            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+//            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
+//    })
+//    @PutMapping("/{id}")
+//    public ResponseEntity<UsuarioViewDTO> atualizarDados(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO){
+//        Usuario usuario = usuarioService.atualizar(id,usuarioUpdateDTO);
+//        return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
+//    }
 
-    @ApiOperation(value = "Lista de usuários")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200,message = "Retornou uma lista de usuários"),
-            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
-    })
-    @GetMapping
-    public ResponseEntity<Page<UsuarioViewDTO>> listagem(
-            @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
-            @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-            @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
-            @RequestParam(value = "ordenar", required = false, defaultValue = "nome") String ordenar
-    ){
-        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
-        if(optionalDirecao.isEmpty()){
-            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
-        }
-
-        PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
-        Page<Usuario> usuarios = usuarioService.listagem(pageRequest);
-        return ResponseEntity.ok().body(UsuarioViewDTO.converterParaDto(usuarios));
-    }
+//    @ApiOperation(value = "Lista de usuários")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200,message = "Retornou uma lista de usuários"),
+//            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+//    })
+//    @GetMapping
+//    public ResponseEntity<Page<UsuarioViewDTO>> listagem(
+//            @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
+//            @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
+//            @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
+//            @RequestParam(value = "ordenar", required = false, defaultValue = "nome") String ordenar
+//    ){
+//        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
+//        if(optionalDirecao.isEmpty()){
+//            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
+//        }
+//
+//        PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
+//        Page<Usuario> usuarios = usuarioService.listagem(pageRequest);
+//        return ResponseEntity.ok().body(UsuarioViewDTO.converterParaDto(usuarios));
+//    }
 
     @ApiOperation("Lista de saldos por usuário")
     @ApiResponses(value = {
@@ -121,10 +116,10 @@ public class UsuarioController {
     })
     @GetMapping("/saldos/{id}")
     public ResponseEntity<Page<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id,
-          @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
-          @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-          @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
-          @RequestParam(value = "ordenar", required = false, defaultValue = "deposito") String ordenar){
+                                                                      @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
+                                                                      @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
+                                                                      @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
+                                                                      @RequestParam(value = "ordenar", required = false, defaultValue = "deposito") String ordenar){
 
         Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
         if(optionalDirecao.isEmpty()){
@@ -168,10 +163,10 @@ public class UsuarioController {
     })
     @GetMapping("/saques/{id}")
     public ResponseEntity<Page<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id,
-        @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
-        @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-        @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
-        @RequestParam(value = "ordenar", required = false, defaultValue = "valor") String ordenar){
+                                                                     @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
+                                                                     @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
+                                                                     @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
+                                                                     @RequestParam(value = "ordenar", required = false, defaultValue = "valor") String ordenar){
 
         Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
         if(optionalDirecao.isEmpty()){

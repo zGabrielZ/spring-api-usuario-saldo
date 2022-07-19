@@ -1,5 +1,5 @@
 package br.com.gabrielferreira.spring.usuario.saldo.repositorio;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saque;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

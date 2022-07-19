@@ -1,8 +1,8 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.SaldoFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

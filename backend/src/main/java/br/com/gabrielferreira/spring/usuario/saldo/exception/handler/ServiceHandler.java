@@ -1,4 +1,4 @@
-package br.com.gabrielferreira.spring.usuario.saldo.exception.hanlder;
+package br.com.gabrielferreira.spring.usuario.saldo.exception.handler;
 
 import br.com.gabrielferreira.spring.usuario.saldo.exception.modelo.ErroFormulario;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.modelo.ErroPadrao;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ControllerAdvice
-public class InterceptadorController {
+public class ServiceHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErroPadrao> erroValidacao(MethodArgumentNotValidException e){

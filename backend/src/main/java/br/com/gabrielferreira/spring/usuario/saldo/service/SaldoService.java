@@ -1,7 +1,7 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaldoRepositorio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,16 +25,16 @@ public class SaldoService {
 
     public Saldo depositar(SaldoFormDTO saldoFormDTO){
         Usuario usuario = usuarioService.buscarPorId(saldoFormDTO.getIdUsuario());
-        Saldo saldo = new Saldo(null,saldoFormDTO.getDeposito(),saldoFormDTO.getDataDeposito(),usuario);
+        //Saldo saldo = new Saldo(null,saldoFormDTO.getDeposito(),saldoFormDTO.getDataDeposito(),usuario);
 
-        saldo = saldoRepositorio.save(saldo);
-        usuario.adicionarSaldo(saldo);
+        //saldo = saldoRepositorio.save(saldo);
+       // usuario.adicionarSaldo(saldo);
 
         BigDecimal valorTotal = saldoTotalPorUsuario(usuario);
         usuarioService.atualizarSaldoTotal(usuario,valorTotal);
 
-
-        return saldo;
+        return null;
+        //return saldo;
     }
 
     public Page<Saldo> saldosPorUsuario(Long idUsuario, PageRequest pageRequest){

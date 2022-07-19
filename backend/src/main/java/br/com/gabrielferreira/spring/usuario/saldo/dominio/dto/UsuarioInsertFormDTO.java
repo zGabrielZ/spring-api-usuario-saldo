@@ -1,4 +1,4 @@
-package br.com.gabrielferreira.spring.usuario.saldo.entidade.dto;
+package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -8,12 +8,9 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class UsuarioFormDTO implements Serializable {
+@Data
+@lombok.Generated
+public class UsuarioInsertFormDTO implements Serializable {
 
     private static final long serialVersionUID = -2398120816295097002L;
 
@@ -26,9 +23,11 @@ public class UsuarioFormDTO implements Serializable {
     @NotBlank(message = "E-mail não pode ser vazio.")
     @Email(message = "E-mail inválido.")
     private String email;
+
     @ApiModelProperty(value = "Senha do usuário", example = "123")
     @NotBlank(message = "Senha não pode ser vazio.")
     private String senha;
+
     @ApiModelProperty(value = "CPF do usuário", example = "84269756071")
     @NotBlank(message = "CPF não pode ser vazio.")
     @CPF(message = "CPF inválido.")
