@@ -1,56 +1,47 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
-
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.SaqueDTOFactory;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.SacarFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.SaqueEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SaqueService {
 
     private final SaqueRepositorio saqueRepositorio;
+
     private final UsuarioService usuarioService;
 
-    public SaqueService(SaqueRepositorio saqueRepositorio, UsuarioService usuarioService) {
-        this.saqueRepositorio = saqueRepositorio;
-        this.usuarioService = usuarioService;
+    public SacarViewDTO sacar(SacarFormDTO sacarFormDTO){
+        SaldoTotalViewDTO saldoTotalViewDTO = usuarioService.buscarSaldoTotal(sacarFormDTO.getIdUsuario());
+        verificarSaque(saldoTotalViewDTO.getSaldoTotal());
+        BigDecimal saldoTotalAtual = saldoTotalUsuario(saldoTotalViewDTO.getSaldoTotal(),sacarFormDTO.getQuantidade());
+
+        Saque saque = saqueRepositorio.save(SaqueEntidadeFactory.toSaqueInsertEntidade(sacarFormDTO));
+
+        usuarioService.atualizarSaldoTotal(sacarFormDTO.getIdUsuario(),saldoTotalAtual);
+
+        return SaqueDTOFactory.toSacarViewDTO(saque);
     }
 
-    public BigDecimal sacar(SacarFormDTO sacarFormDTO){
-        //Usuario usuario = usuarioService.buscarPorId(sacarFormDTO.getIdUsuario());
-        //verificarSaque(usuario.getSaldoTotal());
-        //BigDecimal saldoTotalAtual = saldoTotalUsuario(usuario.getSaldoTotal(),sacarFormDTO.getQuantidade());
+    public Page<SaqueViewDTO> saquesPorUsuario(Long idUsuario, PageRequest pageRequest){
+        UsuarioViewDTO usuario = usuarioService.buscarPorId(idUsuario);
+        Page<Saque> saques = saqueRepositorio.buscarPorUsuario(usuario.getId(),pageRequest);
 
-        //Saque saque = new Saque(null,sacarFormDTO.getQuantidade(),LocalDateTime.now(),usuario);
-        //saqueRepositorio.save(saque);
-        //usuario.adicionarSaque(saque);
-
-
-        //usuarioService.atualizarSaldoTotal(usuario,saldoTotalAtual);
-
-        return null;
-        //return saldoTotalAtual;
-    }
-
-    public Page<Saque> saquesPorUsuario(Long idUsuario, PageRequest pageRequest){
-        //Usuario usuario = usuarioService.buscarPorId(idUsuario);
-        //List<Saque> saques = saqueRepositorio.buscarPorUsuario(usuario.getId(),pageRequest);
-
-        //int inicioConsulta = (int) pageRequest.getOffset();
-        //int finalConsulta = Math.min(inicioConsulta + pageRequest.getPageSize(),saques.size());
-
-        return null;
-        //return new PageImpl<>(saques.subList(inicioConsulta,finalConsulta),pageRequest,saques.size());
+        return SaqueDTOFactory.toPageSaldoViewDTO(saques);
     }
 
     private void verificarSaque(BigDecimal saldoTotal){

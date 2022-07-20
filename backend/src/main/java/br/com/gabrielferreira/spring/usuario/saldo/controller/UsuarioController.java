@@ -1,6 +1,10 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
@@ -21,7 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
-
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
@@ -132,48 +135,48 @@ public class UsuarioController {
     }
 
 
-//    @ApiOperation("Saldo total do usuário")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200,message = "Retornou um saldo total do usuário"),
-//            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
-//    })
-//    @GetMapping("/saldo-total/{id}")
-//    public ResponseEntity<SaldoTotalViewDTO> saldoTotalPorUsuario(@PathVariable Long id){
-//        Usuario usuario = usuarioService.buscarPorId(id);
-//        return ResponseEntity.ok().body(new SaldoTotalViewDTO(usuario.getSaldoTotal()));
-//    }
+    @ApiOperation("Saldo total do usuário")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "Retornou um saldo total do usuário"),
+            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
+    })
+    @GetMapping("/saldo-total/{id}")
+    public ResponseEntity<SaldoTotalViewDTO> saldoTotalPorUsuario(@PathVariable Long id){
+        SaldoTotalViewDTO saldoTotal = usuarioService.buscarSaldoTotal(id);
+        return ResponseEntity.ok().body(saldoTotal);
+    }
 
-//    @ApiOperation("Saque de um saldo total do usuário")
-//    @ResponseStatus(code = HttpStatus.CREATED)
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 201,message = "Sacou um valor do saldo total do usuário"),
-//            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
-//            @ApiResponse(code = 404,message = "Usuário não foi encontrado")
-//    })
-//    @PostMapping("/sacar")
-//    public ResponseEntity<SacarViewDTO> sacarSaldoPorUsuario(@Valid @RequestBody SacarFormDTO sacarFormDTO){
-//        BigDecimal saldoTotal = saqueService.sacar(sacarFormDTO);
-//        return new ResponseEntity<>(new SacarViewDTO(saldoTotal), HttpStatus.CREATED);
-//    }
-//
-//    @ApiOperation("Lista de saques por usuário")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200,message = "Retornou uma lista de saques"),
-//            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
-//    })
-//    @GetMapping("/saques/{id}")
-//    public ResponseEntity<Page<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id,
-//                                                                     @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
-//                                                                     @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-//                                                                     @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
-//                                                                     @RequestParam(value = "ordenar", required = false, defaultValue = "valor") String ordenar){
-//
-//        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
-//        if(optionalDirecao.isEmpty()){
-//            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
-//        }
-//        PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
-//        Page<Saque> saques = saqueService.saquesPorUsuario(id,pageRequest);
-//        return ResponseEntity.ok().body(SaqueViewDTO.converterParaDto(saques));
-//    }
+    @ApiOperation("Saque de um saldo total do usuário")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201,message = "Sacou um valor do saldo total do usuário"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+            @ApiResponse(code = 404,message = "Usuário não foi encontrado")
+    })
+    @PostMapping("/sacar")
+    public ResponseEntity<SacarViewDTO> sacarSaldoPorUsuario(@Valid @RequestBody SacarFormDTO sacarFormDTO){
+        SacarViewDTO sacarViewDTO = saqueService.sacar(sacarFormDTO);
+        return new ResponseEntity<>(sacarViewDTO, HttpStatus.CREATED);
+    }
+
+    @ApiOperation("Lista de saques por usuário")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "Retornou uma lista de saques"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+    })
+    @GetMapping("/saques/{id}")
+    public ResponseEntity<Page<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id,
+        @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
+        @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
+        @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
+        @RequestParam(value = "ordenar", required = false, defaultValue = "valor") String ordenar){
+
+        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
+        if(optionalDirecao.isEmpty()){
+            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
+        }
+        PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
+        Page<SaqueViewDTO> saques = saqueService.saquesPorUsuario(id,pageRequest);
+        return ResponseEntity.ok().body(saques);
+    }
 }

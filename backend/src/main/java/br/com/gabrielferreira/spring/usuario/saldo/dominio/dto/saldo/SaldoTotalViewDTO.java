@@ -6,7 +6,10 @@ import lombok.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SaldoTotalViewDTO implements Serializable {
 
     private static final long serialVersionUID = -2398120816295097002L;
@@ -14,7 +17,4 @@ public class SaldoTotalViewDTO implements Serializable {
     @ApiModelProperty(value = "Saldo total do usuário", example = "500.00")
     private BigDecimal saldoTotal;
 
-    public SaldoTotalViewDTO(BigDecimal saldoTotal){
-        this.saldoTotal = saldoTotal != null ? saldoTotal : BigDecimal.ZERO;
-    }
 }

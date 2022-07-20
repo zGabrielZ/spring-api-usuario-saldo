@@ -2,17 +2,17 @@ package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
-import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Component
 public class UsuarioEntidadeFactory implements Serializable {
 
     private static final long serialVersionUID = 2762513171034400055L;
 
-    public Usuario toUsuarioInsertEntidade(UsuarioInsertFormDTO usuarioInsertFormDTO){
+    private UsuarioEntidadeFactory(){}
+
+    public static Usuario toUsuarioInsertEntidade(UsuarioInsertFormDTO usuarioInsertFormDTO){
         Usuario usuario = new Usuario();
         usuario.setNome(usuarioInsertFormDTO.getNome());
         usuario.setEmail(usuarioInsertFormDTO.getEmail());
@@ -23,7 +23,7 @@ public class UsuarioEntidadeFactory implements Serializable {
         return usuario;
     }
 
-    public Usuario toUsuarioUpdateEntidade(UsuarioUpdateFormDTO usuarioUpdateFormDTO, Usuario usuario){
+    public static Usuario toUsuarioUpdateEntidade(UsuarioUpdateFormDTO usuarioUpdateFormDTO, Usuario usuario){
         usuario.setSenha(usuarioUpdateFormDTO.getSenha());
         usuario.setNome(usuarioUpdateFormDTO.getNome());
         usuario.setEmail(usuarioUpdateFormDTO.getEmail());

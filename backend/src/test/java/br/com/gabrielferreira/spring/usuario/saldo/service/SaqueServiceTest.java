@@ -3,7 +3,7 @@
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
-//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.SacarFormDTO;
+//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 //import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
 //import org.junit.jupiter.api.BeforeEach;

@@ -1,8 +1,10 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.SaldoDTOFactory;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.UsuarioDTOFactory;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.UsuarioDTOFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.UsuarioEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
@@ -25,10 +27,6 @@ public class UsuarioService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final UsuarioEntidadeFactory usuarioEntidadeFactory;
-
-    private final UsuarioDTOFactory usuarioDTOFactory;
-
     public UsuarioViewDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
         usuarioInsertFormDTO.setCpf(limparMascaraCpf(usuarioInsertFormDTO.getCpf()));
 
@@ -37,12 +35,16 @@ public class UsuarioService {
 
         usuarioInsertFormDTO.setSenha(passwordEncoder.encode(usuarioInsertFormDTO.getSenha()));
 
-        Usuario usuario = usuarioRepositorio.save(usuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO));
-        return usuarioDTOFactory.toUsuarioViewDTO(usuario);
+        Usuario usuario = usuarioRepositorio.save(UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO));
+        return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
     }
 
     public UsuarioViewDTO buscarPorId(Long id){
-        return usuarioDTOFactory.toUsuarioViewDTO(buscarUsuario(id));
+        return UsuarioDTOFactory.toUsuarioViewDTO(buscarUsuario(id));
+    }
+
+    public SaldoTotalViewDTO buscarSaldoTotal(Long id){
+        return SaldoDTOFactory.toSaldoTotalViewDTO(buscarUsuario(id).getSaldoTotal());
     }
 
     public void deletarPorId(Long id){
@@ -58,12 +60,12 @@ public class UsuarioService {
         }
 
         usuarioUpdateFormDTO.setSenha(passwordEncoder.encode(usuarioUpdateFormDTO.getSenha()));
-        Usuario usuario = usuarioRepositorio.save(usuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado));
-        return usuarioDTOFactory.toUsuarioViewDTO(usuario);
+        Usuario usuario = usuarioRepositorio.save(UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado));
+        return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
     }
 
     public Page<UsuarioViewDTO> listagem(Pageable pageable){
-        return usuarioDTOFactory.toPageUsuario(usuarioRepositorio.findAll(pageable));
+        return UsuarioDTOFactory.toPageUsuario(usuarioRepositorio.findAll(pageable));
     }
 
     public void atualizarSaldoTotal(Long id, BigDecimal valor){
