@@ -6,7 +6,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
-@lombok.Generated
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UsuarioViewDTO implements Serializable {
 
     private static final long serialVersionUID = -2398120816295097002L;

@@ -8,7 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@lombok.Generated
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "SALDO")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

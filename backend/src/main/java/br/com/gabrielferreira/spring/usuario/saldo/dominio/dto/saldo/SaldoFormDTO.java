@@ -1,9 +1,7 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo;
-import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -11,7 +9,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@lombok.Generated
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SaldoFormDTO implements Serializable {
 
     private static final long serialVersionUID = -2398120816295097002L;
@@ -29,12 +29,5 @@ public class SaldoFormDTO implements Serializable {
     @ApiModelProperty(value = "ID do usuário", example = "1")
     @NotNull(message = "Usuário não pode ser vazio.")
     private Long idUsuario;
-
-    public BigDecimal getDeposito(){
-        if(BigDecimal.ZERO.compareTo(this.deposito) >= 0){
-            throw new ExcecaoPersonalizada(DEPOSITO_MENOR_IGUAL_ZERO.getMensagem());
-        }
-        return this.deposito;
-    }
 
 }
