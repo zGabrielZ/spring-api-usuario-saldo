@@ -13,11 +13,11 @@ public class SaqueDTOFactory implements Serializable {
     private SaqueDTOFactory(){}
 
     public static SacarViewDTO toSacarViewDTO(Saque saque){
-        return new SacarViewDTO(saque.getValor());
+        return SacarViewDTO.builder().saldoTotal(saque.getValor()).build();
     }
 
     public static SaqueViewDTO toSaqueViewDTO(Saque saque){
-        return new SaqueViewDTO(saque.getDataSaque(), saque.getValor());
+        return SaqueViewDTO.builder().dataSaque(saque.getDataSaque()).valor(saque.getValor()).build();
     }
 
     public static Page<SaqueViewDTO> toPageSaldoViewDTO(Page<Saque> saques){

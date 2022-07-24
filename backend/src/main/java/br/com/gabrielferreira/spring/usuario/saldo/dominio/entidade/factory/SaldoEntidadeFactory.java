@@ -11,15 +11,9 @@ public class SaldoEntidadeFactory implements Serializable {
     private SaldoEntidadeFactory(){}
 
     public static Saldo toSaldoInsertEntidade(SaldoFormDTO saldoFormDTO){
-        Saldo saldo = new Saldo();
-        saldo.setDeposito(saldoFormDTO.getDeposito());
-        saldo.setDataDeposito(saldoFormDTO.getDataDeposito());
-
-        Usuario usuario = new Usuario();
-        usuario.setId(saldoFormDTO.getIdUsuario());
-
-        saldo.setUsuario(usuario);
-        return saldo;
+        Usuario usuario = Usuario.builder().id(saldoFormDTO.getIdUsuario()).build();
+        return Saldo.builder().deposito(saldoFormDTO.getDeposito()).dataDeposito(saldoFormDTO.getDataDeposito())
+                .usuario(usuario).build();
     }
 
 }

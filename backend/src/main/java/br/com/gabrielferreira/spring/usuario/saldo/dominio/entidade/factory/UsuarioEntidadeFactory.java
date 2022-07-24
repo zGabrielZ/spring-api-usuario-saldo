@@ -13,14 +13,9 @@ public class UsuarioEntidadeFactory implements Serializable {
     private UsuarioEntidadeFactory(){}
 
     public static Usuario toUsuarioInsertEntidade(UsuarioInsertFormDTO usuarioInsertFormDTO){
-        Usuario usuario = new Usuario();
-        usuario.setNome(usuarioInsertFormDTO.getNome());
-        usuario.setEmail(usuarioInsertFormDTO.getEmail());
-        usuario.setSenha(usuarioInsertFormDTO.getSenha());
-        usuario.setCpf(usuarioInsertFormDTO.getCpf());
-        usuario.setDataNascimento(usuarioInsertFormDTO.getDataNascimento());
-        usuario.setSaldoTotal(BigDecimal.ZERO);
-        return usuario;
+        return Usuario.builder().nome(usuarioInsertFormDTO.getNome()).email(usuarioInsertFormDTO.getEmail())
+                .senha(usuarioInsertFormDTO.getSenha()).cpf(usuarioInsertFormDTO.getCpf()).dataNascimento(usuarioInsertFormDTO.getDataNascimento())
+                .saldoTotal(BigDecimal.ZERO).build();
     }
 
     public static Usuario toUsuarioUpdateEntidade(UsuarioUpdateFormDTO usuarioUpdateFormDTO, Usuario usuario){

@@ -14,11 +14,8 @@ public class SaldoDTOFactory implements Serializable {
     private SaldoDTOFactory(){}
 
     public static SaldoViewDTO toSaldoViewDTO(Saldo saldo){
-        SaldoViewDTO saldoViewDTO = new SaldoViewDTO();
-        saldoViewDTO.setId(saldo.getId());
-        saldoViewDTO.setDeposito(saldo.getDeposito());
-        saldoViewDTO.setDataDeposito(saldo.getDataDeposito());
-        return saldoViewDTO;
+        return SaldoViewDTO.builder().id(saldo.getId()).deposito(saldo.getDeposito())
+                        .dataDeposito(saldo.getDataDeposito()).build();
     }
 
     public static Page<SaldoViewDTO> toPageSaldoViewDTO(Page<Saldo> saldos){
@@ -26,6 +23,6 @@ public class SaldoDTOFactory implements Serializable {
     }
 
     public static SaldoTotalViewDTO toSaldoTotalViewDTO(BigDecimal saldoTotal){
-        return new SaldoTotalViewDTO(saldoTotal);
+        return SaldoTotalViewDTO.builder().saldoTotal(saldoTotal).build();
     }
 }

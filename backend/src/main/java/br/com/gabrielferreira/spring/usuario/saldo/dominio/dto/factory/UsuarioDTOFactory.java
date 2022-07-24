@@ -13,13 +13,9 @@ public class UsuarioDTOFactory implements Serializable {
     private UsuarioDTOFactory(){}
 
     public static UsuarioViewDTO toUsuarioViewDTO(Usuario usuario){
-        UsuarioViewDTO usuarioViewDTO = new UsuarioViewDTO();
-        usuarioViewDTO.setId(usuario.getId());
-        usuarioViewDTO.setNome(usuario.getNome());
-        usuarioViewDTO.setEmail(usuario.getEmail());
-        usuarioViewDTO.setDataNascimento(usuario.getDataNascimento());
-        usuarioViewDTO.setCpf(usuario.getCpf());
-        return usuarioViewDTO;
+        return UsuarioViewDTO.builder().id(usuario.getId()).nome(usuario.getNome())
+                .email(usuario.getEmail()).dataNascimento(usuario.getDataNascimento())
+                .cpf(usuario.getCpf()).build();
     }
 
     public static Page<UsuarioViewDTO> toPageUsuario(Page<Usuario> usuarios){

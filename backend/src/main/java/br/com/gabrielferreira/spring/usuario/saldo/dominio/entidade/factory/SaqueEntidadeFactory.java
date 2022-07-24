@@ -13,15 +13,9 @@ public class SaqueEntidadeFactory implements Serializable {
     private SaqueEntidadeFactory(){}
 
     public static Saque toSaqueInsertEntidade(SacarFormDTO sacarFormDTO){
-        Saque saque = new Saque();
-        saque.setDataSaque(LocalDateTime.now());
-        saque.setValor(sacarFormDTO.getQuantidade());
-
-        Usuario usuario = new Usuario();
-        usuario.setId(sacarFormDTO.getIdUsuario());
-
-        saque.setUsuario(usuario);
-        return saque;
+        Usuario usuario = Usuario.builder().id(sacarFormDTO.getIdUsuario()).build();
+        return Saque.builder().dataSaque(LocalDateTime.now()).valor(sacarFormDTO.getQuantidade())
+                .usuario(usuario).build();
     }
 
 }
