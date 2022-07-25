@@ -125,7 +125,7 @@ class SaldoServiceTest {
 
         // Mock para retornar os saldos por usuário
         PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"dataDeposito");
-        Page<Saldo> saldos = listParaPage(saldosCriados(), pageRequest);
+        Page<Saldo> saldos = listSaldoParaPage(saldosCriados(), pageRequest);
         when(saldoRepositorio.buscarPorUsuario(usuarioViewDTO.getId(),pageRequest)).thenReturn(saldos);
 
         // Executando
@@ -150,7 +150,7 @@ class SaldoServiceTest {
 
         // Mock para retornar os saldos vazios por usuário
         PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"dataDeposito");
-        Page<Saldo> saldos = listParaPage(new ArrayList<>(), pageRequest);
+        Page<Saldo> saldos = listSaldoParaPage(new ArrayList<>(), pageRequest);
         when(saldoRepositorio.buscarPorUsuario(usuarioViewDTO.getId(),pageRequest)).thenReturn(saldos);
 
         // Executando e verificando
@@ -201,7 +201,7 @@ class SaldoServiceTest {
         when(saldoRepositorio.findByUsuarioId(anyLong())).thenReturn(saldos);
 
         // Mock para retornar saques vazios por usuário
-        List<Saque> saques = saqueCriados();
+        List<Saque> saques = saquesCriados();
         when(saqueRepositorio.findByUsuarioId(anyLong())).thenReturn(saques);
 
         // Executando
@@ -225,14 +225,14 @@ class SaldoServiceTest {
         return saldos;
     }
 
-    private List<Saque> saqueCriados(){
+    private List<Saque> saquesCriados(){
         List<Saque> saques = new ArrayList<>();
         saques.add(Saque.builder().id(1L).valor(BigDecimal.valueOf(250.00)).build());
         saques.add(Saque.builder().id(2L).valor(BigDecimal.valueOf(550.00)).build());
         return saques;
     }
 
-    private Page<Saldo> listParaPage(List<Saldo> saldos, PageRequest pageRequest){
+    private Page<Saldo> listSaldoParaPage(List<Saldo> saldos, PageRequest pageRequest){
         return new PageImpl<>(saldos,pageRequest,saldos.size());
     }
 }

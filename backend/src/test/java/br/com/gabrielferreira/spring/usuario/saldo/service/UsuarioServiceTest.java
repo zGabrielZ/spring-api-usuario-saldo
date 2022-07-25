@@ -252,7 +252,7 @@ class UsuarioServiceTest {
 
         // Mock para retornar os dados de cima
         PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"nome");
-        when(usuarioRepositorio.findAll(pageRequest)).thenReturn(listParaPage(usuarios,pageRequest));
+        when(usuarioRepositorio.findAll(pageRequest)).thenReturn(listUsuariosParaPage(usuarios,pageRequest));
 
         // Execução
         Page<UsuarioViewDTO> usuarioPage = usuarioService.listagem(pageRequest);
@@ -300,7 +300,7 @@ class UsuarioServiceTest {
         return usuarios;
     }
 
-    private Page<Usuario> listParaPage(List<Usuario> usuarios, PageRequest pageRequest){
+    private Page<Usuario> listUsuariosParaPage(List<Usuario> usuarios, PageRequest pageRequest){
         return new PageImpl<>(usuarios,pageRequest,usuarios.size());
     }
 }

@@ -246,7 +246,7 @@ class UsuarioControllerTest {
         PageRequest pageRequest = PageRequest.of(pagina,quantidade,direcao,ordenar);
 
         // Mock para retornar dados de uma lista
-        when(usuarioService.listagem(pageRequest)).thenReturn(listParaPage(criarListaUsuarios(),pageRequest));
+        when(usuarioService.listagem(pageRequest)).thenReturn(listUsuariosParaPage(criarListaUsuarios(),pageRequest));
 
         // Paginação
         String query = API + "?pagina="+pagina+"&quantidadeRegistro="+quantidade+"&direcao="+direcao+"&ordenar="+ordenar;
@@ -290,7 +290,7 @@ class UsuarioControllerTest {
         PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"deposito");
 
         // Mock para retornar uma lista de saldos
-        when(saldoService.saldosPorUsuario(idPesquisar,pageRequest)).thenReturn(listSaldoParaPage(criarListaDeSaldos(),pageRequest));
+        when(saldoService.saldosPorUsuario(idPesquisar,pageRequest)).thenReturn(listSaldosParaPage(criarListaDeSaldos(),pageRequest));
 
         // Query
         String queryPaginacao = "?pagina=0&quantidadeRegistro=2&direcao=DESC&ordenar=deposito";
@@ -374,7 +374,7 @@ class UsuarioControllerTest {
         PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"valor");
 
         // Mock para retornar uma lista de saldos
-        when(saqueService.saquesPorUsuario(idPesquisar,pageRequest)).thenReturn(listSaqueParaPage(criarListaDeSaques(),pageRequest));
+        when(saqueService.saquesPorUsuario(idPesquisar,pageRequest)).thenReturn(listSaquesParaPage(criarListaDeSaques(),pageRequest));
 
         // Query
         String queryPaginacao = "?pagina=0&quantidadeRegistro=2&direcao=DESC&ordenar=valor";
@@ -407,15 +407,15 @@ class UsuarioControllerTest {
                 .andExpect(jsonPath("mensagem",equalTo("A direção informada está incorreta, informe DESC ou ASC.")));
     }
 
-    private Page<SaldoViewDTO> listSaldoParaPage(List<SaldoViewDTO> saldos, PageRequest pageRequest){
+    private Page<SaldoViewDTO> listSaldosParaPage(List<SaldoViewDTO> saldos, PageRequest pageRequest){
         return new PageImpl<>(saldos,pageRequest,saldos.size());
     }
 
-    private Page<UsuarioViewDTO> listParaPage(List<UsuarioViewDTO> usuarios, PageRequest pageRequest){
+    private Page<UsuarioViewDTO> listUsuariosParaPage(List<UsuarioViewDTO> usuarios, PageRequest pageRequest){
         return new PageImpl<>(usuarios,pageRequest,usuarios.size());
     }
 
-    private Page<SaqueViewDTO> listSaqueParaPage(List<SaqueViewDTO> saques, PageRequest pageRequest){
+    private Page<SaqueViewDTO> listSaquesParaPage(List<SaqueViewDTO> saques, PageRequest pageRequest){
         return new PageImpl<>(saques,pageRequest,saques.size());
     }
 

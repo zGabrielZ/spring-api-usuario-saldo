@@ -120,7 +120,7 @@ class SaqueServiceTest {
 
         // Mock para retornar saques do usuário
         PageRequest pageRequest = PageRequest.of(0,1, Sort.Direction.DESC,"dataSaque");
-        Page<Saque> saques = listParaPage(saqueCriados(), pageRequest);
+        Page<Saque> saques = listSaquesParaPage(saquesCriados(), pageRequest);
         when(saqueRepositorio.buscarPorUsuario(usuarioViewDTO.getId(),pageRequest)).thenReturn(saques);
 
         // Executando
@@ -145,7 +145,7 @@ class SaqueServiceTest {
 
         // Executando e verificando
         PageRequest pageRequest = PageRequest.of(0,1, Sort.Direction.DESC,"dataSaque");
-        Page<Saque> saques = listParaPage(new ArrayList<>(), pageRequest);
+        Page<Saque> saques = listSaquesParaPage(new ArrayList<>(), pageRequest);
         when(saqueRepositorio.buscarPorUsuario(usuarioViewDTO.getId(),pageRequest)).thenReturn(saques);
 
         // Executando
@@ -159,14 +159,14 @@ class SaqueServiceTest {
         return SacarFormDTO.builder().quantidade(quantidade).idUsuario(idUsuario).build();
     }
 
-    private List<Saque> saqueCriados(){
+    private List<Saque> saquesCriados(){
         List<Saque> saques = new ArrayList<>();
         saques.add(Saque.builder().id(1L).valor(BigDecimal.valueOf(250.00)).build());
         saques.add(Saque.builder().id(2L).valor(BigDecimal.valueOf(550.00)).build());
         return saques;
     }
 
-    private Page<Saque> listParaPage(List<Saque> saques, PageRequest pageRequest){
+    private Page<Saque> listSaquesParaPage(List<Saque> saques, PageRequest pageRequest){
         return new PageImpl<>(saques,pageRequest,saques.size());
     }
 }
