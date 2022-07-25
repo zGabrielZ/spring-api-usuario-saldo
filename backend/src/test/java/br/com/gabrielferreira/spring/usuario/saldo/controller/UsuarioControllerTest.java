@@ -1,10 +1,9 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
@@ -26,7 +25,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -310,7 +308,7 @@ class UsuarioControllerTest {
     @DisplayName("Mostrar saldos por usuário não deveria retornar status 200 quando tiver direção incorreta.")
     void naoDeveMostrarSaldosPorUsuario() throws Exception{
         // Cenário
-        Long idPesquisar = 1l;
+        Long idPesquisar = 1L;
 
         // Query
         String queryPaginacao = "?pagina=0&quantidadeRegistro=2&direcao=TESTE&ordenar=deposito";
@@ -343,72 +341,71 @@ class UsuarioControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isOk());
     }
-//
-//    @Test
-//    @DisplayName("Inserir um saque para o usuário deveria retornar um status 201 quando informar os dados corretamente.")
-//    void sacarValorSaldoTotalUsuario() throws Exception{
-//        // Cenário
-//        SacarFormDTO sacarFormDTO = SacarFormDTO.builder()
-//                .quantidade(BigDecimal.valueOf(500.00)).idUsuario(1L).build();
-//
-//        // Mock para retornar um saque quando tiver salvo
-//        when(saqueService.sacar(any())).thenReturn(sacarFormDTO.getQuantidade());
-//
-//        // Transformar o objeto dto em json
-//        String json = new ObjectMapper().writeValueAsString(sacarFormDTO);
-//
-//        // Criar uma requisição via post
-//        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-//                .post(API + "/sacar/").accept(JSON_MEDIATYPE).contentType(JSON_MEDIATYPE).content(json);
-//
-//        // Verificando
-//        mockMvc.perform(request)
-//                .andExpect(status().isCreated());
-//    }
-//
-//    @Test
-//    @DisplayName("Mostrar saques por usuário deveria retornar status 200 quando tiver saques relacionados ao usuário.")
-//    void deveMostrarSaquesPorUsuario() throws Exception{
-//        // Cenário
-//        Long idPesquisar = 1L;
-//        // Paginação
-//        PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"valor");
-//
-//        Page<Saque> saquePage = new PageImpl<>(criarListaDeSaques(),pageRequest,criarListaDeSaques().size());
-//
-//        // Mock para retornar uma lista de saldos
-//        when(saqueService.saquesPorUsuario(idPesquisar,pageRequest)).thenReturn(saquePage);
-//
-//        // Query
-//        String queryPaginacao = "?pagina=0&quantidadeRegistro=2&direcao=DESC&ordenar=valor";
-//
-//        // Criar requisição do tipo get
-//        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-//                .get(API + "/saques/{id}" + queryPaginacao,idPesquisar).accept(JSON_MEDIATYPE).contentType(JSON_MEDIATYPE);
-//
-//        // Verificando
-//        mockMvc.perform(request)
-//                .andExpect(status().isOk());
-//    }
-//
-//    @Test
-//    @DisplayName("Mostrar saques por usuário não deveria retornar status 200 quando tiver direção incorreta.")
-//    void naoDeveMostrarSaquesPorUsuario() throws Exception{
-//        // Cenário
-//        Long idPesquisar = 1l;
-//
-//        // Query
-//        String queryPaginacao = "?pagina=0&quantidadeRegistro=2&direcao=TESTE&ordenar=valor";
-//
-//        // Criar requisição do tipo get
-//        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-//                .get(API + "/saques/{id}" + queryPaginacao,idPesquisar).accept(JSON_MEDIATYPE).contentType(JSON_MEDIATYPE);
-//
-//        // Verificando
-//        mockMvc.perform(request)
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("mensagem",equalTo("A direção informada está incorreta, informe DESC ou ASC.")));
-//    }
+
+    @Test
+    @DisplayName("Inserir um saque para o usuário deveria retornar um status 201 quando informar os dados corretamente.")
+    void sacarValorSaldoTotalUsuario() throws Exception{
+        // Cenário
+        SacarFormDTO sacarFormDTO = SacarFormDTO.builder()
+                .quantidade(BigDecimal.valueOf(500.00)).idUsuario(1L).build();
+
+        // Mock para retornar um saque quando tiver salvo
+        SacarViewDTO sacarViewDTO = SacarViewDTO.builder().saldoTotal(BigDecimal.valueOf(200.00)).build();
+        when(saqueService.sacar(any())).thenReturn(sacarViewDTO);
+
+        // Transformar o objeto dto em json
+        String json = new ObjectMapper().writeValueAsString(sacarFormDTO);
+
+        // Criar uma requisição via post
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(API + "/sacar/").accept(JSON_MEDIATYPE).contentType(JSON_MEDIATYPE).content(json);
+
+        // Verificando
+        mockMvc.perform(request)
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("Mostrar saques por usuário deveria retornar status 200 quando tiver saques relacionados ao usuário.")
+    void deveMostrarSaquesPorUsuario() throws Exception{
+        // Cenário
+        Long idPesquisar = 1L;
+        // Paginação
+        PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"valor");
+
+        // Mock para retornar uma lista de saldos
+        when(saqueService.saquesPorUsuario(idPesquisar,pageRequest)).thenReturn(listSaqueParaPage(criarListaDeSaques(),pageRequest));
+
+        // Query
+        String queryPaginacao = "?pagina=0&quantidadeRegistro=2&direcao=DESC&ordenar=valor";
+
+        // Criar requisição do tipo get
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(API + "/saques/{id}" + queryPaginacao,idPesquisar).accept(JSON_MEDIATYPE).contentType(JSON_MEDIATYPE);
+
+        // Verificando
+        mockMvc.perform(request)
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Mostrar saques por usuário não deveria retornar status 200 quando tiver direção incorreta.")
+    void naoDeveMostrarSaquesPorUsuario() throws Exception{
+        // Cenário
+        Long idPesquisar = 1L;
+
+        // Query
+        String queryPaginacao = "?pagina=0&quantidadeRegistro=2&direcao=TESTE&ordenar=valor";
+
+        // Criar requisição do tipo get
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(API + "/saques/{id}" + queryPaginacao,idPesquisar).accept(JSON_MEDIATYPE).contentType(JSON_MEDIATYPE);
+
+        // Verificando
+        mockMvc.perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("mensagem",equalTo("A direção informada está incorreta, informe DESC ou ASC.")));
+    }
 
     private Page<SaldoViewDTO> listSaldoParaPage(List<SaldoViewDTO> saldos, PageRequest pageRequest){
         return new PageImpl<>(saldos,pageRequest,saldos.size());
@@ -416,6 +413,10 @@ class UsuarioControllerTest {
 
     private Page<UsuarioViewDTO> listParaPage(List<UsuarioViewDTO> usuarios, PageRequest pageRequest){
         return new PageImpl<>(usuarios,pageRequest,usuarios.size());
+    }
+
+    private Page<SaqueViewDTO> listSaqueParaPage(List<SaqueViewDTO> saques, PageRequest pageRequest){
+        return new PageImpl<>(saques,pageRequest,saques.size());
     }
 
     private UsuarioInsertFormDTO criarUsuarioFormDTO(){
@@ -459,13 +460,13 @@ class UsuarioControllerTest {
         saldos.add(SaldoViewDTO.builder().id(3L).deposito(BigDecimal.valueOf(700.00)).dataDeposito(LocalDateTime.now()).build());
         return saldos;
     }
-//
-//    private List<Saque> criarListaDeSaques(){
-//        List<Saque> saques = new ArrayList<>();
-//        saques.add(Saque.builder().id(1L).valor(BigDecimal.valueOf(200.00)).dataSaque(LocalDateTime.now()).build());
-//        saques.add(Saque.builder().id(2L).valor(BigDecimal.valueOf(500.00)).dataSaque(LocalDateTime.now()).build());
-//        saques.add(Saque.builder().id(3L).valor(BigDecimal.valueOf(700.00)).dataSaque(LocalDateTime.now()).build());
-//        return saques;
-//    }
+
+    private List<SaqueViewDTO> criarListaDeSaques(){
+        List<SaqueViewDTO> saques = new ArrayList<>();
+        saques.add(SaqueViewDTO.builder().valor(BigDecimal.valueOf(200.00)).dataSaque(LocalDateTime.now()).build());
+        saques.add(SaqueViewDTO.builder().valor(BigDecimal.valueOf(500.00)).dataSaque(LocalDateTime.now()).build());
+        saques.add(SaqueViewDTO.builder().valor(BigDecimal.valueOf(700.00)).dataSaque(LocalDateTime.now()).build());
+        return saques;
+    }
 
 }
