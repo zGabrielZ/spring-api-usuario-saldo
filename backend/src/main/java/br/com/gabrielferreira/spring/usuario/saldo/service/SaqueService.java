@@ -30,11 +30,11 @@ public class SaqueService {
         verificarSaque(saldoTotalViewDTO.getSaldoTotal());
         BigDecimal saldoTotalAtual = saldoTotalUsuario(saldoTotalViewDTO.getSaldoTotal(),sacarFormDTO.getQuantidade());
 
-        Saque saque = saqueRepositorio.save(SaqueEntidadeFactory.toSaqueInsertEntidade(sacarFormDTO));
+        saqueRepositorio.save(SaqueEntidadeFactory.toSaqueInsertEntidade(sacarFormDTO));
 
-        usuarioService.atualizarSaldoTotal(sacarFormDTO.getIdUsuario(),saldoTotalAtual);
+        BigDecimal saldoTotal = usuarioService.atualizarSaldoTotal(sacarFormDTO.getIdUsuario(),saldoTotalAtual);
 
-        return SaqueDTOFactory.toSacarViewDTO(saque);
+        return SaqueDTOFactory.toSacarViewDTO(saldoTotal);
     }
 
     public Page<SaqueViewDTO> saquesPorUsuario(Long idUsuario, PageRequest pageRequest){

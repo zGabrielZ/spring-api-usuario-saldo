@@ -5,6 +5,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 import org.springframework.data.domain.Page;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class SaqueDTOFactory implements Serializable {
 
@@ -12,8 +13,8 @@ public class SaqueDTOFactory implements Serializable {
 
     private SaqueDTOFactory(){}
 
-    public static SacarViewDTO toSacarViewDTO(Saque saque){
-        return SacarViewDTO.builder().saldoTotal(saque.getValor()).build();
+    public static SacarViewDTO toSacarViewDTO(BigDecimal saldoTotal){
+        return SacarViewDTO.builder().saldoTotal(saldoTotal).build();
     }
 
     public static SaqueViewDTO toSaqueViewDTO(Saque saque){

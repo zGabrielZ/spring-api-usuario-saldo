@@ -33,9 +33,9 @@ public class UsuarioService {
         verificarEmail(usuarioInsertFormDTO.getEmail());
         verificarCpf(usuarioInsertFormDTO.getCpf());
 
-        usuarioInsertFormDTO.setSenha(passwordEncoder.encode(usuarioInsertFormDTO.getSenha()));
-
-        Usuario usuario = usuarioRepositorio.save(UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO));
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO);
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        usuario = usuarioRepositorio.save(usuario);
         return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
     }
 
@@ -59,8 +59,10 @@ public class UsuarioService {
             verificarEmail(usuarioUpdateFormDTO.getEmail());
         }
 
-        usuarioUpdateFormDTO.setSenha(passwordEncoder.encode(usuarioUpdateFormDTO.getSenha()));
-        Usuario usuario = usuarioRepositorio.save(UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado));
+
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado);
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        usuarioRepositorio.save(usuario);
         return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
     }
 
@@ -68,10 +70,11 @@ public class UsuarioService {
         return UsuarioDTOFactory.toPageUsuario(usuarioRepositorio.findAll(pageable));
     }
 
-    public void atualizarSaldoTotal(Long id, BigDecimal valor){
+    public BigDecimal atualizarSaldoTotal(Long id, BigDecimal valor){
         Usuario usuario = buscarUsuario(id);
         usuario.setSaldoTotal(valor);
         usuarioRepositorio.save(usuario);
+        return usuario.getSaldoTotal();
     }
 
     private Usuario buscarUsuario(Long id){

@@ -13,14 +13,14 @@ public class UsuarioEntidadeFactory implements Serializable {
     private UsuarioEntidadeFactory(){}
 
     public static Usuario toUsuarioInsertEntidade(UsuarioInsertFormDTO usuarioInsertFormDTO){
-        return Usuario.builder().nome(usuarioInsertFormDTO.getNome()).email(usuarioInsertFormDTO.getEmail())
-                .senha(usuarioInsertFormDTO.getSenha()).cpf(usuarioInsertFormDTO.getCpf()).dataNascimento(usuarioInsertFormDTO.getDataNascimento())
+        return Usuario.builder().nome(usuarioInsertFormDTO.getNome().trim()).email(usuarioInsertFormDTO.getEmail())
+                .senha(usuarioInsertFormDTO.getSenha().trim()).cpf(usuarioInsertFormDTO.getCpf()).dataNascimento(usuarioInsertFormDTO.getDataNascimento())
                 .saldoTotal(BigDecimal.ZERO).build();
     }
 
     public static Usuario toUsuarioUpdateEntidade(UsuarioUpdateFormDTO usuarioUpdateFormDTO, Usuario usuario){
-        usuario.setSenha(usuarioUpdateFormDTO.getSenha());
-        usuario.setNome(usuarioUpdateFormDTO.getNome());
+        usuario.setSenha(usuarioUpdateFormDTO.getSenha().trim());
+        usuario.setNome(usuarioUpdateFormDTO.getNome().trim());
         usuario.setEmail(usuarioUpdateFormDTO.getEmail());
         usuario.setDataNascimento(usuarioUpdateFormDTO.getDataNascimento());
         return usuario;

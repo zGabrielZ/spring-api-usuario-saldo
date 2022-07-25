@@ -64,11 +64,14 @@ class SaqueServiceTest {
                 .usuario(Usuario.builder().id(idUsuarioInformado).build()).build();
         when(saqueRepositorio.save(any())).thenReturn(saqueJaSalvo);
 
+        // Mock para retornar o valor total do saldo
+        when(usuarioService.atualizarSaldoTotal(any(),any())).thenReturn(BigDecimal.valueOf(150.00));
+
         // Executando
         SacarViewDTO sacarViewDTO = saqueService.sacar(sacarFormDTO);
 
         // Verificando
-        assertThat(sacarViewDTO.getSaldoTotal()).isEqualTo(saqueJaSalvo.getValor());
+        assertThat(sacarViewDTO.getSaldoTotal()).isNotEqualTo(saqueJaSalvo.getValor());
         verify(saqueRepositorio).save(any());
     }
 
