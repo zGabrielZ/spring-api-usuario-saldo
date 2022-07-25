@@ -1,4 +1,5 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
@@ -18,7 +19,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 class UsuarioServiceTest {
 
     private static final DateTimeFormatter DTFDIA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -263,6 +262,24 @@ class UsuarioServiceTest {
         assertThat(usuarioPage.getTotalPages()).isEqualTo(2);
         assertThat(usuarioPage.isEmpty()).isFalse();
 
+    }
+
+    @Test
+    @DisplayName("Deve buscar saldos por usuário pelo id.")
+    void deveBuscarSaldoPorUsuario(){
+        // Cenário
+
+        Long idPesquisar = 1L;
+
+        // Mock para retornar um usuário
+        Usuario usuario = Usuario.builder().id(1L).nome("Teste").saldoTotal(BigDecimal.valueOf(500.00)).email("teste@email.com").build();
+        doReturn(Optional.of(usuario)).when(usuarioRepositorio).findById(idPesquisar);
+
+        // Executando
+        SaldoTotalViewDTO saldoTotalResultado = usuarioService.buscarSaldoTotal(idPesquisar);
+
+        // Verificando
+        assertThat(saldoTotalResultado.getSaldoTotal()).isEqualTo(BigDecimal.valueOf(500.00));
     }
 
     private UsuarioInsertFormDTO criarUsuarioFormDTO(){
