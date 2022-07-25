@@ -1,6 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.repositorio;
 
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,12 +12,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DataJpaTest
 class UsuarioRepositorioTest {
+
+    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -29,9 +32,8 @@ class UsuarioRepositorioTest {
     @DisplayName("Buscar por email deveria retornar dado quando tiver registro salvo no banco de dados.")
     void buscarPorEmail(){
         // Cenário
-        Usuario usuario = Usuario.builder().id(null).nome("José Ferreira").email("jose@gmail.com")
-                .senha("$2a$10$rkFB6IzKB9M/T8UBxe11eOS0dsUJxxe0.R2OLhkMqFtfHdOqypwZS").cpf("73977674005")
-                .dataNascimento(LocalDate.parse("1989-02-10")).build();
+        Usuario usuario = Usuario.builder().nome("José Ferreira").email("jose@gmail.com").senha("123")
+                .cpf("73977674005").dataNascimento(LocalDate.parse("10/12/1995",DTF)).build();
 
         testEntityManager.persist(usuario);
 
@@ -56,9 +58,9 @@ class UsuarioRepositorioTest {
     @DisplayName("Buscar por CPF deveria retornar dado quando tiver registro salvo no banco de dados.")
     void buscarPorCpf(){
         // Cenário
-        Usuario usuario = Usuario.builder().id(null).nome("Gabriel Ferreira").email("gabriel@gmail.com")
-                .senha("$2a$10$rkFB6IzKB9M/T8UBxe11eOS0dsUJxxe0.R2OLhkMqFtfHdOqypwZS").cpf("01324148055")
-                .dataNascimento(LocalDate.parse("1997-12-26")).build();
+        Usuario usuario = Usuario.builder().nome("Gabriel Ferreira").email("gabriel@gmail.com")
+                .senha("123").cpf("01324148055")
+                .dataNascimento(LocalDate.parse("26/12/1997",DTF)).build();
 
         testEntityManager.persist(usuario);
 

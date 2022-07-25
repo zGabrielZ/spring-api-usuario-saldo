@@ -1,10 +1,16 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.UsuarioUpdateDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.SaldoDTOFactory;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.UsuarioDTOFactory;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.UsuarioEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,85 +18,82 @@ import org.springframework.stereotype.Service;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepositorio usuarioRepositorio;
 
     private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepositorio usuarioRepositorio, PasswordEncoder passwordEncoder) {
-        this.usuarioRepositorio = usuarioRepositorio;
-        this.passwordEncoder = passwordEncoder;
-    }
+    public UsuarioViewDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
+        usuarioInsertFormDTO.setCpf(limparMascaraCpf(usuarioInsertFormDTO.getCpf()));
 
-    public Usuario inserir(UsuarioFormDTO usuarioFormDTO){
-        String senhaCriptografada = passwordEncoder.encode(usuarioFormDTO.getSenha());
-        String cpfFormatado = formataCpf(usuarioFormDTO.getCpf());
-        Usuario usuario = new Usuario(null,usuarioFormDTO.getNome(), usuarioFormDTO.getEmail()
-                , senhaCriptografada, cpfFormatado, usuarioFormDTO.getDataNascimento());
-        verificarEmail(usuario.getEmail());
-        verificarCpf(usuario.getCpf());
-        return usuarioRepositorio.save(usuario);
-    }
+        verificarEmail(usuarioInsertFormDTO.getEmail());
+        verificarCpf(usuarioInsertFormDTO.getCpf());
 
-    public Usuario atualizar(Long id,UsuarioUpdateDTO usuarioUpdateDTO){
-        Usuario usuario = buscarPorId(id);
-
-        if(!usuario.getEmail().equals(usuarioUpdateDTO.getEmail())){
-            verificarEmail(usuarioUpdateDTO.getEmail());
-        }
-
-        dtoParaEntidade(usuario,usuarioUpdateDTO);
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO);
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuario = usuarioRepositorio.save(usuario);
-        return usuario;
+        return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
     }
 
-    public Page<Usuario> listagem(Pageable pageable){
-        return usuarioRepositorio.findAll(pageable);
+    public UsuarioViewDTO buscarPorId(Long id){
+        return UsuarioDTOFactory.toUsuarioViewDTO(buscarUsuario(id));
     }
 
-    public Usuario buscarPorId(Long id){
-        Optional<Usuario> optionalUsuario = usuarioRepositorio.findById(id);
-        if(optionalUsuario.isEmpty()){
-            throw new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem());
-        }
-        return optionalUsuario.get();
+    public SaldoTotalViewDTO buscarSaldoTotal(Long id){
+        return SaldoDTOFactory.toSaldoTotalViewDTO(buscarUsuario(id).getSaldoTotal());
     }
 
     public void deletarPorId(Long id){
-        Usuario usuario = buscarPorId(id);
+        Usuario usuario = buscarUsuario(id);
         usuarioRepositorio.deleteById(usuario.getId());
     }
-    public void atualizarSaldoTotal(Usuario usuario, BigDecimal valor){
+
+    public UsuarioViewDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
+        Usuario usuarioEncontrado = buscarUsuario(id);
+
+        if(!usuarioEncontrado.getEmail().equals(usuarioUpdateFormDTO.getEmail())){
+            verificarEmail(usuarioUpdateFormDTO.getEmail());
+        }
+
+
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado);
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        usuarioRepositorio.save(usuario);
+        return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
+    }
+
+    public Page<UsuarioViewDTO> listagem(Pageable pageable){
+        return UsuarioDTOFactory.toPageUsuario(usuarioRepositorio.findAll(pageable));
+    }
+
+    public BigDecimal atualizarSaldoTotal(Long id, BigDecimal valor){
+        Usuario usuario = buscarUsuario(id);
         usuario.setSaldoTotal(valor);
         usuarioRepositorio.save(usuario);
+        return usuario.getSaldoTotal();
+    }
+
+    private Usuario buscarUsuario(Long id){
+        return usuarioRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
     private void verificarEmail(String email){
-        Optional<Usuario> optionalUsuario = usuarioRepositorio.findByEmail(email);
-        if(optionalUsuario.isPresent()){
+        usuarioRepositorio.findByEmail(email).ifPresent(usuario -> {
             throw new ExcecaoPersonalizada(EMAIL_CADASTRADO.getMensagem());
-        }
+        });
     }
 
     private void verificarCpf(String cpf) {
-        Optional<Usuario> optionalUsuario = usuarioRepositorio.findByCpf(cpf);
-        if (optionalUsuario.isPresent()) {
+        usuarioRepositorio.findByCpf(cpf).ifPresent(usuario -> {
             throw new ExcecaoPersonalizada(CPF_CADASTRADO.getMensagem());
-        }
+        });
     }
 
-    private void dtoParaEntidade(Usuario usuario,UsuarioUpdateDTO usuarioUpdateDTO){
-        usuario.setNome(usuarioUpdateDTO.getNome());
-        usuario.setEmail(usuarioUpdateDTO.getEmail());
-        usuario.setSenha(passwordEncoder.encode(usuarioUpdateDTO.getSenha()));
-        usuario.setDataNascimento(usuarioUpdateDTO.getDataNascimento());
-    }
-
-    private String formataCpf(String cpf){
+    private String limparMascaraCpf(String cpf){
         cpf = cpf.replace(".","");
         cpf = cpf.replace("-","");
         return cpf;

@@ -1,4 +1,4 @@
-package br.com.gabrielferreira.spring.usuario.saldo.entidade;
+package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade;
 
 import lombok.*;
 
@@ -7,14 +7,12 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "SALDO")
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "usuario")
+@Entity
+@Table(name = "SALDO")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Saldo implements Serializable {
 

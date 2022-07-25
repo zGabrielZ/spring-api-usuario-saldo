@@ -1,9 +1,13 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saque;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.*;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaqueService;
@@ -12,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -20,14 +25,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
-
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
+@RequiredArgsConstructor
 @Api("Usuário API")
 public class UsuarioController {
 
@@ -37,12 +41,6 @@ public class UsuarioController {
 
     private final SaqueService saqueService;
 
-    public UsuarioController(UsuarioService usuarioService, SaldoService saldoService, SaqueService saqueService) {
-        this.usuarioService = usuarioService;
-        this.saldoService = saldoService;
-        this.saqueService = saqueService;
-    }
-
     @ApiOperation("Inserir um usuário")
     @ResponseStatus(code = HttpStatus.CREATED)
     @ApiResponses(value = {
@@ -50,10 +48,10 @@ public class UsuarioController {
             @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
     })
     @PostMapping
-    public ResponseEntity<UsuarioViewDTO> inserir(@Valid @RequestBody UsuarioFormDTO usuarioFormDTO, UriComponentsBuilder uriComponentsBuilder){
-        Usuario usuario = usuarioService.inserir(usuarioFormDTO);
+    public ResponseEntity<UsuarioViewDTO> inserir(@Valid @RequestBody UsuarioInsertFormDTO usuarioInsertFormDTO, UriComponentsBuilder uriComponentsBuilder){
+        UsuarioViewDTO usuario = usuarioService.inserir(usuarioInsertFormDTO);
         URI uri = uriComponentsBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
-        return ResponseEntity.created(uri).body(new UsuarioViewDTO(usuario));
+        return ResponseEntity.created(uri).body(usuario);
     }
 
     @ApiOperation("Buscar usuário por ID")
@@ -63,8 +61,8 @@ public class UsuarioController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioViewDTO> buscarPorId(@PathVariable Long id){
-        Usuario usuario = usuarioService.buscarPorId(id);
-        return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
+        UsuarioViewDTO usuario = usuarioService.buscarPorId(id);
+        return ResponseEntity.ok().body(usuario);
     }
 
     @ApiOperation("Deletar usuário por ID")
@@ -87,9 +85,9 @@ public class UsuarioController {
             @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
     })
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioViewDTO> atualizarDados(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO){
-        Usuario usuario = usuarioService.atualizar(id,usuarioUpdateDTO);
-        return ResponseEntity.ok().body(new UsuarioViewDTO(usuario));
+    public ResponseEntity<UsuarioViewDTO> atualizarDados(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateFormDTO usuarioUpdateFormDTO){
+        UsuarioViewDTO usuario = usuarioService.atualizar(id, usuarioUpdateFormDTO);
+        return ResponseEntity.ok().body(usuario);
     }
 
     @ApiOperation(value = "Lista de usuários")
@@ -110,8 +108,8 @@ public class UsuarioController {
         }
 
         PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
-        Page<Usuario> usuarios = usuarioService.listagem(pageRequest);
-        return ResponseEntity.ok().body(UsuarioViewDTO.converterParaDto(usuarios));
+        Page<UsuarioViewDTO> usuarios = usuarioService.listagem(pageRequest);
+        return ResponseEntity.ok().body(usuarios);
     }
 
     @ApiOperation("Lista de saldos por usuário")
@@ -121,10 +119,10 @@ public class UsuarioController {
     })
     @GetMapping("/saldos/{id}")
     public ResponseEntity<Page<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id,
-          @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
-          @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-          @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
-          @RequestParam(value = "ordenar", required = false, defaultValue = "deposito") String ordenar){
+        @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
+        @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
+        @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
+        @RequestParam(value = "ordenar", required = false, defaultValue = "deposito") String ordenar){
 
         Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
         if(optionalDirecao.isEmpty()){
@@ -132,8 +130,8 @@ public class UsuarioController {
         }
 
         PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
-        Page<Saldo> saldos = saldoService.saldosPorUsuario(id,pageRequest);
-        return ResponseEntity.ok(SaldoViewDTO.converterParaDto(saldos));
+        Page<SaldoViewDTO> saldos = saldoService.saldosPorUsuario(id,pageRequest);
+        return ResponseEntity.ok(saldos);
     }
 
 
@@ -144,8 +142,8 @@ public class UsuarioController {
     })
     @GetMapping("/saldo-total/{id}")
     public ResponseEntity<SaldoTotalViewDTO> saldoTotalPorUsuario(@PathVariable Long id){
-        Usuario usuario = usuarioService.buscarPorId(id);
-        return ResponseEntity.ok().body(new SaldoTotalViewDTO(usuario.getSaldoTotal()));
+        SaldoTotalViewDTO saldoTotal = usuarioService.buscarSaldoTotal(id);
+        return ResponseEntity.ok().body(saldoTotal);
     }
 
     @ApiOperation("Saque de um saldo total do usuário")
@@ -157,8 +155,8 @@ public class UsuarioController {
     })
     @PostMapping("/sacar")
     public ResponseEntity<SacarViewDTO> sacarSaldoPorUsuario(@Valid @RequestBody SacarFormDTO sacarFormDTO){
-        BigDecimal saldoTotal = saqueService.sacar(sacarFormDTO);
-        return new ResponseEntity<>(new SacarViewDTO(saldoTotal), HttpStatus.CREATED);
+        SacarViewDTO sacarViewDTO = saqueService.sacar(sacarFormDTO);
+        return new ResponseEntity<>(sacarViewDTO, HttpStatus.CREATED);
     }
 
     @ApiOperation("Lista de saques por usuário")
@@ -178,7 +176,7 @@ public class UsuarioController {
             throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
         }
         PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
-        Page<Saque> saques = saqueService.saquesPorUsuario(id,pageRequest);
-        return ResponseEntity.ok().body(SaqueViewDTO.converterParaDto(saques));
+        Page<SaqueViewDTO> saques = saqueService.saquesPorUsuario(id,pageRequest);
+        return ResponseEntity.ok().body(saques);
     }
 }

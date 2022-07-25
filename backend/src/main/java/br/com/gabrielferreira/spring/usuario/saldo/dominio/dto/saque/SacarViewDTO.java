@@ -1,11 +1,13 @@
-package br.com.gabrielferreira.spring.usuario.saldo.entidade.dto;
+package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class SacarViewDTO implements Serializable {
 

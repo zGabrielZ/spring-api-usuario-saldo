@@ -1,6 +1,7 @@
 package br.com.gabrielferreira.spring.usuario.saldo.repositorio;
 
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,5 +14,7 @@ import java.util.List;
 public interface SaldoRepositorio extends JpaRepository<Saldo,Long> {
 
     @Query("SELECT s FROM Saldo s join s.usuario u where u.id = :idUsuario")
-    List<Saldo> buscarPorUsuario(@Param("idUsuario") Long idUsuario, Pageable pageable);
+    Page<Saldo> buscarPorUsuario(@Param("idUsuario") Long idUsuario, Pageable pageable);
+
+    List<Saldo> findByUsuarioId(Long idUsuario);
 }

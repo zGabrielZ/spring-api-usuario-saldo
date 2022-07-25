@@ -1,49 +1,51 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
-
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saldo;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Saque;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.entidade.dto.SaldoFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaldoRepositorio;
 import static org.assertj.core.api.Assertions.*;
+import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 class SaldoServiceTest {
 
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+    private static final DateTimeFormatter DTFHORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+    private static final DateTimeFormatter DTFDIA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private UsuarioService usuarioService;
 
     private SaldoRepositorio saldoRepositorio;
-    private UsuarioService usuarioService;
+
+    private SaqueRepositorio saqueRepositorio;
+
     private SaldoService saldoService;
 
     @BeforeEach
     void criarInstancias(){
-        saldoRepositorio = mock(SaldoRepositorio.class);
         usuarioService = mock(UsuarioService.class);
-        saldoService = new SaldoService(saldoRepositorio,usuarioService);
+        saldoRepositorio = mock(SaldoRepositorio.class);
+        saqueRepositorio = mock(SaqueRepositorio.class);
+        saldoService = new SaldoService(usuarioService,saldoRepositorio,saqueRepositorio);
     }
 
     @Test
@@ -52,33 +54,41 @@ class SaldoServiceTest {
         // Cenário
 
         Long idUsuarioInformado = 1L;
-        // Mock para retornar um usuário
-        Usuario usuario = usuarioCriado();
-        when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuario);
+        // Mock para retornar um usuário qualquer
+        UsuarioViewDTO usuarioViewDTO = UsuarioViewDTO.builder().id(idUsuarioInformado).build();
+        when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         // Mock para retornar um saldo quando tiver salvo
-        SaldoFormDTO saldoFormDTO = criarSaldoFormDto(BigDecimal.valueOf(500.00),
-                LocalDateTime.parse("30/06/2022 13:00:00",dateTimeFormatter),idUsuarioInformado);
-        Saldo saldoJaSalvo = Saldo.builder().id(1L).deposito(saldoFormDTO.getDeposito()).dataDeposito(saldoFormDTO.getDataDeposito())
-                .usuario(usuario).build();
+        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",DTFHORA))
+                .deposito(BigDecimal.valueOf(500.00))
+                .idUsuario(idUsuarioInformado).build();
+
+        Saldo saldoJaSalvo = Saldo.builder().id(123L).usuario(Usuario.builder().id(usuarioViewDTO.getId()).build()).dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",DTFHORA))
+                .deposito(BigDecimal.valueOf(500.00)).build();
         when(saldoRepositorio.save(any())).thenReturn(saldoJaSalvo);
 
+
         // Executando
-        Saldo saldoResultado = saldoService.depositar(saldoFormDTO);
+        SaldoViewDTO saldoResultado = saldoService.depositar(saldoFormDTO);
 
         // Verificando
         assertThat(saldoResultado.getId()).isNotNull();
         assertThat(saldoResultado.getDeposito()).isEqualTo(BigDecimal.valueOf(500.00));
-        assertThat(saldoResultado.getDataDeposito()).isEqualTo(LocalDateTime.parse("30/06/2022 13:00:00",dateTimeFormatter));
-        assertThat(saldoResultado.getUsuario().getNome()).isEqualTo("José Ferreira");
+        assertThat(saldoResultado.getDataDeposito()).isEqualTo(LocalDateTime.parse("30/06/2022 13:00:00",DTFHORA));
     }
 
     @Test
     @DisplayName("Depositar saldo não deveria salvar quando a quantidade for menor do que 0.")
     void naoDeveDepositarSaldoMenorQueZero(){
         // Cenário
-        SaldoFormDTO saldoFormDTO = criarSaldoFormDto(BigDecimal.valueOf(-10.0),
-                LocalDateTime.parse("30/06/2022 13:00:00",dateTimeFormatter),any());
+
+        Long idUsuarioInformado = 1L;
+        // Mock para retornar um usuário qualquer
+        UsuarioViewDTO usuarioViewDTO = UsuarioViewDTO.builder().id(idUsuarioInformado).build();
+        when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
+
+        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(-500.00))
+                .dataDeposito(LocalDateTime.parse("10/07/2022 12:00:00",DTFHORA)).idUsuario(idUsuarioInformado).build();
 
         // Executando e verificando
         assertThrows(ExcecaoPersonalizada.class, () -> saldoService.depositar(saldoFormDTO));
@@ -89,8 +99,14 @@ class SaldoServiceTest {
     @DisplayName("Depositar saldo não deveria salvar quando a quantidade for igual a 0.")
     void naoDeveDepositarSaldoIgualZero(){
         // Cenário
-        SaldoFormDTO saldoFormDTO = criarSaldoFormDto(BigDecimal.valueOf(0.0),
-                LocalDateTime.parse("30/06/2022 13:00:00",dateTimeFormatter),any());
+
+        Long idUsuarioInformado = 1L;
+        // Mock para retornar um usuário qualquer
+        UsuarioViewDTO usuarioViewDTO = UsuarioViewDTO.builder().id(idUsuarioInformado).build();
+        when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
+
+        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(0.0))
+                .dataDeposito(LocalDateTime.parse("10/10/2022 10:00:00",DTFHORA)).idUsuario(idUsuarioInformado).build();
 
         // Executando e verificando
         assertThrows(ExcecaoPersonalizada.class, () -> saldoService.depositar(saldoFormDTO));
@@ -101,19 +117,19 @@ class SaldoServiceTest {
     @DisplayName("Saldos por usuário deveria retornar uma lista quando informar o usuário já cadastrado.")
     void deveMostrarSaldosPorUsuario(){
         // Cenário
-        Long idUsuarioPesquisar = 1L;
-        // Mock para retornar um usuário com saldos
-        Usuario usuario = usuarioCriado();
-        List<Saldo> saldos = saldosCriados(usuario);
-        saldos.forEach(usuario::adicionarSaldo);
-        when(usuarioService.buscarPorId(idUsuarioPesquisar)).thenReturn(usuario);
+
+        Long idUsuarioInformado = 1L;
+        // Mock para retornar um usuário qualquer
+        UsuarioViewDTO usuarioViewDTO = UsuarioViewDTO.builder().id(idUsuarioInformado).build();
+        when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         // Mock para retornar os saldos por usuário
         PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"dataDeposito");
-        when(saldoRepositorio.buscarPorUsuario(idUsuarioPesquisar,pageRequest)).thenReturn(saldos);
+        Page<Saldo> saldos = listSaldoParaPage(saldosCriados(), pageRequest);
+        when(saldoRepositorio.buscarPorUsuario(usuarioViewDTO.getId(),pageRequest)).thenReturn(saldos);
 
         // Executando
-        Page<Saldo> saldosResultados = saldoService.saldosPorUsuario(idUsuarioPesquisar,pageRequest);
+        Page<SaldoViewDTO> saldosResultados = saldoService.saldosPorUsuario(idUsuarioInformado,pageRequest);
 
         // Verificando
         assertThat(saldosResultados).isNotEmpty();
@@ -124,17 +140,21 @@ class SaldoServiceTest {
 
     @Test
     @DisplayName("Saldos por usuário deveria retornar uma lista vazia quando não tiver saldos associado ao usuário pesquisado.")
-    void deveMostrarSaldosVazioPorUsuarioNaoEncontrado(){
+    void deveMostrarSaldosVazioPorUsuario(){
         // Cenário
-        Long idUsuarioPesquisar = 1L;
 
-        // Mock para retornar usuario quando informar o id
-        Usuario usuario = usuarioCriado();
-        when(usuarioService.buscarPorId(idUsuarioPesquisar)).thenReturn(usuario);
+        Long idUsuarioInformado = 1L;
+        // Mock para retornar um usuário qualquer
+        UsuarioViewDTO usuarioViewDTO = UsuarioViewDTO.builder().id(idUsuarioInformado).build();
+        when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
+
+        // Mock para retornar os saldos vazios por usuário
+        PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"dataDeposito");
+        Page<Saldo> saldos = listSaldoParaPage(new ArrayList<>(), pageRequest);
+        when(saldoRepositorio.buscarPorUsuario(usuarioViewDTO.getId(),pageRequest)).thenReturn(saldos);
 
         // Executando e verificando
-        PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"dataDeposito");
-        Page<Saldo> saldosResultados = saldoService.saldosPorUsuario(idUsuarioPesquisar,pageRequest);
+        Page<SaldoViewDTO> saldosResultados = saldoService.saldosPorUsuario(idUsuarioInformado,pageRequest);
 
         // Verificando
         assertThat(saldosResultados).isEmpty();
@@ -144,12 +164,22 @@ class SaldoServiceTest {
     @DisplayName("Saldo total por usuário deveria retornar um valor quando informar um usuário.")
     void deveMostrarSaldoTotalPorUsuario(){
         // Cenário
-        Usuario usuario = usuarioCriado();
-        List<Saldo> saldos = saldosCriados(usuario);
-        saldos.forEach(usuario::adicionarSaldo);
+
+        Long idUsuarioInformado = 1L;
+        // Mock para retornar um usuário qualquer
+        UsuarioViewDTO usuarioViewDTO = UsuarioViewDTO.builder().id(idUsuarioInformado).build();
+        when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
+
+        // Mock para retornar saldos por usuário
+        List<Saldo> saldos = saldosCriados();
+        when(saldoRepositorio.findByUsuarioId(anyLong())).thenReturn(saldos);
+
+        // Mock para retornar saques vazios por usuário
+        List<Saque> saques = new ArrayList<>();
+        when(saqueRepositorio.findByUsuarioId(anyLong())).thenReturn(saques);
 
         // Executando
-        BigDecimal valorTotal = saldoService.saldoTotalPorUsuario(usuario);
+        BigDecimal valorTotal = saldoService.saldoTotalPorUsuario(idUsuarioInformado);
 
         // Verificando
         assertThat(valorTotal).isEqualTo(BigDecimal.valueOf(2100.00));
@@ -160,56 +190,49 @@ class SaldoServiceTest {
     @DisplayName("Saldo total por usuário deveria retornar um valor quando informar um usuário que já tem seus saques registrados.")
     void deveMostrarSaldoTotalPorUsuarioQuandoTiverSaque(){
         // Cenário
-        Usuario usuario = usuarioCriado();
 
-        List<Saldo> saldos = saldosCriados(usuario);
-        saldos.forEach(usuario::adicionarSaldo);
+        Long idUsuarioInformado = 1L;
+        // Mock para retornar um usuário qualquer
+        UsuarioViewDTO usuarioViewDTO = UsuarioViewDTO.builder().id(idUsuarioInformado).build();
+        when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
-        List<Saque> saques = saqueCriados(usuario);
-        saques.forEach(usuario::adicionarSaque);
+        // Mock para retornar saldos por usuário
+        List<Saldo> saldos = saldosCriados();
+        when(saldoRepositorio.findByUsuarioId(anyLong())).thenReturn(saldos);
+
+        // Mock para retornar saques vazios por usuário
+        List<Saque> saques = saquesCriados();
+        when(saqueRepositorio.findByUsuarioId(anyLong())).thenReturn(saques);
 
         // Executando
-        BigDecimal valorTotal = saldoService.saldoTotalPorUsuario(usuario);
+        BigDecimal valorTotal = saldoService.saldoTotalPorUsuario(idUsuarioInformado);
 
         // Verificando
         assertThat(valorTotal).isEqualTo(BigDecimal.valueOf(1300.00));
 
     }
 
-    private SaldoFormDTO criarSaldoFormDto(BigDecimal deposito, LocalDateTime dataDeposito, Long idUsuario){
-        return SaldoFormDTO.builder().deposito(deposito).dataDeposito(dataDeposito).idUsuario(idUsuario).build();
-    }
-
-    private Usuario usuarioCriado(){
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return Usuario.builder().id(1L).nome("José Ferreira").email("jose@gmail.com")
-                .senha("$2a$10$rkFB6IzKB9M/T8UBxe11eOS0dsUJxxe0.R2OLhkMqFtfHdOqypwZS").cpf("73977674005")
-                .dataNascimento(LocalDate.parse("10/02/1990",dateTimeFormatter))
-                .saldos(new ArrayList<>()).saques(new ArrayList<>())
-                .build();
-    }
-
-    private List<Saldo> saldosCriados(Usuario usuario){
+    private List<Saldo> saldosCriados(){
         List<Saldo> saldos = new ArrayList<>();
         saldos.add(Saldo.builder().id(1L).deposito(BigDecimal.valueOf(200.00))
-                .dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",dateTimeFormatter)).usuario(usuario).build());
+                .dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",DTFHORA)).build());
         saldos.add(Saldo.builder().id(2L).deposito(BigDecimal.valueOf(500.00))
-                .dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",dateTimeFormatter)).usuario(usuario).build());
+                .dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",DTFHORA)).build());
         saldos.add(Saldo.builder().id(3L).deposito(BigDecimal.valueOf(600.00))
-                .dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",dateTimeFormatter)).usuario(usuario).build());
+                .dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",DTFHORA)).build());
         saldos.add(Saldo.builder().id(4L).deposito(BigDecimal.valueOf(800.00))
-                .dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",dateTimeFormatter)).usuario(usuario).build());
+                .dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",DTFHORA)).build());
         return saldos;
     }
 
-    private List<Saque> saqueCriados(Usuario usuario){
+    private List<Saque> saquesCriados(){
         List<Saque> saques = new ArrayList<>();
-        saques.add(Saque.builder().id(1L).valor(BigDecimal.valueOf(250.00)).usuario(usuario).build());
-        saques.add(Saque.builder().id(2L).valor(BigDecimal.valueOf(550.00)).usuario(usuario).build());
+        saques.add(Saque.builder().id(1L).valor(BigDecimal.valueOf(250.00)).build());
+        saques.add(Saque.builder().id(2L).valor(BigDecimal.valueOf(550.00)).build());
         return saques;
     }
 
-    private Page<Saldo> listParaPage(List<Saldo> saldos, PageRequest pageRequest){
+    private Page<Saldo> listSaldoParaPage(List<Saldo> saldos, PageRequest pageRequest){
         return new PageImpl<>(saldos,pageRequest,saldos.size());
     }
 }

@@ -1,4 +1,4 @@
-package br.com.gabrielferreira.spring.usuario.saldo.entidade.dto;
+package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -7,11 +7,10 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Getter
-@Setter
+@Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class SacarFormDTO implements Serializable {
 
     private static final long serialVersionUID = -7136821550686871414L;
