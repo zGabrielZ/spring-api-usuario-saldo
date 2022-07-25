@@ -11,6 +11,7 @@
 - Banco de dados PostgreSQL
 - Swagger (Documentação)
 - Docker
+- Jacoco
 
 # Endpoints do usuário
 
