@@ -49,11 +49,4 @@ public class Usuario implements Serializable {
     @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "usuario")
     private List<Saque> saques = new ArrayList<>();
 
-    public void adicionarSaldo(Saldo saldo){
-        this.saldos.add(saldo);
-    }
-
-    public void adicionarSaque(Saque saque){
-        this.saques.add(saque);
-    }
 }
