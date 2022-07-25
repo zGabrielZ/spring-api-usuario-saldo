@@ -101,8 +101,6 @@ Esse endpoint é responsável realizar uma atualização de um usuário.
 
 #### Parâmetros 
 
-cpf : CPF do usuário
-
 dataNascimento : Data nascimento do usuário
 
 email : E-mail do usuário
@@ -115,7 +113,6 @@ senha : Senha do usuário
 
 ```
 {
-  "cpf": "84269756071",
   "dataNascimento": "31/12/1990",
   "email": "jose@gmail.com",
   "nome": "José Fernandes",
