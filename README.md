@@ -6,6 +6,7 @@
 - Spring Boot REST
 - Spring Data JPA
 - Spring Security
+- Spring Cloud OpenFeign
 - JUnit 
 - Banco de dados H2 (Memória)
 - Banco de dados PostgreSQL
