@@ -3,6 +3,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDT
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 public class SaldoEntidadeFactory implements Serializable {
 
@@ -10,9 +11,9 @@ public class SaldoEntidadeFactory implements Serializable {
 
     private SaldoEntidadeFactory(){}
 
-    public static Saldo toSaldoInsertEntidade(SaldoFormDTO saldoFormDTO){
+    public static Saldo toSaldoInsertEntidade(SaldoFormDTO saldoFormDTO, LocalDateTime dataDeposito){
         Usuario usuario = Usuario.builder().id(saldoFormDTO.getIdUsuario()).build();
-        return Saldo.builder().deposito(saldoFormDTO.getDeposito()).dataDeposito(saldoFormDTO.getDataDeposito())
+        return Saldo.builder().deposito(saldoFormDTO.getDeposito()).dataDeposito(dataDeposito)
                 .usuario(usuario).build();
     }
 

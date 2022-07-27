@@ -8,7 +8,9 @@ public enum ValidacaoEnum {
     USUARIO_NAO_ENCONTRADO("Usuário não foi encontrado, verifique o id informado."),
     SAQUE_NAO_ENCONTRADO("Não é possível sacar sem nenhum valor."),
     SALDO_TOTAL_USUARIO("Não é possível sacar pois o saldo total é "),
-    DEPOSITO_MENOR_IGUAL_ZERO("O déposito não pode ser menor ou igual ao 0.");
+    DEPOSITO_MENOR_IGUAL_ZERO("O déposito não pode ser menor ou igual ao 0."),
+    FINAL_DE_SEMANA("O déposito não pode ser realizado no sábado ou no domingo"),
+    FERIADO_NACIONAL("Não vai ser possível dépositar pois é feriado nacional");
 
     private final String mensagem;
     ValidacaoEnum(String mensagem){
