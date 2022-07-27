@@ -87,12 +87,6 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>io.github.openfeign</groupId>
-			<artifactId>feign-mock</artifactId>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<dependencyManagement>

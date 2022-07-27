@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,6 +27,8 @@ import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 @Service
 @RequiredArgsConstructor
 public class SaldoService {
+
+    private final Clock clock;
 
     private final FeriadoNacionalClient nacionalClient;
 
@@ -39,9 +42,10 @@ public class SaldoService {
         UsuarioViewDTO usuario = usuarioService.buscarPorId(saldoFormDTO.getIdUsuario());
 
         verificarValorDeposito(saldoFormDTO.getDeposito());
-        Saldo saldo = saldoRepositorio.save(SaldoEntidadeFactory.toSaldoInsertEntidade(saldoFormDTO, LocalDateTime.now()));
+        Saldo saldo = SaldoEntidadeFactory.toSaldoInsertEntidade(saldoFormDTO, LocalDateTime.now(clock));
         verificarDataAtualDeposito(saldo.getDataDeposito());
         verificarFeriadoNacional(saldo.getDataDeposito());
+        saldo = saldoRepositorio.save(saldo);
 
         BigDecimal valorTotal = saldoTotalPorUsuario(usuario.getId());
         usuarioService.atualizarSaldoTotal(usuario.getId(),valorTotal);

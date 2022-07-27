@@ -1,4 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
+import br.com.gabrielferreira.spring.usuario.saldo.client.FeriadoNacionalClient;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.FeriadoNacionalDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
@@ -21,9 +23,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
@@ -31,6 +36,10 @@ class SaldoServiceTest {
 
     private static final DateTimeFormatter DTFHORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     private static final DateTimeFormatter DTFDIA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private Clock clock;
+
+    private FeriadoNacionalClient feriadoNacionalClient;
 
     private UsuarioService usuarioService;
 
@@ -45,7 +54,9 @@ class SaldoServiceTest {
         usuarioService = mock(UsuarioService.class);
         saldoRepositorio = mock(SaldoRepositorio.class);
         saqueRepositorio = mock(SaqueRepositorio.class);
-        saldoService = new SaldoService(usuarioService,saldoRepositorio,saqueRepositorio);
+        feriadoNacionalClient = mock(FeriadoNacionalClient.class);
+        clock = mock(Clock.class);
+        saldoService = new SaldoService(clock,feriadoNacionalClient,usuarioService,saldoRepositorio,saqueRepositorio);
     }
 
     @Test
@@ -59,12 +70,19 @@ class SaldoServiceTest {
         when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         // Mock para retornar um saldo quando tiver salvo
-        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",DTFHORA))
+        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder()
                 .deposito(BigDecimal.valueOf(500.00))
                 .idUsuario(idUsuarioInformado).build();
 
         Saldo saldoJaSalvo = Saldo.builder().id(123L).usuario(Usuario.builder().id(usuarioViewDTO.getId()).build()).dataDeposito(LocalDateTime.parse("30/06/2022 13:00:00",DTFHORA))
                 .deposito(BigDecimal.valueOf(500.00)).build();
+
+        // Mock para data atual fixa
+        LocalDateTime dataAtualFixa = LocalDateTime.parse("06/10/2022 10:00:00", DTFHORA);
+        when(clock.instant()).thenReturn(dataAtualFixa.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        when(clock.getZone()).thenReturn(ZoneId.systemDefault());
+
+        saldoJaSalvo.setDataDeposito(dataAtualFixa);
         when(saldoRepositorio.save(any())).thenReturn(saldoJaSalvo);
 
 
@@ -74,7 +92,7 @@ class SaldoServiceTest {
         // Verificando
         assertThat(saldoResultado.getId()).isNotNull();
         assertThat(saldoResultado.getDeposito()).isEqualTo(BigDecimal.valueOf(500.00));
-        assertThat(saldoResultado.getDataDeposito()).isEqualTo(LocalDateTime.parse("30/06/2022 13:00:00",DTFHORA));
+        assertThat(saldoResultado.getDataDeposito()).isEqualTo(LocalDateTime.parse("06/10/2022 10:00:00",DTFHORA));
     }
 
     @Test
@@ -88,7 +106,7 @@ class SaldoServiceTest {
         when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(-500.00))
-                .dataDeposito(LocalDateTime.parse("10/07/2022 12:00:00",DTFHORA)).idUsuario(idUsuarioInformado).build();
+                .idUsuario(idUsuarioInformado).build();
 
         // Executando e verificando
         assertThrows(ExcecaoPersonalizada.class, () -> saldoService.depositar(saldoFormDTO));
@@ -106,7 +124,58 @@ class SaldoServiceTest {
         when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(0.0))
-                .dataDeposito(LocalDateTime.parse("10/10/2022 10:00:00",DTFHORA)).idUsuario(idUsuarioInformado).build();
+                .idUsuario(idUsuarioInformado).build();
+
+        // Executando e verificando
+        assertThrows(ExcecaoPersonalizada.class, () -> saldoService.depositar(saldoFormDTO));
+        verify(saldoRepositorio,never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Depositar saldo não deveria salvar quando for final de semana.")
+    void naoDeveDepositarSaldoFinalDeSemana(){
+        // Cenário
+
+        Long idUsuarioInformado = 1L;
+        // Mock para retornar um usuário qualquer
+        UsuarioViewDTO usuarioViewDTO = UsuarioViewDTO.builder().id(idUsuarioInformado).build();
+        when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
+
+        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(100.0))
+                .idUsuario(idUsuarioInformado).build();
+
+        // Mock para data atual fixa
+        LocalDateTime dataAtualFixa = LocalDateTime.parse("23/07/2022 10:00:00", DTFHORA);
+        when(clock.instant()).thenReturn(dataAtualFixa.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        when(clock.getZone()).thenReturn(ZoneId.systemDefault());
+
+
+        // Executando e verificando
+        assertThrows(ExcecaoPersonalizada.class, () -> saldoService.depositar(saldoFormDTO));
+        verify(saldoRepositorio,never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Depositar saldo não deveria salvar quando for feriado nacional.")
+    void naoDeveDepositarSaldoFeriadoNacional(){
+        // Cenário
+
+        Long idUsuarioInformado = 1L;
+        // Mock para retornar um usuário qualquer
+        UsuarioViewDTO usuarioViewDTO = UsuarioViewDTO.builder().id(idUsuarioInformado).build();
+        when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
+
+        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(100.0))
+                .idUsuario(idUsuarioInformado).build();
+
+        // Mock para data atual fixa
+        LocalDateTime dataAtualFixa = LocalDateTime.parse("07/10/2022 10:00:00", DTFHORA);
+        when(clock.instant()).thenReturn(dataAtualFixa.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        when(clock.getZone()).thenReturn(ZoneId.systemDefault());
+
+        // Mock para feriado nacional
+        FeriadoNacionalDTO feriadoNacionalDTO = FeriadoNacionalDTO.builder().date(dataAtualFixa.toLocalDate()).build();
+        when(feriadoNacionalClient.buscarFeriadosNacionais()).thenReturn(Arrays.asList(feriadoNacionalDTO));
 
         // Executando e verificando
         assertThrows(ExcecaoPersonalizada.class, () -> saldoService.depositar(saldoFormDTO));

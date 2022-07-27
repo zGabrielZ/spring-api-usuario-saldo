@@ -44,12 +44,13 @@ class SaldoControllerTest {
         // Cenário
 
         // Form do Saldo
-        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(500.00)).dataDeposito(LocalDateTime.parse("30/06/2023 13:00:00",formatter))
+        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(500.00))
                 .idUsuario(1L).build();
 
         // Mock para retornar um saldo quando tiver salvo
         SaldoViewDTO saldo = SaldoViewDTO.builder().id(1L).deposito(saldoFormDTO.getDeposito())
-                .dataDeposito(saldoFormDTO.getDataDeposito()).build();
+                .dataDeposito(LocalDateTime.parse("27/07/2022 10:00:00", formatter)).build();
+
         when(saldoService.depositar(any())).thenReturn(saldo);
 
         // Transformar o objeto dto em json
