@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
@@ -27,6 +29,7 @@ public class UsuarioService {
 
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public UsuarioViewDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
         usuarioInsertFormDTO.setCpf(limparMascaraCpf(usuarioInsertFormDTO.getCpf()));
 
@@ -47,11 +50,13 @@ public class UsuarioService {
         return SaldoDTOFactory.toSaldoTotalViewDTO(buscarUsuario(id).getSaldoTotal());
     }
 
+    @Transactional
     public void deletarPorId(Long id){
         Usuario usuario = buscarUsuario(id);
         usuarioRepositorio.deleteById(usuario.getId());
     }
 
+    @Transactional
     public UsuarioViewDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
         Usuario usuarioEncontrado = buscarUsuario(id);
 
@@ -70,6 +75,7 @@ public class UsuarioService {
         return UsuarioDTOFactory.toPageUsuario(usuarioRepositorio.findAll(pageable));
     }
 
+    @Transactional
     public BigDecimal atualizarSaldoTotal(Long id, BigDecimal valor){
         Usuario usuario = buscarUsuario(id);
         usuario.setSaldoTotal(valor);

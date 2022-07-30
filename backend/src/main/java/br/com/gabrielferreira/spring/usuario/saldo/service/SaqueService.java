@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
@@ -25,6 +27,7 @@ public class SaqueService {
 
     private final UsuarioService usuarioService;
 
+    @Transactional
     public SacarViewDTO sacar(SacarFormDTO sacarFormDTO){
         SaldoTotalViewDTO saldoTotalViewDTO = usuarioService.buscarSaldoTotal(sacarFormDTO.getIdUsuario());
         verificarSaque(saldoTotalViewDTO.getSaldoTotal());

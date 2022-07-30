@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.DayOfWeek;
@@ -38,6 +40,7 @@ public class SaldoService {
 
     private final SaqueRepositorio saqueRepositorio;
 
+    @Transactional
     public SaldoViewDTO depositar(SaldoFormDTO saldoFormDTO){
         UsuarioViewDTO usuario = usuarioService.buscarPorId(saldoFormDTO.getIdUsuario());
 
