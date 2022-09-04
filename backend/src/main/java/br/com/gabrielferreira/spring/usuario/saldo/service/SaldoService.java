@@ -48,8 +48,8 @@ public class SaldoService {
         verificarFeriadoNacional(saldo.getDataDeposito());
         saldo = saldoRepositorio.save(saldo);
 
-        BigDecimal valorTotal = saldoTotalPorUsuario(usuario.getId());
-        usuarioService.atualizarSaldoTotal(usuario.getId(),valorTotal);
+        BigDecimal valorTotal = saldoTotalPorUsuario(usuario.id());
+        usuarioService.atualizarSaldoTotal(usuario.id(),valorTotal);
 
         return SaldoDTOFactory.toSaldoViewDTO(saldo);
     }

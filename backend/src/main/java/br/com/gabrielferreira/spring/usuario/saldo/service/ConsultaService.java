@@ -2,8 +2,10 @@ package br.com.gabrielferreira.spring.usuario.saldo.service;
 import br.com.gabrielferreira.spring.usuario.saldo.dao.QueryDslDAO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.QSaldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.QSaque;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.QUsuario;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -12,10 +14,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.SimplePath;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -69,6 +68,26 @@ public class ConsultaService {
                 .limit(pageRequest.getPageSize())
                 .orderBy(getSort(pageRequest.getSort(), QSaque.saque, qSaque))
                 .fetch();
+
+        return new PageImpl<>(result, pageRequest, result.size());
+    }
+
+    public Page<UsuarioViewDTO> listagem(PageRequest pageRequest){
+        QUsuario qUsuario = QUsuario.usuario;
+
+        List<UsuarioViewDTO> result = queryDslDAO.query(q -> q.select(Projections.constructor(
+                            UsuarioViewDTO.class,
+                            qUsuario.id,
+                            qUsuario.nome,
+                            qUsuario.email,
+                            qUsuario.cpf,
+                            qUsuario.dataNascimento
+                    )))
+                    .from(qUsuario)
+                    .offset(pageRequest.getOffset())
+                    .limit(pageRequest.getPageSize())
+                    .orderBy(getSort(pageRequest.getSort(), QUsuario.usuario, qUsuario))
+                    .fetch();
 
         return new PageImpl<>(result, pageRequest, result.size());
     }

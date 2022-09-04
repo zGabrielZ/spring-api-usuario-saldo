@@ -11,8 +11,6 @@ import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizad
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,10 +67,6 @@ public class UsuarioService {
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuarioRepositorio.save(usuario);
         return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
-    }
-
-    public Page<UsuarioViewDTO> listagem(Pageable pageable){
-        return UsuarioDTOFactory.toPageUsuario(usuarioRepositorio.findAll(pageable));
     }
 
     @Transactional

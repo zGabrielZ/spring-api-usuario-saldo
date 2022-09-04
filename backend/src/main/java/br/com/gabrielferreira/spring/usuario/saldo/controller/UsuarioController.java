@@ -50,7 +50,7 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<UsuarioViewDTO> inserir(@Valid @RequestBody UsuarioInsertFormDTO usuarioInsertFormDTO, UriComponentsBuilder uriComponentsBuilder){
         UsuarioViewDTO usuario = usuarioService.inserir(usuarioInsertFormDTO);
-        URI uri = uriComponentsBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
+        URI uri = uriComponentsBuilder.path("/usuarios/{id}").buildAndExpand(usuario.id()).toUri();
         return ResponseEntity.created(uri).body(usuario);
     }
 
@@ -108,7 +108,7 @@ public class UsuarioController {
         }
 
         PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
-        Page<UsuarioViewDTO> usuarios = usuarioService.listagem(pageRequest);
+        Page<UsuarioViewDTO> usuarios = consultaService.listagem(pageRequest);
         return ResponseEntity.ok().body(usuarios);
     }
 
