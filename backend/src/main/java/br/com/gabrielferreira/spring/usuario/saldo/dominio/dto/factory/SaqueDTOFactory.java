@@ -18,7 +18,7 @@ public class SaqueDTOFactory implements Serializable {
     }
 
     public static SaqueViewDTO toSaqueViewDTO(Saque saque){
-        return SaqueViewDTO.builder().dataSaque(saque.getDataSaque()).valor(saque.getValor()).build();
+        return new SaqueViewDTO(saque.getDataSaque(), saque.getValor());
     }
 
     public static Page<SaqueViewDTO> toPageSaldoViewDTO(Page<Saque> saques){

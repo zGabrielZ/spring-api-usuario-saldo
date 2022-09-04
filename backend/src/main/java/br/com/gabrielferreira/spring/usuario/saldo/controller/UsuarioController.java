@@ -166,17 +166,17 @@ public class UsuarioController {
     })
     @GetMapping("/saques/{id}")
     public ResponseEntity<Page<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id,
-        @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
-        @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-        @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
-        @RequestParam(value = "ordenar", required = false, defaultValue = "valor") String ordenar){
+         @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
+         @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
+         @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
+          @RequestParam(value = "ordenar", required = false, defaultValue = "valor") String ordenar){
 
         Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
         if(optionalDirecao.isEmpty()){
             throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
         }
         PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
-        Page<SaqueViewDTO> saques = saqueService.saquesPorUsuario(id,pageRequest);
+        Page<SaqueViewDTO> saques = consultaService.saquesPorUsuario(id,pageRequest);
         return ResponseEntity.ok().body(saques);
     }
 }

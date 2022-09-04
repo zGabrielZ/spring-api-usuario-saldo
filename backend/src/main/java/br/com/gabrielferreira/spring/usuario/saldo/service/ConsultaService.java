@@ -1,7 +1,9 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 import br.com.gabrielferreira.spring.usuario.saldo.dao.QueryDslDAO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.QSaldo;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.QSaque;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -44,6 +46,28 @@ public class ConsultaService {
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
                 .orderBy(getSort(pageRequest.getSort(), QSaldo.saldo, qSaldo))
+                .fetch();
+
+        return new PageImpl<>(result, pageRequest, result.size());
+    }
+
+    public Page<SaqueViewDTO> saquesPorUsuario(Long idUsuario, PageRequest pageRequest){
+
+        QSaque qSaque = QSaque.saque;
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(qSaque.usuario.id.eq(idUsuario));
+
+        List<SaqueViewDTO> result = queryDslDAO.query(q -> q.select(Projections.constructor(
+                            SaqueViewDTO.class,
+                            qSaque.dataSaque,
+                            qSaque.valor
+                )))
+                .from(qSaque)
+                .innerJoin(qSaque.usuario)
+                .where(booleanBuilder)
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
+                .orderBy(getSort(pageRequest.getSort(), QSaque.saque, qSaque))
                 .fetch();
 
         return new PageImpl<>(result, pageRequest, result.size());
