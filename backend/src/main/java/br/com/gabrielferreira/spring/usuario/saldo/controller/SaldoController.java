@@ -33,7 +33,7 @@ public class SaldoController {
     @PostMapping("/depositar")
     public ResponseEntity<SaldoViewDTO> depositar(@Valid @RequestBody SaldoFormDTO saldoFormDTO, UriComponentsBuilder uriComponentsBuilder){
         SaldoViewDTO saldo = saldoService.depositar(saldoFormDTO);
-        URI uri = uriComponentsBuilder.path("/saldos/{id}").buildAndExpand(saldo.getId()).toUri();
+        URI uri = uriComponentsBuilder.path("/saldos/{id}").buildAndExpand(saldo.id()).toUri();
         return ResponseEntity.created(uri).body(saldo);
     }
 

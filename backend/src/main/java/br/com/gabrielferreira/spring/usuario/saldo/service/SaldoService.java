@@ -12,8 +12,6 @@ import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizad
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaldoRepositorio;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,13 +52,6 @@ public class SaldoService {
         usuarioService.atualizarSaldoTotal(usuario.getId(),valorTotal);
 
         return SaldoDTOFactory.toSaldoViewDTO(saldo);
-    }
-
-    public Page<SaldoViewDTO> saldosPorUsuario(Long idUsuario, PageRequest pageRequest){
-        UsuarioViewDTO usuario = usuarioService.buscarPorId(idUsuario);
-        Page<Saldo> saldos = saldoRepositorio.buscarPorUsuario(usuario.getId(),pageRequest);
-
-        return SaldoDTOFactory.toPageSaldoViewDTO(saldos);
     }
 
     public BigDecimal saldoTotalPorUsuario(Long idUsuario){
