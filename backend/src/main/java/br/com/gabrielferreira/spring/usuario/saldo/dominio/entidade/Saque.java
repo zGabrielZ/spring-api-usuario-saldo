@@ -3,6 +3,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Saque implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -9124903408974073315L;
 
     @Id
@@ -23,13 +25,13 @@ public class Saque implements Serializable {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "valor",nullable = false)
+    @Column(name = "valor", nullable = false)
     private BigDecimal valor;
 
     @Column(name = "data_saque", nullable = false)
     private LocalDateTime dataSaque;
 
-    @JoinColumn(name = "usuario_id",foreignKey = @ForeignKey(name="usuario_saque_fk"))
+    @JoinColumn(name = "usuario_id", foreignKey = @ForeignKey(name="usuario_saque_fk"))
     @ManyToOne
     private Usuario usuario;
 

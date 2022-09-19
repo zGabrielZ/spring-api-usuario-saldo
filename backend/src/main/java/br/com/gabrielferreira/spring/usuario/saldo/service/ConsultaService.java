@@ -16,7 +16,6 @@ import com.querydsl.core.types.dsl.SimplePath;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,6 @@ public class ConsultaService {
 
     private final QueryDslDAO queryDslDAO;
 
-    // Fazer um endpoint paginada com nome usuario, cpf, dataNascimento, total de saques, total de depositos, total de saldo
     public Page<SaldoViewDTO> saldosPorUsuario(Long idUsuario, PageRequest pageRequest) {
 
         QSaldo qSaldo = QSaldo.saldo;
@@ -102,5 +100,4 @@ public class ConsultaService {
         }
         return orderSpecifiers.toArray(OrderSpecifier[]::new);
     }
-
 }

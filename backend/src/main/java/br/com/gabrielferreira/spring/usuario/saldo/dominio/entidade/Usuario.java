@@ -3,6 +3,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Usuario implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -7061711027863603940L;
 
     @Id
@@ -25,30 +27,30 @@ public class Usuario implements Serializable {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "nome",nullable = false)
+    @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "email",nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "senha",nullable = false)
+    @Column(name = "senha", nullable = false)
     private String senha;
 
-    @Column(name = "cpf",nullable = false)
+    @Column(name = "cpf", nullable = false)
     private String cpf;
 
-    @Column(name = "data_nascimento",nullable = false)
+    @Column(name = "data_nascimento", nullable = false)
     private LocalDate dataNascimento;
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "usuario")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Saldo> saldos = new ArrayList<>();
 
     @Column(name = "saldo_total")
     private BigDecimal saldoTotal;
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "usuario")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Saque> saques = new ArrayList<>();
 
 }
