@@ -4,10 +4,12 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioVi
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import org.springframework.data.domain.Page;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class UsuarioDTOFactory implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -4687700744639015221L;
 
     private UsuarioDTOFactory(){}

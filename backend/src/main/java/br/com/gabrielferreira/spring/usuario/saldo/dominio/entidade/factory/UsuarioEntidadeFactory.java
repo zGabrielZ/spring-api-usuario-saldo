@@ -3,11 +3,13 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioIn
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 public class UsuarioEntidadeFactory implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2762513171034400055L;
 
     private UsuarioEntidadeFactory(){}

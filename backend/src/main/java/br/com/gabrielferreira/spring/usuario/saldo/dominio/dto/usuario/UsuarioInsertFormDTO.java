@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -14,11 +15,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UsuarioInsertFormDTO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -2398120816295097002L;
 
     @ApiModelProperty(value = "Nome do usuário", example = "Gabriel Ferreira")
     @NotBlank(message = "Nome não pode ser vazio.")
-    @Size(min = 5,max = 150,message = "O campo nome deve ter no mínimo 5 até 150 caracteres.")
+    @Size(min = 5, max = 150, message = "O campo nome deve ter no mínimo 5 até 150 caracteres.")
     private String nome;
 
     @ApiModelProperty(value = "E-mail do usuário", example = "ferreiragabriel2612@gmail.com")
