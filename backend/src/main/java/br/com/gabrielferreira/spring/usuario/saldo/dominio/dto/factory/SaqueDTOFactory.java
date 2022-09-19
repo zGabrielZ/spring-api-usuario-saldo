@@ -4,11 +4,13 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDT
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 import org.springframework.data.domain.Page;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 public class SaqueDTOFactory implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -4687700744639015221L;
 
     private SaqueDTOFactory(){}
@@ -18,7 +20,7 @@ public class SaqueDTOFactory implements Serializable {
     }
 
     public static SaqueViewDTO toSaqueViewDTO(Saque saque){
-        return new SaqueViewDTO(saque.getDataSaque(), saque.getValor());
+        return new SaqueViewDTO(saque.getId(),saque.getDataSaque(),saque.getValor());
     }
 
     public static Page<SaqueViewDTO> toPageSaldoViewDTO(Page<Saque> saques){

@@ -3,6 +3,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.constraints.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class SaldoFormDTO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -2398120816295097002L;
 
     @ApiModelProperty(value = "Valor do déposito", example = "500.00")

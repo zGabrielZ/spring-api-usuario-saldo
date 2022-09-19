@@ -3,11 +3,13 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalV
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 public class SaldoDTOFactory implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -4687700744639015221L;
 
     private SaldoDTOFactory(){}

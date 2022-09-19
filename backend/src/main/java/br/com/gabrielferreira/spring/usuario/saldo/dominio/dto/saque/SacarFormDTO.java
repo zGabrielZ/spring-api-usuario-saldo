@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class SacarFormDTO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -7136821550686871414L;
 
     @ApiModelProperty(value = "Valor do saque", example = "400.00")

@@ -2,11 +2,14 @@ package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class SaldoEntidadeFactory implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2762513171034400055L;
 
     private SaldoEntidadeFactory(){}

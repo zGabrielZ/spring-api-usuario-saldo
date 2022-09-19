@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.constraints.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UsuarioUpdateFormDTO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -2398120816295097002L;
 
     @ApiModelProperty(value = "Nome do usuário", example = "José Fernandes")

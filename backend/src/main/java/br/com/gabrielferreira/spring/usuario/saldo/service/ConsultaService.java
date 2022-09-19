@@ -56,6 +56,7 @@ public class ConsultaService {
 
         List<SaqueViewDTO> result = queryDslDAO.query(q -> q.select(Projections.constructor(
                             SaqueViewDTO.class,
+                            qSaque.id,
                             qSaque.dataSaque,
                             qSaque.valor
                 )))
