@@ -30,13 +30,13 @@ public class Usuario implements Serializable {
     @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "senha", nullable = false)
     private String senha;
 
-    @Column(name = "cpf", nullable = false)
+    @Column(name = "cpf", nullable = false, unique = true)
     private String cpf;
 
     @Column(name = "data_nascimento", nullable = false)
