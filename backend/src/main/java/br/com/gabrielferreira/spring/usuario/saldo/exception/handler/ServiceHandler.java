@@ -6,6 +6,8 @@ import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizad
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,6 +18,8 @@ import java.util.List;
 
 @ControllerAdvice
 public class ServiceHandler {
+
+    private static final String ERRO = "Verifique o erro abaixo";
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErroPadrao> erroValidacao(MethodArgumentNotValidException e){
@@ -28,21 +32,34 @@ public class ServiceHandler {
         }
 
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Verifque os erros","Erros encontrados após realizar a requisição",erroFormularios);
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,"Erros encontrados após realizar a requisição",erroFormularios);
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 
     @ExceptionHandler(ExcecaoPersonalizada.class)
     public ResponseEntity<ErroPadrao> excessaoPersonalizada(ExcecaoPersonalizada e){
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Ocorreu um erro",e.getMessage(),new ArrayList<>());
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,e.getMessage(),new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 
     @ExceptionHandler(RecursoNaoEncontrado.class)
     public ResponseEntity<ErroPadrao> entidadeNaoEncontrada(RecursoNaoEncontrado e){
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Entidade não encontrada",e.getMessage(),new ArrayList<>());
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,e.getMessage(),new ArrayList<>());
+        return ResponseEntity.status(httpStatus).body(erroPadrao);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErroPadrao> usuarioNaoEncontradoNoSistema(AuthenticationException e){
+
+        String mensagemErro = null;
+        if(e instanceof BadCredentialsException){
+            mensagemErro = "Usuário e/ou senha inválidos!";
+        }
+
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,mensagemErro,new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 }

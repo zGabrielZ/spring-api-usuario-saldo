@@ -1,6 +1,8 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade;
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -8,6 +10,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -17,7 +20,7 @@ import java.util.List;
 @Entity
 @Table(name = "USUARIO")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Usuario implements Serializable {
+public class Usuario implements Serializable, UserDetails {
 
     @Serial
     private static final long serialVersionUID = -7061711027863603940L;
@@ -53,4 +56,45 @@ public class Usuario implements Serializable {
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Saque> saques = new ArrayList<>();
 
+    @Builder.Default
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "USUARIOS_PERFIL",
+                joinColumns = @JoinColumn(name = "usuario_id", referencedColumnName = "id", table = "USUARIO"),
+                inverseJoinColumns = @JoinColumn(name = "perfil_id", referencedColumnName = "id", table = "PERFIL"))
+    private List<Perfil> perfis = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return perfis;
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
