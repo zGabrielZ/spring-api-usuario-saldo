@@ -1,6 +1,7 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service.security;
 
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,4 +34,19 @@ public class TokenService {
                 .signWith(SignatureAlgorithm.HS256 , senhaSecreta) // Token criptografado
                 .compact();
     }
+
+    public boolean isTokenValido(String token){
+        try {
+            Jwts.parser().setSigningKey(senhaSecreta).parseClaimsJws(token); // Verificar se está ok o token
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    public Long recuperarIdUsuarioLogado(String token){
+        Claims claims = Jwts.parser().setSigningKey(senhaSecreta).parseClaimsJws(token).getBody();
+        return Long.parseLong(claims.getSubject());
+    }
+
 }

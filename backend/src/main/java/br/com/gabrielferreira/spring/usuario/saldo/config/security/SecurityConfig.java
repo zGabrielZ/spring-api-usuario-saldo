@@ -1,4 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.config.security;
+import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
+import br.com.gabrielferreira.spring.usuario.saldo.service.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -10,12 +12,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
+
+    private final TokenService tokenService;
+
+    private final UsuarioRepositorio usuarioRepositorio;
 
     // Config a partir da autenticação
     @Bean
@@ -33,7 +40,8 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
                 .and().csrf().disable() // Disable csrf, via token fica livre disso
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Não é pra criar sessão
-                .and().build();
+                .and().addFilterBefore(new AutenticacaoTokenFilter(tokenService, usuarioRepositorio), UsernamePasswordAuthenticationFilter.class) // Adicionando o filtro antes de qualquer coisa
+                .build();
     }
 
     // Config de recurso estaticos
