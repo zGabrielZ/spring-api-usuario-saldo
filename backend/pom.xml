@@ -158,6 +158,7 @@
 						<exclude>**/*QUsuario.class</exclude>
 						<exclude>**/*QSaque.class</exclude>
 						<exclude>**/*QSaldo.class</exclude>
+						<exclude>**/*QPerfil.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>

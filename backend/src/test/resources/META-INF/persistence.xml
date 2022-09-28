@@ -7,6 +7,7 @@
         <class>br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario</class>
         <class>br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque</class>
         <class>br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo</class>
+        <class>br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:usuarios_saldos_test" />

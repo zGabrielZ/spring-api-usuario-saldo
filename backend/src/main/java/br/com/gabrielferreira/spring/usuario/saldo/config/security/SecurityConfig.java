@@ -24,6 +24,11 @@ public class SecurityConfig {
 
     private final UsuarioRepositorio usuarioRepositorio;
 
+    private static final String[] PUBLICO_ENDPOINT_POST = {
+            "/autenticacao",
+            "/usuarios"
+    };
+
     // Config a partir da autenticação
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -34,9 +39,7 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/usuarios").permitAll()
-                .antMatchers(HttpMethod.GET,"/usuarios/*").permitAll()
-                .antMatchers(HttpMethod.POST,"/autenticacao").permitAll()
+                .antMatchers(HttpMethod.POST,PUBLICO_ENDPOINT_POST).permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable() // Disable csrf, via token fica livre disso
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Não é pra criar sessão
