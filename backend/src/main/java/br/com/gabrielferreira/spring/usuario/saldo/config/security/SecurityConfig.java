@@ -1,4 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.config.security;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.handler.ServiceHandlerAutenticacao;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.handler.ServiceHandlerPermissao;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 import br.com.gabrielferreira.spring.usuario.saldo.service.security.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +46,9 @@ public class SecurityConfig {
                 .and().csrf().disable() // Disable csrf, via token fica livre disso
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Não é pra criar sessão
                 .and().addFilterBefore(new AutenticacaoTokenFilter(tokenService, usuarioRepositorio), UsernamePasswordAuthenticationFilter.class) // Adicionando o filtro antes de qualquer coisa
-                .build();
+                .exceptionHandling().authenticationEntryPoint(new ServiceHandlerAutenticacao()) // Mensagem personalizada quando não for autenticado
+                .and().exceptionHandling().accessDeniedHandler(new ServiceHandlerPermissao()) // Mensagem personalizada quando não tiver permissão
+                .and().build();
     }
 
     // Config de recurso estaticos
