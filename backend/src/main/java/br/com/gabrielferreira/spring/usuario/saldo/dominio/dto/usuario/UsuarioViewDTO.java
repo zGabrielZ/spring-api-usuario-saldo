@@ -1,7 +1,9 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilViewDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
+import java.util.List;
 
 public record UsuarioViewDTO (
 
@@ -19,7 +21,10 @@ public record UsuarioViewDTO (
 
         @ApiModelProperty(value = "Data de nascimento do usuário", example = "26/12/1997")
         @JsonFormat(pattern = "dd/MM/yyyy")
-        LocalDate dataNascimento
+        LocalDate dataNascimento,
+
+        @ApiModelProperty(value = "Lista de perfis")
+        List<PerfilViewDTO> perfis
 ) {
 
 }

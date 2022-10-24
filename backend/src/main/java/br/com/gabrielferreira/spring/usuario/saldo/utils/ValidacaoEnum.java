@@ -10,7 +10,10 @@ public enum ValidacaoEnum {
     SALDO_TOTAL_USUARIO("Não é possível sacar pois o saldo total é "),
     DEPOSITO_MENOR_IGUAL_ZERO("O déposito não pode ser menor ou igual ao 0."),
     FINAL_DE_SEMANA("O déposito não pode ser realizado no sábado ou no domingo"),
-    FERIADO_NACIONAL("Não vai ser possível dépositar pois é feriado nacional");
+    FERIADO_NACIONAL("Não vai ser possível dépositar pois é feriado nacional"),
+    PERFIL_USUARIO("É necessário informar um perfil para este usuário"),
+    PERFIL_USUARIO_ADMIN("Para inserir um perfil para este usuário é necessário logar na conta da administração");
+
 
     private final String mensagem;
     ValidacaoEnum(String mensagem){

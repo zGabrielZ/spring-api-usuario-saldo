@@ -1,4 +1,5 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -8,6 +9,8 @@ import javax.validation.constraints.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -42,5 +45,8 @@ public class UsuarioInsertFormDTO implements Serializable {
     @NotNull(message = "Data nascimento não pode ser vazio.")
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
+
+    @ApiModelProperty(value = "Lista de perfis")
+    private List<PerfilDTO> perfis = new ArrayList<>();
 
 }

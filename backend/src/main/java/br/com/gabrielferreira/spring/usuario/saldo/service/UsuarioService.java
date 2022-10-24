@@ -1,11 +1,15 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.SaldoDTOFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.UsuarioDTOFactory;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.RoleEnum;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.PerfilEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.UsuarioEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
@@ -18,10 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
+
+    private final PerfilService perfilService;
 
     private final UsuarioRepositorio usuarioRepositorio;
 
@@ -34,9 +41,11 @@ public class UsuarioService {
         verificarEmail(usuarioInsertFormDTO.getEmail());
         verificarCpf(usuarioInsertFormDTO.getCpf());
 
-        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO);
+        List<Perfil> perfis = verificarUsuarioLogado(usuarioInsertFormDTO.getPerfis());
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfis);
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuario = usuarioRepositorio.save(usuario);
+
         return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
     }
 
@@ -91,6 +100,22 @@ public class UsuarioService {
         usuarioRepositorio.findByCpf(cpf).ifPresent(usuario -> {
             throw new ExcecaoPersonalizada(CPF_CADASTRADO.getMensagem());
         });
+    }
+
+    private List<Perfil> verificarUsuarioLogado(List<PerfilDTO> perfis){
+
+        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
+
+        if(usuarioLogado != null && isUsuarioLogadoPerfilAdmin && perfis.isEmpty()){
+            throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
+        } else if(usuarioLogado != null && !isUsuarioLogadoPerfilAdmin){
+            throw new ExcecaoPersonalizada(PERFIL_USUARIO_ADMIN.getMensagem());
+        } else if(usuarioLogado != null){
+            return PerfilEntidadeFactory.toPerfis(perfis);
+        }
+
+        return List.of(Perfil.builder().id(RoleEnum.ROLE_CLIENTE.getId()).build());
     }
 
     private String limparMascaraCpf(String cpf){
