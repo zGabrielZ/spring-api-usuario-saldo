@@ -70,8 +70,21 @@ public class UsuarioService {
 
     @Transactional
     public void deletarPorId(Long id){
-        Usuario usuario = buscarUsuario(id);
-        usuarioRepositorio.deleteById(usuario.getId());
+
+        Usuario usuario = perfilService.recuperarUsuarioLogado();
+        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
+
+        if(!isUsuarioLogadoPerfilAdmin){
+            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DELETAR_ADMIN.getMensagem());
+        }
+
+        Usuario usuarioEncontrado = buscarUsuario(id);
+        if(usuario.getId().equals(usuarioEncontrado.getId())){
+            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DELETAR_ADMIN_PROPRIO.getMensagem());
+        }
+
+
+        usuarioRepositorio.deleteById(usuarioEncontrado.getId());
     }
 
     @Transactional
