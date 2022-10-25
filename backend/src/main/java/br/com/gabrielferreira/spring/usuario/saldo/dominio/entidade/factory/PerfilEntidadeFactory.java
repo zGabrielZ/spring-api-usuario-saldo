@@ -1,6 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory;
 
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 
 import java.util.ArrayList;
@@ -10,19 +10,19 @@ public class PerfilEntidadeFactory {
 
     private PerfilEntidadeFactory(){}
 
-    public static List<Perfil> toPerfis(List<PerfilDTO> perfis){
+    public static List<Perfil> toPerfis(List<PerfilInsertFormDTO> perfis){
         List<Perfil> perfils = new ArrayList<>();
-        perfis.forEach(perfilDto ->{
-            Perfil perfil = toPerfil(perfilDto);
+        perfis.forEach(perfilInsertFormDto ->{
+            Perfil perfil = toPerfil(perfilInsertFormDto);
             perfils.add(perfil);
         });
         return perfils;
     }
 
-    public static Perfil toPerfil(PerfilDTO perfilDTO){
-        if(perfilDTO != null){
+    public static Perfil toPerfil(PerfilInsertFormDTO perfilInsertFormDTO){
+        if(perfilInsertFormDTO != null){
             return Perfil.builder()
-                    .id(perfilDTO.getId())
+                    .id(perfilInsertFormDTO.getId())
                     .build();
         }
         return null;

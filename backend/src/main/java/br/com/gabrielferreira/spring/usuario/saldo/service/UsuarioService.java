@@ -1,15 +1,13 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.SaldoDTOFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.UsuarioDTOFactory;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.RoleEnum;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.PerfilEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.UsuarioEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
@@ -22,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,8 +41,12 @@ public class UsuarioService {
         verificarEmail(usuarioInsertFormDTO.getEmail());
         verificarCpf(usuarioInsertFormDTO.getCpf());
 
-        List<Perfil> perfis = verificarUsuarioLogado(usuarioInsertFormDTO.getPerfis());
-        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfis);
+        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
+        verificarPerfil(usuarioInsertFormDTO.getPerfis(), usuarioLogado, isUsuarioLogadoPerfilAdmin);
+
+        List<PerfilInsertFormDTO> perfisDtos = validarPerfis(usuarioInsertFormDTO.getPerfis(), isUsuarioLogadoPerfilAdmin);
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisDtos);
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuario = usuarioRepositorio.save(usuario);
 
@@ -52,17 +55,17 @@ public class UsuarioService {
 
     public UsuarioViewDTO buscarPorId(Long id){
 
-        Usuario usuario = buscarUsuario(id);
+        Usuario usuarioEncontrado = buscarUsuario(id);
 
         Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
         boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
 
-        if(!usuarioLogado.getId().equals(usuario.getId()) && !isUsuarioLogadoPerfilAdmin){
+        if(!usuarioLogado.getId().equals(usuarioEncontrado.getId()) && !isUsuarioLogadoPerfilAdmin){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
         }
 
 
-        return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
+        return UsuarioDTOFactory.toUsuarioViewDTO(usuarioEncontrado);
     }
 
     public SaldoTotalViewDTO buscarSaldoTotal(Long id){
@@ -72,15 +75,14 @@ public class UsuarioService {
     @Transactional
     public void deletarPorId(Long id){
 
-        Usuario usuario = perfilService.recuperarUsuarioLogado();
+        Usuario usuarioEncontrado = buscarUsuario(id);
+
+        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
         boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
 
-        if(!isUsuarioLogadoPerfilAdmin){
-            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DELETAR_ADMIN.getMensagem());
-        }
-
-        Usuario usuarioEncontrado = buscarUsuario(id);
-        if(usuario.getId().equals(usuarioEncontrado.getId())){
+        if(!usuarioLogado.getId().equals(usuarioEncontrado.getId()) && !isUsuarioLogadoPerfilAdmin){
+            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN_DELETAR.getMensagem());
+        } else if(usuarioLogado.getId().equals(usuarioEncontrado.getId())){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO_DELETAR_ADMIN_PROPRIO.getMensagem());
         }
 
@@ -92,12 +94,11 @@ public class UsuarioService {
     public UsuarioViewDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
         Usuario usuarioEncontrado = buscarUsuario(id);
 
-        if(!usuarioEncontrado.getEmail().equals(usuarioUpdateFormDTO.getEmail())){
-            verificarEmail(usuarioUpdateFormDTO.getEmail());
-        }
+        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
+        verificarUsuarioLogado(usuarioLogado, usuarioEncontrado, isUsuarioLogadoPerfilAdmin, usuarioUpdateFormDTO.getPerfis());
 
-
-        Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado);
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado, usuarioUpdateFormDTO.getPerfis());
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuarioRepositorio.save(usuario);
         return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
@@ -127,31 +128,44 @@ public class UsuarioService {
         });
     }
 
-    private List<Perfil> verificarUsuarioLogado(List<PerfilDTO> perfis){
-
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
-
+    private void verificarPerfil(List<PerfilInsertFormDTO> perfis, Usuario usuarioLogado, boolean isUsuarioLogadoPerfilAdmin){
         if(usuarioLogado != null && isUsuarioLogadoPerfilAdmin && perfis.isEmpty()){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
         } else if(usuarioLogado != null && !isUsuarioLogadoPerfilAdmin){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO_ADMIN.getMensagem());
-        } else if(usuarioLogado != null){
-            verificarPerfisDuplicados(perfis);
-            return PerfilEntidadeFactory.toPerfis(perfis);
         }
 
-        return List.of(Perfil.builder().id(RoleEnum.ROLE_CLIENTE.getId()).build());
+        verificarPerfisDuplicados(perfis);
     }
 
-    private void verificarPerfisDuplicados(List<PerfilDTO> perfis){
-        perfis.forEach(perfilDTO -> {
-            int duplicados = Collections.frequency(perfis, perfilDTO);
+    private void verificarPerfisDuplicados(List<PerfilInsertFormDTO> perfis){
+        perfis.forEach(perfilInsertFormDTO -> {
+            int duplicados = Collections.frequency(perfis, perfilInsertFormDTO);
 
             if (duplicados > 1) {
                 throw new ExcecaoPersonalizada(PERFIL_USUARIO_ADMIN_REPETIDO.getMensagem());
             }
         });
+    }
+
+    private List<PerfilInsertFormDTO> validarPerfis(List<PerfilInsertFormDTO> perfis, boolean isUsuarioLogadoPerfilAdmin){
+        List<PerfilInsertFormDTO> perfilInsertFormDTOS = new ArrayList<>();
+        if(isUsuarioLogadoPerfilAdmin){
+            perfilInsertFormDTOS = perfis;
+        } else {
+            perfilInsertFormDTOS.add(PerfilInsertFormDTO.builder().id(RoleEnum.ROLE_CLIENTE.getId()).build());
+        }
+        return perfilInsertFormDTOS;
+    }
+
+    private void verificarUsuarioLogado(Usuario usuarioLogado, Usuario usuarioEncontrado, boolean isUsuarioLogadoPerfilAdmin, List<PerfilInsertFormDTO> perfis){
+        if(!isUsuarioLogadoPerfilAdmin && !usuarioLogado.equals(usuarioEncontrado)){
+            throw new ExcecaoPersonalizada(USUARIO_ATUALIZAR_PERMISSAO.getMensagem());
+        } else if (usuarioLogado.equals(usuarioEncontrado) && !isUsuarioLogadoPerfilAdmin && !perfis.isEmpty()){
+            throw new ExcecaoPersonalizada(USUARIO_INCLUIR_ALTERAR.getMensagem());
+        } else if(isUsuarioLogadoPerfilAdmin && perfis.isEmpty()){
+            throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
+        }
     }
 
     private String limparMascaraCpf(String cpf){

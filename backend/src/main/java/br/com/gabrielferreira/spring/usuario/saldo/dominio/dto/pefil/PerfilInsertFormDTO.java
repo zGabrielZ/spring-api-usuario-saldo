@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PerfilDTO implements Serializable {
+public class PerfilInsertFormDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -1708090859850629848L;

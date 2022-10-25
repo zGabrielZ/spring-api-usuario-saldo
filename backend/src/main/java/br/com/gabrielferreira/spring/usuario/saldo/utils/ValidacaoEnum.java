@@ -15,8 +15,10 @@ public enum ValidacaoEnum {
     PERFIL_USUARIO_ADMIN("Para inserir um perfil para este usuário é necessário logar na conta da administração."),
     PERFIL_USUARIO_ADMIN_REPETIDO("Não é possível cadastrar perfis duplicados."),
     PERFIL_USUARIO_DADOS_ADMIN("Para ver os dados deste usuário é necessário logar na conta da administração."),
-    PERFIL_USUARIO_DELETAR_ADMIN("Para deletar este usuário é necessário logar na conta da administração."),
-    PERFIL_USUARIO_DELETAR_ADMIN_PROPRIO("Não é possível deletar o próprio perfil.");
+    PERFIL_USUARIO_DELETAR_ADMIN_PROPRIO("Não é possível deletar o próprio perfil."),
+    PERFIL_USUARIO_DADOS_ADMIN_DELETAR("Para deletar este usuário é necessário logar na conta da administração."),
+    USUARIO_ATUALIZAR_PERMISSAO("Você não tem permissão para atualizar este usuário."),
+    USUARIO_INCLUIR_ALTERAR("Você não tem permissão de incluir ou alterar perfil do usuário.");
 
 
     private final String mensagem;

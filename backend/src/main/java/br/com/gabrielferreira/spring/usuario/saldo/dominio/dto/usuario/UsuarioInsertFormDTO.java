@@ -1,5 +1,5 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilInsertFormDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -47,6 +47,6 @@ public class UsuarioInsertFormDTO implements Serializable {
     private LocalDate dataNascimento;
 
     @ApiModelProperty(value = "Lista de perfis")
-    private List<PerfilDTO> perfis = new ArrayList<>();
+    private List<PerfilInsertFormDTO> perfis = new ArrayList<>();
 
 }
