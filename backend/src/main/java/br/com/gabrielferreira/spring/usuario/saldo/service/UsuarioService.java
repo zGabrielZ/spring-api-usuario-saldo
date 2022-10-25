@@ -50,7 +50,18 @@ public class UsuarioService {
     }
 
     public UsuarioViewDTO buscarPorId(Long id){
-        return UsuarioDTOFactory.toUsuarioViewDTO(buscarUsuario(id));
+
+        Usuario usuario = buscarUsuario(id);
+
+        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
+
+        if(!usuarioLogado.getId().equals(usuario.getId()) && !isUsuarioLogadoPerfilAdmin){
+            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
+        }
+
+
+        return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
     }
 
     public SaldoTotalViewDTO buscarSaldoTotal(Long id){

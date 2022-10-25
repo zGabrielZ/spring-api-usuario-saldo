@@ -12,7 +12,8 @@ public enum ValidacaoEnum {
     FINAL_DE_SEMANA("O déposito não pode ser realizado no sábado ou no domingo"),
     FERIADO_NACIONAL("Não vai ser possível dépositar pois é feriado nacional"),
     PERFIL_USUARIO("É necessário informar um perfil para este usuário"),
-    PERFIL_USUARIO_ADMIN("Para inserir um perfil para este usuário é necessário logar na conta da administração");
+    PERFIL_USUARIO_ADMIN("Para inserir um perfil para este usuário é necessário logar na conta da administração"),
+    PERFIL_USUARIO_DADOS_ADMIN("Para ver os dados deste usuário é necessário logar na conta da administração");
 
 
     private final String mensagem;
