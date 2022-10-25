@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -136,10 +137,21 @@ public class UsuarioService {
         } else if(usuarioLogado != null && !isUsuarioLogadoPerfilAdmin){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO_ADMIN.getMensagem());
         } else if(usuarioLogado != null){
+            verificarPerfisDuplicados(perfis);
             return PerfilEntidadeFactory.toPerfis(perfis);
         }
 
         return List.of(Perfil.builder().id(RoleEnum.ROLE_CLIENTE.getId()).build());
+    }
+
+    private void verificarPerfisDuplicados(List<PerfilDTO> perfis){
+        perfis.forEach(perfilDTO -> {
+            int duplicados = Collections.frequency(perfis, perfilDTO);
+
+            if (duplicados > 1) {
+                throw new ExcecaoPersonalizada(PERFIL_USUARIO_ADMIN_REPETIDO.getMensagem());
+            }
+        });
     }
 
     private String limparMascaraCpf(String cpf){

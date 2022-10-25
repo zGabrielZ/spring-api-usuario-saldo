@@ -62,4 +62,17 @@ public class ServiceHandler {
         ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,mensagemErro,new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErroPadrao> excessaoPersonalizada(Exception e){
+
+        String mensagemErro = "Erro inesperado";
+        if(e.getMessage().contains("ConstraintViolationException")){
+            mensagemErro = "Erro de integridade referêncial";
+        }
+
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,mensagemErro,new ArrayList<>());
+        return ResponseEntity.status(httpStatus).body(erroPadrao);
+    }
 }
