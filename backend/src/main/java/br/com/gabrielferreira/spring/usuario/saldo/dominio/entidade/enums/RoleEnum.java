@@ -7,12 +7,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum RoleEnum {
 
-    ROLE_ADMIN(1L, "Admin"),
-    ROLE_FUNCIONARIO(2L, "Funcionário"),
-    ROLE_CLIENTE(3L, "Cliente");
+    ROLE_ADMIN(1L, "Admin", "ADMIN"),
+    ROLE_FUNCIONARIO(2L, "Funcionário", "FUNCIONARIO"),
+    ROLE_CLIENTE(3L, "Cliente", "CLIENTE");
 
     private final Long id;
     private final String descricao;
+
+    private final String role;
 
     public static String getDescricao(Long id){
         for (RoleEnum role : RoleEnum.values()) {

@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import static br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.RoleEnum.*;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -42,6 +43,7 @@ public class SecurityConfig {
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeRequests()
                 .antMatchers(HttpMethod.POST,PUBLICO_ENDPOINT_POST).permitAll()
+                .antMatchers(HttpMethod.GET, "/usuarios").hasAnyRole(ROLE_ADMIN.getRole(), ROLE_FUNCIONARIO.getRole())
                 .anyRequest().authenticated()
                 .and().csrf().disable() // Disable csrf, via token fica livre disso
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Não é pra criar sessão

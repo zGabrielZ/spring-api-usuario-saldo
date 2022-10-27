@@ -1,11 +1,13 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 import br.com.gabrielferreira.spring.usuario.saldo.dao.QueryDslDAO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.UsuarioDTOFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.QSaldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.QSaque;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.QUsuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -24,6 +26,8 @@ import java.util.List;
 public class ConsultaService {
 
     private final QueryDslDAO queryDslDAO;
+
+    private final UsuarioRepositorio usuarioRepositorio;
 
     public Page<SaldoViewDTO> saldosPorUsuario(Long idUsuario, PageRequest pageRequest) {
 
@@ -72,23 +76,8 @@ public class ConsultaService {
     }
 
     public Page<UsuarioViewDTO> listagem(PageRequest pageRequest){
-        QUsuario qUsuario = QUsuario.usuario;
-
-        List<UsuarioViewDTO> result = queryDslDAO.query(q -> q.select(Projections.constructor(
-                            UsuarioViewDTO.class,
-                            qUsuario.id,
-                            qUsuario.nome,
-                            qUsuario.email,
-                            qUsuario.cpf,
-                            qUsuario.dataNascimento
-                    )))
-                    .from(qUsuario)
-                    .offset(pageRequest.getOffset())
-                    .limit(pageRequest.getPageSize())
-                    .orderBy(getSort(pageRequest.getSort(), QUsuario.usuario, qUsuario))
-                    .fetch();
-
-        return new PageImpl<>(result, pageRequest, result.size());
+        Page<Usuario> usuarios = usuarioRepositorio.buscarUsuarios(pageRequest);
+        return UsuarioDTOFactory.toPageUsuarioViewDTO(usuarios);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
