@@ -56,20 +56,17 @@ public class UsuarioService {
     public UsuarioViewDTO buscarPorId(Long id){
 
         Usuario usuarioEncontrado = buscarUsuario(id);
-
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
-
-        if(!usuarioLogado.getId().equals(usuarioEncontrado.getId()) && !isUsuarioLogadoPerfilAdmin){
-            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
-        }
-
+        verificarUsuarioLogado(usuarioEncontrado);
 
         return UsuarioDTOFactory.toUsuarioViewDTO(usuarioEncontrado);
     }
 
     public SaldoTotalViewDTO buscarSaldoTotal(Long id){
-        return SaldoDTOFactory.toSaldoTotalViewDTO(buscarUsuario(id).getSaldoTotal());
+
+        Usuario usuarioEncontrado = buscarUsuario(id);
+        verificarUsuarioLogado(usuarioEncontrado);
+
+        return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
     }
 
     @Transactional
@@ -164,6 +161,15 @@ public class UsuarioService {
             throw new ExcecaoPersonalizada(USUARIO_INCLUIR_ALTERAR.getMensagem());
         } else if(isUsuarioLogadoPerfilAdmin && perfis.isEmpty()){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
+        }
+    }
+
+    private void verificarUsuarioLogado(Usuario usuarioEncontrado){
+        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
+
+        if(!usuarioLogado.getId().equals(usuarioEncontrado.getId()) && !isUsuarioLogadoPerfilAdmin){
+            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
         }
     }
 
