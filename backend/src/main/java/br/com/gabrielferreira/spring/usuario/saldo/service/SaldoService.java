@@ -6,6 +6,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioVi
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.SaldoEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.client.FeriadoNacionalClient;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
@@ -16,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.Clock;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.List;
 
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
@@ -29,6 +27,8 @@ import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 public class SaldoService {
 
     private final Clock clock;
+
+    private final PerfilService perfilService;
 
     private final FeriadoNacionalClient nacionalClient;
 
@@ -42,8 +42,11 @@ public class SaldoService {
     public SaldoViewDTO depositar(SaldoFormDTO saldoFormDTO){
         UsuarioViewDTO usuario = usuarioService.buscarPorId(saldoFormDTO.getIdUsuario());
 
+        verificarUsuarioLogado(usuario.id());
+
         verificarValorDeposito(saldoFormDTO.getDeposito());
-        Saldo saldo = SaldoEntidadeFactory.toSaldoInsertEntidade(saldoFormDTO, LocalDateTime.now(clock));
+        LocalDateTime dataAtual = LocalDateTime.now(clock);
+        Saldo saldo = SaldoEntidadeFactory.toSaldoInsertEntidade(saldoFormDTO, dataAtual);
         verificarDataAtualDeposito(saldo.getDataDeposito());
         verificarFeriadoNacional(saldo.getDataDeposito());
         saldo = saldoRepositorio.save(saldo);
@@ -86,6 +89,13 @@ public class SaldoService {
                 throw new ExcecaoPersonalizada(FERIADO_NACIONAL.getMensagem());
             }
         });
+    }
+
+    private void verificarUsuarioLogado(Long idUsuarioEncontrado){
+        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+        if(usuarioLogado.getId().equals(idUsuarioEncontrado)){
+            throw new ExcecaoPersonalizada(USUARIO_INCLUIR_DEPOSITO_ADMIN.getMensagem());
+        }
     }
 
 }
