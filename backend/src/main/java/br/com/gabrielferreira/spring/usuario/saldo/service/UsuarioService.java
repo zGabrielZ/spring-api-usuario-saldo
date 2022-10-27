@@ -99,7 +99,6 @@ public class UsuarioService {
         verificarUsuarioLogado(usuarioLogado, usuarioEncontrado, isUsuarioLogadoPerfilAdmin, usuarioUpdateFormDTO.getPerfis());
 
         Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado, usuarioUpdateFormDTO.getPerfis());
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuarioRepositorio.save(usuario);
         return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
     }
