@@ -21,6 +21,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 @RequiredArgsConstructor
 @Service
@@ -100,7 +101,7 @@ public class ConsultaService {
 
     private void verificarUsuarioLogado(Usuario usuarioLogado, boolean isUsuarioAdmin, Long idUsuario){
         if(usuarioLogado != null && !isUsuarioAdmin && !usuarioLogado.getId().equals(idUsuario)){
-            throw new ExcecaoPersonalizada("Para ver os saques é preciso logar na conta da adminstração.");
+            throw new ExcecaoPersonalizada(LISTA_SAQUES.getMensagem());
         }
     }
 }
