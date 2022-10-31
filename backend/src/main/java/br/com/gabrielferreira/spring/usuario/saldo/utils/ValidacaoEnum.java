@@ -19,7 +19,9 @@ public enum ValidacaoEnum {
     PERFIL_USUARIO_DADOS_ADMIN_DELETAR("Para deletar este usuário é necessário logar na conta da administração."),
     USUARIO_ATUALIZAR_PERMISSAO("Você não tem permissão para atualizar este usuário."),
     USUARIO_INCLUIR_ALTERAR("Você não tem permissão de incluir ou alterar perfil do usuário."),
-    USUARIO_INCLUIR_DEPOSITO_ADMIN("Vocẽ não pode depositar saldo na própria conta.");
+    USUARIO_INCLUIR_DEPOSITO_ADMIN("Vocẽ não pode depositar saldo na própria conta."),
+    SAQUE_MENOR_IGUAL_ZERO("Não é possível sacar com valor negativo ou valor zerado."),
+    SAQUE_CONTA_PROPRIA("Somente é póssivel sacar o valor com a própria conta.");
 
 
     private final String mensagem;
