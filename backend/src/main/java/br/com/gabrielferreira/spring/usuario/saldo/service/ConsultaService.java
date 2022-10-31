@@ -7,6 +7,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioVi
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.QSaldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.QSaque;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
@@ -24,6 +25,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class ConsultaService {
+
+    private final PerfilService perfilService;
 
     private final QueryDslDAO queryDslDAO;
 
@@ -53,6 +56,10 @@ public class ConsultaService {
     }
 
     public Page<SaqueViewDTO> saquesPorUsuario(Long idUsuario, PageRequest pageRequest){
+
+        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
+        verificarUsuarioLogado(usuarioLogado, isUsuarioLogadoPerfilAdmin, idUsuario);
 
         QSaque qSaque = QSaque.saque;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -89,5 +96,11 @@ public class ConsultaService {
             orderSpecifiers.add(new OrderSpecifier(orderQuery, path));
         }
         return orderSpecifiers.toArray(OrderSpecifier[]::new);
+    }
+
+    private void verificarUsuarioLogado(Usuario usuarioLogado, boolean isUsuarioAdmin, Long idUsuario){
+        if(usuarioLogado != null && !isUsuarioAdmin && !usuarioLogado.getId().equals(idUsuario)){
+            throw new ExcecaoPersonalizada("Para ver os saques é preciso logar na conta da adminstração.");
+        }
     }
 }
