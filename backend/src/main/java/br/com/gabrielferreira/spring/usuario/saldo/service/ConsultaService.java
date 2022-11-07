@@ -35,6 +35,12 @@ public class ConsultaService {
 
     public Page<SaldoViewDTO> saldosPorUsuario(Long idUsuario, PageRequest pageRequest) {
 
+        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+        boolean isUsuarioLogadoPerfilCliente = perfilService.isContemPerfilClienteUsuarioLogado();
+        if(isUsuarioLogadoPerfilCliente && !usuarioLogado.getId().equals(idUsuario)){
+            throw new ExcecaoPersonalizada(LISTA_SALDOS.getMensagem());
+        }
+
         QSaldo qSaldo = QSaldo.saldo;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(qSaldo.usuario.id.eq(idUsuario));

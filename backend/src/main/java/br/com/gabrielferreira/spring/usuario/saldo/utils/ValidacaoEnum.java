@@ -22,7 +22,8 @@ public enum ValidacaoEnum {
     SAQUE_MENOR_IGUAL_ZERO("Não é possível sacar com valor negativo ou valor zerado."),
     SAQUE_CONTA_PROPRIA("Somente é póssivel sacar o valor com a própria conta."),
     LISTA_SAQUES("Para ver os saques é preciso logar na conta da adminstração."),
-    ERRO_MASCARA("Erro na máscara.");
+    ERRO_MASCARA("Erro na máscara."),
+    LISTA_SALDOS("Para ver os saldos é preciso logar na conta da adminstração.");
 
 
     private final String mensagem;

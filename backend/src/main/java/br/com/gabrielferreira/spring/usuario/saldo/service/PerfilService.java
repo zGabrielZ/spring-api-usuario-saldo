@@ -26,4 +26,12 @@ public class PerfilService {
         }
         return false;
     }
+
+    public boolean isContemPerfilClienteUsuarioLogado(){
+        Usuario usuario = recuperarUsuarioLogado();
+        if(usuario != null){
+            return usuario.getPerfis().stream().anyMatch(f -> f.getId().equals(RoleEnum.ROLE_CLIENTE.getId()));
+        }
+        return false;
+    }
 }
