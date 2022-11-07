@@ -83,7 +83,7 @@ public class SaldoService {
 
     private void verificarFeriadoNacional(LocalDateTime dataDeposito){
         LocalDate dataAtualDeposito = dataDeposito.toLocalDate();
-        List<FeriadoNacionalDTO> feriadosNacionais = nacionalClient.buscarFeriadosNacionais();
+        List<FeriadoNacionalDTO> feriadosNacionais = nacionalClient.buscarFeriadosNacionais(dataAtualDeposito.getYear());
         feriadosNacionais.forEach(feriadoNacionalDTO -> {
             if(feriadoNacionalDTO.getDate().equals(dataAtualDeposito)){
                 throw new ExcecaoPersonalizada(FERIADO_NACIONAL.getMensagem());
