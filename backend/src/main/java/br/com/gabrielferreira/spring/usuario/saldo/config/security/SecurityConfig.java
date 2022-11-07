@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/usuarios").hasAnyRole(ROLE_ADMIN.getRole(), ROLE_FUNCIONARIO.getRole())
                 .antMatchers(HttpMethod.POST, "/saldos/depositar").hasAnyRole(ROLE_ADMIN.getRole())
                 .antMatchers(HttpMethod.GET, "/usuarios/saldos/*").hasAnyRole(ROLE_ADMIN.getRole(), ROLE_FUNCIONARIO.getRole())
+                .antMatchers(HttpMethod.DELETE, "/usuarios/*").hasAnyRole(ROLE_ADMIN.getRole())
                 .anyRequest().authenticated()
                 .and().csrf().disable() // Disable csrf, via token fica livre disso
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Não é pra criar sessão

@@ -75,14 +75,10 @@ public class UsuarioService {
         Usuario usuarioEncontrado = buscarUsuario(id);
 
         Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
 
-        if(!usuarioLogado.getId().equals(usuarioEncontrado.getId()) && !isUsuarioLogadoPerfilAdmin){
-            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN_DELETAR.getMensagem());
-        } else if(usuarioLogado.getId().equals(usuarioEncontrado.getId())){
+        if(usuarioLogado.getId().equals(usuarioEncontrado.getId())){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO_DELETAR_ADMIN_PROPRIO.getMensagem());
         }
-
 
         usuarioRepositorio.deleteById(usuarioEncontrado.getId());
     }
