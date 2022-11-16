@@ -1,4 +1,5 @@
 package br.com.gabrielferreira.spring.usuario.saldo.repositorio;
+import br.com.gabrielferreira.spring.usuario.saldo.controller.AbstractTests;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import static org.assertj.core.api.Assertions.*;
@@ -14,16 +15,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DataJpaTest
-class SaqueRepositorioTest {
-
-    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+class SaqueRepositorioTest extends AbstractTests {
 
     @Autowired
     private TestEntityManager testEntityManager;

@@ -14,10 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class SaqueService {
+
+    private final Clock clock;
 
     private final SaqueRepositorio saqueRepositorio;
 
@@ -34,7 +38,8 @@ public class SaqueService {
         verificarSaque(saldoTotalViewDTO.getSaldoTotal(), sacarFormDTO.getQuantidade());
         BigDecimal saldoTotalAtual = saldoTotalUsuario(saldoTotalViewDTO.getSaldoTotal(),sacarFormDTO.getQuantidade());
 
-        saqueRepositorio.save(SaqueEntidadeFactory.toSaqueInsertEntidade(sacarFormDTO));
+        LocalDateTime dataAtual = LocalDateTime.now(clock);
+        saqueRepositorio.save(SaqueEntidadeFactory.toSaqueInsertEntidade(sacarFormDTO, dataAtual));
 
         BigDecimal saldoTotal = usuarioService.atualizarSaldoTotal(sacarFormDTO.getIdUsuario(),saldoTotalAtual);
 
