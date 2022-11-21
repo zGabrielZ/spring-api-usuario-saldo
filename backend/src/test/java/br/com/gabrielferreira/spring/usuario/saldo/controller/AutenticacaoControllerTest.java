@@ -6,6 +6,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.PerfilRepositorio;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
+import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

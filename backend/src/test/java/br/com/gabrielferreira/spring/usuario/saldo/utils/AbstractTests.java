@@ -1,4 +1,4 @@
-package br.com.gabrielferreira.spring.usuario.saldo.controller;
+package br.com.gabrielferreira.spring.usuario.saldo.utils;
 import java.time.format.DateTimeFormatter;
 
 public abstract class AbstractTests {

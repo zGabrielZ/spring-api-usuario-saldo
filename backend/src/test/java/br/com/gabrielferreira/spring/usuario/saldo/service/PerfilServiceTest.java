@@ -1,6 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 
-import br.com.gabrielferreira.spring.usuario.saldo.controller.AbstractTests;
+import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import org.junit.jupiter.api.BeforeEach;

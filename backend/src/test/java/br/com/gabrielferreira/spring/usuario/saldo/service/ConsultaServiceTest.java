@@ -1,5 +1,5 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
-import br.com.gabrielferreira.spring.usuario.saldo.controller.AbstractTests;
+import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
 import br.com.gabrielferreira.spring.usuario.saldo.dao.QueryDslDAO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;

@@ -1,5 +1,5 @@
 package br.com.gabrielferreira.spring.usuario.saldo.repositorio;
-import br.com.gabrielferreira.spring.usuario.saldo.controller.AbstractTests;
+import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import org.junit.jupiter.api.DisplayName;
