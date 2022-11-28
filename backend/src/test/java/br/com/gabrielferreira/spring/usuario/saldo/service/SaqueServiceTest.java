@@ -1,7 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDTO;
@@ -15,10 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.time.Clock;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -56,7 +53,7 @@ class SaqueServiceTest extends AbstractTests {
         SacarFormDTO sacarFormDTO = criarSaqueFormDto(BigDecimal.valueOf(50.00),idUsuarioInformado);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Marcos"));
 
         // Mock para retornar um valor do usuário informado
         SaldoTotalViewDTO saldoTotalViewDTO = SaldoTotalViewDTO.builder().saldoTotal(BigDecimal.valueOf(200.00)).build();
@@ -94,7 +91,7 @@ class SaqueServiceTest extends AbstractTests {
         SacarFormDTO sacarFormDTO = criarSaqueFormDto(BigDecimal.valueOf(50.00),idUsuarioInformado);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Mariano"));
 
         // Mock para retornar um valor do usuário informado
         SaldoTotalViewDTO saldoTotalViewDTO = SaldoTotalViewDTO.builder().saldoTotal(BigDecimal.valueOf(0.00)).build();
@@ -119,7 +116,44 @@ class SaqueServiceTest extends AbstractTests {
         when(usuarioService.buscarSaldoTotal(idUsuarioInformado)).thenReturn(saldoTotalViewDTO);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Joana"));
+
+        // Executando e verificando
+        assertThrows(ExcecaoPersonalizada.class, () -> saqueService.sacar(sacarFormDTO));
+        verify(saqueRepositorio,never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Sacar saldo não deveria salvar quando tiver com a mesma conta.")
+    void naoDeveSacarSaldoContaPropria(){
+        // Cenário
+
+        Long idUsuarioInformado = 1L;
+        SacarFormDTO sacarFormDTO = criarSaqueFormDto(BigDecimal.valueOf(50.00),idUsuarioInformado);
+
+        // Recuperar Usuário logado como Admin
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(2L, ROLE_FUNCIONARIO, 2L, "Josué"));
+
+        // Executando e verificando
+        assertThrows(ExcecaoPersonalizada.class, () -> saqueService.sacar(sacarFormDTO));
+        verify(saqueRepositorio,never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Não deveria sacar valor quando o saque for menor do que o 0.")
+    void naoDeveSacarValorQuandoForMenorQue0(){
+        // Cenário
+
+        // Criar o form saque
+        Long idUsuarioInformado = 1L;
+        SacarFormDTO sacarFormDTO = criarSaqueFormDto(BigDecimal.valueOf(-10.00),idUsuarioInformado);
+
+        // Mock para retornar um valor do usuário informado
+        SaldoTotalViewDTO saldoTotalViewDTO = SaldoTotalViewDTO.builder().saldoTotal(BigDecimal.valueOf(10.00)).build();
+        when(usuarioService.buscarSaldoTotal(idUsuarioInformado)).thenReturn(saldoTotalViewDTO);
+
+        // Recuperar Usuário logado como Admin
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Joana"));
 
         // Executando e verificando
         assertThrows(ExcecaoPersonalizada.class, () -> saqueService.sacar(sacarFormDTO));
@@ -128,15 +162,5 @@ class SaqueServiceTest extends AbstractTests {
 
     private SacarFormDTO criarSaqueFormDto(BigDecimal quantidade, Long idUsuario){
         return SacarFormDTO.builder().quantidade(quantidade).idUsuario(idUsuario).build();
-    }
-
-    private Usuario gerarUsuarioLogado(Long idPerfil, String nomePerfil){
-        Perfil perfil = Perfil.builder().id(idPerfil).nome(nomePerfil).build();
-
-        return Usuario.builder().id(1L).nome("Gabriel Ferreira").email("ferreiragabriel2612@gmail.com").senha("$2a$10$g2AT4HFF..7JcSaxF4WhUO0RZjw5kAGy3RvBNkD/NrZ4Q2FBPHWfm")
-                .cpf("73977674005").dataNascimento(LocalDate.parse("10/12/1995",DTF))
-                .saldoTotal(BigDecimal.ZERO)
-                .perfis(List.of(perfil))
-                .build();
     }
 }

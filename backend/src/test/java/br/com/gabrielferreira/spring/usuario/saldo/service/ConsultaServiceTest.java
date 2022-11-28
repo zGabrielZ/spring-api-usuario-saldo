@@ -26,7 +26,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +60,7 @@ class ConsultaServiceTest extends AbstractTests {
         // Cenário
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogadoAdmin(1L, "ROLE_ADMIN", 1L));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Gabriel Ferreira"));
 
         // Verificar Usuário logado como Admin
         when(perfilService.isContemPerfilClienteUsuarioLogado()).thenReturn(false);
@@ -98,8 +97,8 @@ class ConsultaServiceTest extends AbstractTests {
     void naoDeveMostrarSaldosPorUsuario(){
         // Cenário
 
-        // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogadoAdmin(3L, "ROLE_CLIENTE", 10L));
+        // Recuperar Usuário logado como Cliente
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(3L, ROLE_CLIENTE, 3L, "José Marques"));
 
         // Verificar Usuário logado como Admin
         when(perfilService.isContemPerfilClienteUsuarioLogado()).thenReturn(true);
@@ -117,7 +116,7 @@ class ConsultaServiceTest extends AbstractTests {
         // Cenário
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogadoAdmin(1L, "ROLE_ADMIN", 1L));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Gabriel Ferreira"));
 
         // Verificar Usuário logado como Admin
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(true);
@@ -152,10 +151,10 @@ class ConsultaServiceTest extends AbstractTests {
     void naoDeveMostrarSaquesPorUsuario(){
         // Cenário
 
-        // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogadoAdmin(3L, "ROLE_CLIENTE", 10L));
+        // Recuperar Usuário logado como Cliente
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(5L, ROLE_CLIENTE, 5L, "Marina Silva"));
 
-        // Verificar Usuário logado como Admin
+        // Verificar Usuário logado como Cliente
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(false);
 
         // Usuário informado
@@ -187,12 +186,31 @@ class ConsultaServiceTest extends AbstractTests {
         assertThat(usuarioPage.getTotalElements()).isEqualTo(3);
         assertThat(usuarioPage.getTotalPages()).isEqualTo(2);
         assertThat(usuarioPage.isEmpty()).isFalse();
+        assertThat(usuarioPage.getContent().get(0).perfis().get(0).getDescricao()).isEqualTo("Admin");
+    }
+
+    @Test
+    @DisplayName("Não deve retornar lista de usuários quando tiver com cpf formato incorreto")
+    void naoDeveRetornarUsuariosPaginados(){
+        // Cenário
+
+        List<Usuario> usuarios = criarUsuarios();
+        usuarios.get(0).setCpf("12---12222----2");
+
+        // Mock para retornar os dados de cima
+        PageRequest pageRequest = PageRequest.of(0,2, Sort.Direction.DESC,"nome");
+
+        // Mock
+        when(usuarioRepositorio.buscarUsuarios(pageRequest)).thenReturn(toPages(usuarios, pageRequest));
+
+        // Executando e verificando
+        assertThrows(Exception.class, () -> consultaService.listagem(pageRequest));
     }
 
 
     private List<Usuario> criarUsuarios(){
         List<Usuario> usuarios = new ArrayList<>();
-        Perfil perfil = Perfil.builder().id(1L).nome("TESTE_PERFIL").build();
+        Perfil perfil = Perfil.builder().id(1L).nome("Admin").build();
         usuarios.add(new Usuario(1L,"Teste","teste@email.com",null,null, null, null, null, null, List.of(perfil)));
         usuarios.add(new Usuario(2L,"Teste 2","teste22@email.com",null,null, null, null, null, null, List.of(perfil)));
         usuarios.add(new Usuario(3L,"Teste 3","teste33@email.com",null,null, null, null, null, null, List.of(perfil)));
@@ -223,16 +241,6 @@ class ConsultaServiceTest extends AbstractTests {
         saques.add(new SaqueViewDTO(1L,LocalDateTime.now(),BigDecimal.valueOf(250.00)));
         saques.add(new SaqueViewDTO(2L,LocalDateTime.now(),BigDecimal.valueOf(550.00)));
         return saques;
-    }
-
-    private Usuario gerarUsuarioLogadoAdmin(Long idPerfil, String nomePerfil, Long idUsuario){
-        Perfil perfil = Perfil.builder().id(idPerfil).nome(nomePerfil).build();
-
-        return Usuario.builder().id(idUsuario).nome("Gabriel Ferreira").email("ferreiragabriel2612@gmail.com").senha("$2a$10$g2AT4HFF..7JcSaxF4WhUO0RZjw5kAGy3RvBNkD/NrZ4Q2FBPHWfm")
-                .cpf("73977674005").dataNascimento(LocalDate.parse("10/12/1995",DTF))
-                .saldoTotal(BigDecimal.ZERO)
-                .perfis(List.of(perfil))
-                .build();
     }
 
 }

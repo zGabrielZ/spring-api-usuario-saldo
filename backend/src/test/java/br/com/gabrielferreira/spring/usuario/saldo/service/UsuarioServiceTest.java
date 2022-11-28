@@ -105,7 +105,7 @@ class UsuarioServiceTest extends AbstractTests {
         when(usuarioRepositorio.findByCpf(anyString())).thenReturn(Optional.empty());
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "José"));
 
         // Verificar Usuário logado como Admin
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(true);
@@ -147,7 +147,7 @@ class UsuarioServiceTest extends AbstractTests {
         when(usuarioRepositorio.findByCpf(anyString())).thenReturn(Optional.empty());
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 10L, "Marcos"));
 
         // Verificar Usuário logado como Admin
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(true);
@@ -171,10 +171,10 @@ class UsuarioServiceTest extends AbstractTests {
         // Mock de verificar cpf já cadastrado, nesse caso tem que retornar vazio
         when(usuarioRepositorio.findByCpf(anyString())).thenReturn(Optional.empty());
 
-        // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(2L, "ROLE_CLIENTE"));
+        // Recuperar Usuário logado como Cliente
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(3L, ROLE_CLIENTE, 11L, "Tiago"));
 
-        // Verificar Usuário logado como Admin
+        // Verificar Usuário logado como Cliente
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(false);
 
         // Usuário sem perfil
@@ -197,7 +197,7 @@ class UsuarioServiceTest extends AbstractTests {
         when(usuarioRepositorio.findByCpf(anyString())).thenReturn(Optional.empty());
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 35L, "Mariana"));
 
         // Verificar Usuário logado como Admin
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(true);
@@ -261,7 +261,7 @@ class UsuarioServiceTest extends AbstractTests {
         when(usuarioRepositorio.save(any())).thenReturn(usuarioAtualizado);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Jośe teste"));
 
         // Verificar Usuário logado como Admin
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(true);
@@ -287,7 +287,7 @@ class UsuarioServiceTest extends AbstractTests {
         when(usuarioRepositorio.findById(idPesquisar)).thenReturn(Optional.empty());
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Juan"));
 
         // Verificar Usuário logado como Admin
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(true);
@@ -309,7 +309,7 @@ class UsuarioServiceTest extends AbstractTests {
         doReturn(Optional.of(usuario)).when(usuarioRepositorio).findById(idPesquisar);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Ana"));
 
         // Verificar Usuário logado como Admin
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(true);
@@ -333,7 +333,7 @@ class UsuarioServiceTest extends AbstractTests {
         doReturn(Optional.empty()).when(usuarioRepositorio).findById(idPesquisar);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Anna"));
 
         // Verificar Usuário logado como Admin
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(true);
@@ -353,10 +353,10 @@ class UsuarioServiceTest extends AbstractTests {
         Usuario usuario = Usuario.builder().id(10L).nome("Teste 123").email("teste123@email.com").build();
         doReturn(Optional.of(usuario)).when(usuarioRepositorio).findById(idPesquisar);
 
-        // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(3L, "ROLE_CLIENTE"));
+        // Recuperar Usuário logado como Cliente
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(3L, ROLE_CLIENTE, 1L, "José da Silva"));
 
-        // Verificar Usuário logado como Admin
+        // Verificar Usuário logado como Cliente
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(false);
 
         // Executando e verificando
@@ -375,7 +375,7 @@ class UsuarioServiceTest extends AbstractTests {
         doReturn(Optional.of(usuario)).when(usuarioRepositorio).findById(idPesquisar);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Seila"));
 
         // Executando
         assertDoesNotThrow(() -> usuarioService.deletarPorId(idPesquisar));
@@ -396,7 +396,7 @@ class UsuarioServiceTest extends AbstractTests {
         doReturn(Optional.of(usuario)).when(usuarioRepositorio).findById(idPesquisar);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Seila 2"));
 
         // Executando
         assertThrows(ExcecaoPersonalizada.class, () -> usuarioService.deletarPorId(idPesquisar));
@@ -416,7 +416,7 @@ class UsuarioServiceTest extends AbstractTests {
         doReturn(Optional.empty()).when(usuarioRepositorio).findById(idPesquisar);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Teste"));
 
         // Executando
         assertThrows(RecursoNaoEncontrado.class, () -> usuarioService.deletarPorId(idPesquisar));
@@ -456,7 +456,7 @@ class UsuarioServiceTest extends AbstractTests {
         doReturn(Optional.of(usuario)).when(usuarioRepositorio).findById(idPesquisar);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Oi"));
 
         // Verificar Usuário logado como Admin
         when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(true);
@@ -466,6 +466,73 @@ class UsuarioServiceTest extends AbstractTests {
 
         // Verificando
         assertThat(saldoTotalResultado.getSaldoTotal()).isEqualTo(BigDecimal.valueOf(500.00));
+    }
+
+    @Test
+    @DisplayName("Atualizar usuário não deveria salvar no banco de dados quando o usuário encontrado for diferente e também não tiver com a conta adminstração.")
+    void naoDeveAtualizarUsuarioPermissao(){
+        // Cenário
+
+        Long idPesquisar = 1L;
+
+        // Mock para retornar um usuário
+        Usuario usuario = Usuario.builder().id(1L).nome("Teste 1223").email("teste321@email.com").build();
+        doReturn(Optional.of(usuario)).when(usuarioRepositorio).findById(idPesquisar);
+
+        // Recuperar Usuário logado como Cliente
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(3L, ROLE_CLIENTE, 11L, "Juan Teste"));
+
+        // Verificar Usuário logado como Admin
+        when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(false);
+
+        // Executando e verificando
+        UsuarioUpdateFormDTO usuarioUpdateDTO = criarUsuarioUpdateFormDTO();
+        assertThrows(ExcecaoPersonalizada.class, () -> usuarioService.atualizar(idPesquisar,usuarioUpdateDTO));
+    }
+
+    @Test
+    @DisplayName("Atualizar usuário não deveria salvar no banco de dados quando o usuário encontrado for igual e não admin e perfil inserido.")
+    void naoDeveAtualizarUsuarioPerfil(){
+        // Cenário
+
+        Long idPesquisar = 1L;
+
+        // Mock para retornar um usuário
+        Usuario usuario = Usuario.builder().id(1L).nome("Teste 1223").email("teste321@email.com").build();
+        doReturn(Optional.of(usuario)).when(usuarioRepositorio).findById(idPesquisar);
+
+        // Recuperar Usuário logado como Cliente
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(3L, ROLE_CLIENTE, 1L, "Teste 000"));
+
+        // Verificar Usuário logado como Admin
+        when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(false);
+
+        // Executando e verificando
+        UsuarioUpdateFormDTO usuarioUpdateDTO = criarUsuarioUpdateFormDTO();
+        assertThrows(ExcecaoPersonalizada.class, () -> usuarioService.atualizar(idPesquisar,usuarioUpdateDTO));
+    }
+
+    @Test
+    @DisplayName("Atualizar usuário não deveria salvar no banco de dados quando não é perfil admin e sem perfil incluindo.")
+    void naoDeveAtualizarUsuarioSemPerfil(){
+        // Cenário
+
+        Long idPesquisar = 1L;
+
+        // Mock para retornar um usuário
+        Usuario usuario = Usuario.builder().id(1L).nome("Teste 1223").email("teste321@email.com").build();
+        doReturn(Optional.of(usuario)).when(usuarioRepositorio).findById(idPesquisar);
+
+        // Recuperar Usuário logado como Admin
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Teste 000"));
+
+        // Verificar Usuário logado como Admin
+        when(perfilService.isContemPerfilAdminUsuarioLogado()).thenReturn(true);
+
+        // Executando e verificando
+        UsuarioUpdateFormDTO usuarioUpdateDTO = criarUsuarioUpdateFormDTO();
+        usuarioUpdateDTO.setPerfis(new ArrayList<>());
+        assertThrows(ExcecaoPersonalizada.class, () -> usuarioService.atualizar(idPesquisar,usuarioUpdateDTO));
     }
 
     private UsuarioInsertFormDTO criarUsuarioFormDTO(){
@@ -485,16 +552,6 @@ class UsuarioServiceTest extends AbstractTests {
                 .id(3L).build();
         perfis.add(perfil1); perfis.add(perfil2); perfis.add(perfil3);
         return perfis;
-    }
-
-    private Usuario gerarUsuarioLogado(Long idPerfil, String nomePerfil){
-        Perfil perfil = Perfil.builder().id(idPerfil).nome(nomePerfil).build();
-
-        return Usuario.builder().id(1L).nome("Gabriel Ferreira").email("ferreiragabriel2612@gmail.com").senha("$2a$10$g2AT4HFF..7JcSaxF4WhUO0RZjw5kAGy3RvBNkD/NrZ4Q2FBPHWfm")
-                .cpf("73977674005").dataNascimento(LocalDate.parse("10/12/1995",DTF))
-                .saldoTotal(BigDecimal.ZERO)
-                .perfis(List.of(perfil))
-                .build();
     }
 
     private UsuarioUpdateFormDTO criarUsuarioUpdateFormDTO(){

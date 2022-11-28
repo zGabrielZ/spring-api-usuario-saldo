@@ -1,7 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 
 import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,10 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.assertj.core.api.Assertions.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -37,7 +32,7 @@ class PerfilServiceTest extends AbstractTests {
     void deveRecuperarUsuario(){
         // Cenário
         when(authentication.getCredentials()).thenReturn("mockAutenticacao");
-        when(authentication.getPrincipal()).thenReturn(gerarUsuario(2L));
+        when(authentication.getPrincipal()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Gabriel Ferreira"));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Executando
@@ -67,7 +62,7 @@ class PerfilServiceTest extends AbstractTests {
     void deveConterUsuarioLogadoAdmin(){
         // Cenário
         when(authentication.getCredentials()).thenReturn("mockAutenticacao");
-        when(authentication.getPrincipal()).thenReturn(gerarUsuario(1L));
+        when(authentication.getPrincipal()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 2L, "José Marques"));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Executando
@@ -97,7 +92,7 @@ class PerfilServiceTest extends AbstractTests {
     void deveConterUsuarioLogadoCliente(){
         // Cenário
         when(authentication.getCredentials()).thenReturn("mockAutenticacao");
-        when(authentication.getPrincipal()).thenReturn(gerarUsuario(3L));
+        when(authentication.getPrincipal()).thenReturn(gerarUsuarioLogado(3L, ROLE_CLIENTE, 5L, "Marina Marques"));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Executando
@@ -120,16 +115,6 @@ class PerfilServiceTest extends AbstractTests {
 
         // Verificando Usuário
         assertThat(isCliente).isFalse();
-    }
-
-    private Usuario gerarUsuario(Long idPerfil){
-        Perfil perfil = Perfil.builder().id(idPerfil).nome("Teste").build();
-
-        return Usuario.builder().id(1L).nome("Gabriel Ferreira").email("ferreiragabriel2612@gmail.com").senha("$2a$10$g2AT4HFF..7JcSaxF4WhUO0RZjw5kAGy3RvBNkD/NrZ4Q2FBPHWfm")
-                .cpf("73977674005").dataNascimento(LocalDate.parse("10/12/1995",DTF))
-                .saldoTotal(BigDecimal.ZERO)
-                .perfis(List.of(perfil))
-                .build();
     }
 
 }

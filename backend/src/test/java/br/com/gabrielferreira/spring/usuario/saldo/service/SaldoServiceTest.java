@@ -3,7 +3,6 @@ import br.com.gabrielferreira.spring.usuario.saldo.client.FeriadoNacionalClient;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.FeriadoNacionalDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
@@ -22,7 +21,6 @@ import static org.mockito.Mockito.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.time.Clock;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -68,7 +66,7 @@ class SaldoServiceTest extends AbstractTests {
         when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Marcos da Silva"));
 
         // Mock para retornar um saldo quando tiver salvo
         SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder()
@@ -108,7 +106,7 @@ class SaldoServiceTest extends AbstractTests {
         when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 40L, "José da Silva"));
 
         SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(-500.00))
                 .idUsuario(idUsuarioInformado).build();
@@ -129,7 +127,7 @@ class SaldoServiceTest extends AbstractTests {
         when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 20L, "Gabriel da Silva"));
 
         SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(0.0))
                 .idUsuario(idUsuarioInformado).build();
@@ -150,7 +148,7 @@ class SaldoServiceTest extends AbstractTests {
         when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 4L, "Thiago da Silva"));
 
         SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(100.0))
                 .idUsuario(idUsuarioInformado).build();
@@ -177,7 +175,7 @@ class SaldoServiceTest extends AbstractTests {
         when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 11L, "Maria Souza"));
 
         SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(100.0))
                 .idUsuario(idUsuarioInformado).build();
@@ -207,7 +205,7 @@ class SaldoServiceTest extends AbstractTests {
         when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 50L, "José"));
 
         // Mock para retornar saldos por usuário
         List<Saldo> saldos = saldosCriados();
@@ -236,7 +234,7 @@ class SaldoServiceTest extends AbstractTests {
         when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 3L, "Mariana"));
 
         // Mock para retornar saldos por usuário
         List<Saldo> saldos = saldosCriados();
@@ -265,7 +263,7 @@ class SaldoServiceTest extends AbstractTests {
         when(usuarioService.buscarPorId(idUsuarioInformado)).thenReturn(usuarioViewDTO);
 
         // Recuperar Usuário logado como Admin
-        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, "ROLE_ADMIN"));
+        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Josué"));
 
         SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(-500.00))
                 .idUsuario(idUsuarioInformado).build();
@@ -293,15 +291,5 @@ class SaldoServiceTest extends AbstractTests {
         saques.add(Saque.builder().id(1L).valor(BigDecimal.valueOf(250.00)).build());
         saques.add(Saque.builder().id(2L).valor(BigDecimal.valueOf(550.00)).build());
         return saques;
-    }
-
-    private Usuario gerarUsuarioLogado(Long idPerfil, String nomePerfil){
-        Perfil perfil = Perfil.builder().id(idPerfil).nome(nomePerfil).build();
-
-        return Usuario.builder().id(1L).nome("Gabriel Ferreira").email("ferreiragabriel2612@gmail.com").senha("$2a$10$g2AT4HFF..7JcSaxF4WhUO0RZjw5kAGy3RvBNkD/NrZ4Q2FBPHWfm")
-                .cpf("73977674005").dataNascimento(LocalDate.parse("10/12/1995",DTF))
-                .saldoTotal(BigDecimal.ZERO)
-                .perfis(List.of(perfil))
-                .build();
     }
 }
