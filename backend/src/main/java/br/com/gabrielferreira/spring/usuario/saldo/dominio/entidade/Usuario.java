@@ -20,6 +20,7 @@ import java.util.List;
 @Entity
 @Table(name = "USUARIO")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Generated
 public class Usuario implements Serializable, UserDetails {
 
     @Serial

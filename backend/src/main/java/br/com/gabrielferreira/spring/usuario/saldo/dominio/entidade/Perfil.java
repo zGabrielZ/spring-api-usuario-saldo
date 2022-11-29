@@ -14,6 +14,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "PERFIL")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Generated
 public class Perfil implements Serializable, GrantedAuthority {
 
     @Serial
