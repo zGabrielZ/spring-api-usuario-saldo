@@ -64,7 +64,7 @@ public class ServiceHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErroPadrao> excessaoPersonalizada(Exception e){
+    public ResponseEntity<ErroPadrao> erroInesperado(Exception e){
 
         String mensagemErro = "Erro inesperado";
         if(e.getMessage().contains("ConstraintViolationException")){

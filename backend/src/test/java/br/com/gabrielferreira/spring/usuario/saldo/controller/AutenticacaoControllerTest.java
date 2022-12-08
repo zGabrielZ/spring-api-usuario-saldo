@@ -2,6 +2,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.controller;
 import br.com.gabrielferreira.spring.usuario.saldo.config.GenericRestTemplate;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.autenticacao.AutenticacaoFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.autenticacao.TokenDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.PerfilRepositorio;
@@ -85,9 +86,22 @@ class AutenticacaoControllerTest extends AbstractTests {
         assertThat(request.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
+    @Test
+    @DisplayName("Não deve realizar a consulta de usuário pelo id quando não informar o usuário logado")
+    @Order(3)
+    void naoDeveRealizarConsulta(){
+        // Executando
+        String caminho = PORTA.concat("/usuarios/1");
+        ParameterizedTypeReference<UsuarioViewDTO> responseType = new ParameterizedTypeReference<>() {};
+        ResponseEntity<UsuarioViewDTO> request = genericRestTemplate.genericRequest(null, responseType, JSON_MEDIATYPE, HttpMethod.GET, caminho, "", testRestTemplate);
+
+        // Verificando
+        assertThat(request.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
     private void gerarUsuario(){
 
-        Perfil perfil = Perfil.builder().nome("ROLE_ADMIN").build();
+        Perfil perfil = Perfil.builder().nome("ROLE_FUNCIONARIO").build();
         perfilRepositorio.save(perfil);
 
         Usuario usuario = Usuario.builder().nome("Gabriel Ferreira").email("ferreiragabriel2612@gmail.com").senha("$2a$10$g2AT4HFF..7JcSaxF4WhUO0RZjw5kAGy3RvBNkD/NrZ4Q2FBPHWfm")
