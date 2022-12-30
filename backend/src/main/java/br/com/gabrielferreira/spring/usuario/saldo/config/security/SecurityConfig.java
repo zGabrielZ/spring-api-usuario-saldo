@@ -32,6 +32,8 @@ public class SecurityConfig {
             "/usuarios"
     };
 
+    private static final String PUBLICO_ENDPOINT_H2 = "/h2-console/**";
+
     // Config a partir da autenticação
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -43,6 +45,7 @@ public class SecurityConfig {
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeRequests()
                 .antMatchers(HttpMethod.POST,PUBLICO_ENDPOINT_POST).permitAll()
+                .antMatchers(HttpMethod.GET,PUBLICO_ENDPOINT_H2).permitAll()
                 .antMatchers(HttpMethod.GET, "/usuarios").hasAnyRole(ROLE_ADMIN.getRole(), ROLE_FUNCIONARIO.getRole())
                 .antMatchers(HttpMethod.POST, "/saldos/depositar").hasAnyRole(ROLE_ADMIN.getRole())
                 .antMatchers(HttpMethod.DELETE, "/usuarios/*").hasAnyRole(ROLE_ADMIN.getRole())
@@ -58,7 +61,7 @@ public class SecurityConfig {
     // Config de recurso estaticos
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring().antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**"));
+        return (web -> web.ignoring().antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**", PUBLICO_ENDPOINT_H2));
     }
 
 }

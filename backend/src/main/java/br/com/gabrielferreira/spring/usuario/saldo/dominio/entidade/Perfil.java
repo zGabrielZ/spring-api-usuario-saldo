@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PERFIL")
+@Table(name = "PERFIL", schema = "dbo")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Generated
 public class Perfil implements Serializable, GrantedAuthority {
@@ -22,11 +22,15 @@ public class Perfil implements Serializable, GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "nome", nullable = false)
+    @Column(name = "NOME", nullable = false)
     private String nome;
+
+    @Column(name = "DESCRICAO", nullable = false)
+    private String descricao;
 
     @Override
     public String getAuthority() {

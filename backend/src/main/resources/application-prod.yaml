@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: ${API_DATABASE_URL}
+    username: ${API_DATABASE_USERNAME}
+    password: ${API_DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: ${API_DATABASE_DDL_AUTO}
+    defer-datasource-initialization: ${API_DATABASE_DEFER_DATASOURCE}
+    show_sql: ${API_DATABASE_SHOW_SQL}
+    properties:
+      hibernate:
+        dialect: ${API_DATABASE_DIALECT}
+        format_sql: ${API_DATABASE_FORMAT_SQL}

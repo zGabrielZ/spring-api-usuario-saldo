@@ -11,7 +11,7 @@ public record SaqueViewDTO (
 
         @ApiModelProperty(value = "Data do saque", example = "26/06/2022 12:00:00")
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-        LocalDateTime dataSaque,
+        LocalDateTime data,
 
         @ApiModelProperty(value = "Valor saque do usuário", example = "500.00")
         BigDecimal valor

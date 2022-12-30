@@ -1,5 +1,5 @@
-FROM openjdk:11
-LABEL maintainer="Gabriel Ferreira <ferreiragabriel2612@gmail.coim>"
+FROM openjdk:17
+LABEL maintainer="Gabriel Ferreira <ferreiragabriel2612@gmail.com>"
 WORKDIR /app
 ENV TZ=America/Sao_Paulo
 EXPOSE 8080

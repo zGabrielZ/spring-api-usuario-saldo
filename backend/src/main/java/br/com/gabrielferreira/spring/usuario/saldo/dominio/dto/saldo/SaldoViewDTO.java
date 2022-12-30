@@ -14,7 +14,7 @@ public record SaldoViewDTO (
 
         @ApiModelProperty(value = "Data do déposito", example = "26/06/2022 12:00:00")
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-        LocalDateTime dataDeposito
+        LocalDateTime data
 ) {
 
 }

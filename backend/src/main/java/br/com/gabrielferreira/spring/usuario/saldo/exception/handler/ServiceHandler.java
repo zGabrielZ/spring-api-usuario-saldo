@@ -4,6 +4,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.exception.modelo.ErroFormular
 import br.com.gabrielferreira.spring.usuario.saldo.exception.modelo.ErroPadrao;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,12 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ControllerAdvice
+@Slf4j
 public class ServiceHandler {
 
     private static final String ERRO = "Verifique o erro abaixo";
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErroPadrao> erroValidacao(MethodArgumentNotValidException e){
+        log.warn(e.getMessage());
 
         // Percorrendo na lista se tem algum erro de validação
         List<ErroFormulario> erroFormularios = new ArrayList<>();
@@ -38,6 +41,8 @@ public class ServiceHandler {
 
     @ExceptionHandler(ExcecaoPersonalizada.class)
     public ResponseEntity<ErroPadrao> excessaoPersonalizada(ExcecaoPersonalizada e){
+        log.warn(e.getMessage());
+
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,e.getMessage(),new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
@@ -45,6 +50,8 @@ public class ServiceHandler {
 
     @ExceptionHandler(RecursoNaoEncontrado.class)
     public ResponseEntity<ErroPadrao> entidadeNaoEncontrada(RecursoNaoEncontrado e){
+        log.warn(e.getMessage());
+
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,e.getMessage(),new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
@@ -52,6 +59,7 @@ public class ServiceHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErroPadrao> usuarioNaoEncontradoNoSistema(AuthenticationException e){
+        log.warn(e.getMessage());
 
         String mensagemErro = null;
         if(e instanceof BadCredentialsException){
@@ -65,6 +73,7 @@ public class ServiceHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErroPadrao> erroInesperado(Exception e){
+        log.error(e.getMessage());
 
         String mensagemErro = "Erro inesperado";
         if(e.getMessage().contains("ConstraintViolationException")){

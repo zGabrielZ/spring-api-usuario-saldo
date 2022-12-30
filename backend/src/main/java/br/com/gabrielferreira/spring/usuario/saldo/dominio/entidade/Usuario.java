@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "USUARIO")
+@Table(name = "USUARIO", schema = "dbo")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Generated
 public class Usuario implements Serializable, UserDetails {
@@ -27,30 +27,31 @@ public class Usuario implements Serializable, UserDetails {
     private static final long serialVersionUID = -7061711027863603940L;
 
     @Id
+    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "nome", nullable = false)
+    @Column(name = "NOME", nullable = false)
     private String nome;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "senha", nullable = false)
+    @Column(name = "SENHA", nullable = false)
     private String senha;
 
-    @Column(name = "cpf", nullable = false, unique = true)
+    @Column(name = "CPF", nullable = false, unique = true)
     private String cpf;
 
-    @Column(name = "data_nascimento", nullable = false)
+    @Column(name = "DATA_NASCIMENTO", nullable = false)
     private LocalDate dataNascimento;
 
     @Builder.Default
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Saldo> saldos = new ArrayList<>();
 
-    @Column(name = "saldo_total")
+    @Column(name = "SALDO_TOTAL")
     private BigDecimal saldoTotal;
 
     @Builder.Default
@@ -60,8 +61,8 @@ public class Usuario implements Serializable, UserDetails {
     @Builder.Default
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "USUARIOS_PERFIL",
-                joinColumns = @JoinColumn(name = "usuario_id", referencedColumnName = "id", table = "USUARIO"),
-                inverseJoinColumns = @JoinColumn(name = "perfil_id", referencedColumnName = "id", table = "PERFIL"))
+                joinColumns = @JoinColumn(name = "USUARIO_ID", referencedColumnName = "ID", table = "USUARIO"),
+                inverseJoinColumns = @JoinColumn(name = "PERFIL_ID", referencedColumnName = "ID", table = "PERFIL"))
     private List<Perfil> perfis = new ArrayList<>();
 
     @Override

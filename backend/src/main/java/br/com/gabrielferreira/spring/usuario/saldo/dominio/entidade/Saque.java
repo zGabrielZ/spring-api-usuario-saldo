@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SAQUE")
+@Table(name = "SAQUE", schema = "dbo")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Saque implements Serializable {
 
@@ -21,17 +21,18 @@ public class Saque implements Serializable {
     private static final long serialVersionUID = -9124903408974073315L;
 
     @Id
+    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "valor", nullable = false)
+    @Column(name = "VALOR", nullable = false)
     private BigDecimal valor;
 
-    @Column(name = "data_saque", nullable = false)
+    @Column(name = "DATA_SAQUE", nullable = false)
     private LocalDateTime dataSaque;
 
-    @JoinColumn(name = "usuario_id", foreignKey = @ForeignKey(name="usuario_saque_fk"))
+    @JoinColumn(name = "USUARIO_ID")
     @ManyToOne
     private Usuario usuario;
 

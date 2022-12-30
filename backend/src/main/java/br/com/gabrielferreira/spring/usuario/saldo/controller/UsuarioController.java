@@ -8,7 +8,6 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDT
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.service.ConsultaService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaqueService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
@@ -18,16 +17,12 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -99,16 +94,9 @@ public class UsuarioController {
     public ResponseEntity<Page<UsuarioViewDTO>> listagem(
             @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
             @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-            @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
-            @RequestParam(value = "ordenar", required = false, defaultValue = "nome") String ordenar
-    ){
-        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
-        if(optionalDirecao.isEmpty()){
-            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
-        }
+            @RequestParam(value = "sort", required = false) String[] sort){
 
-        PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
-        Page<UsuarioViewDTO> usuarios = consultaService.listagem(pageRequest);
+        Page<UsuarioViewDTO> usuarios = consultaService.listagem(pagina, quantidadeRegistro, sort);
         return ResponseEntity.ok().body(usuarios);
     }
 
@@ -121,19 +109,11 @@ public class UsuarioController {
     public ResponseEntity<Page<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id,
          @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
          @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-         @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
-         @RequestParam(value = "ordenar", required = false, defaultValue = "deposito") String ordenar) {
+         @RequestParam(value = "sort", required = false) String[] sort) {
 
-        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
-        if (optionalDirecao.isEmpty()) {
-            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
-        }
-
-        PageRequest pageRequest = PageRequest.of(pagina, quantidadeRegistro, optionalDirecao.get(), ordenar);
-        Page<SaldoViewDTO> saldos = consultaService.saldosPorUsuario(id, pageRequest);
+        Page<SaldoViewDTO> saldos = consultaService.saldosPorUsuario(id, pagina, quantidadeRegistro, sort);
         return ResponseEntity.ok(saldos);
     }
-
 
     @ApiOperation("Saldo total do usuário")
     @ApiResponses(value = {
@@ -168,15 +148,9 @@ public class UsuarioController {
     public ResponseEntity<Page<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id,
          @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
          @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-         @RequestParam(value = "direcao", required = false, defaultValue = "ASC") String direcao,
-          @RequestParam(value = "ordenar", required = false, defaultValue = "valor") String ordenar){
+         @RequestParam(value = "sort", required = false) String[] sort){
 
-        Optional<Sort.Direction> optionalDirecao = Sort.Direction.fromOptionalString(direcao);
-        if(optionalDirecao.isEmpty()){
-            throw new ExcecaoPersonalizada(DIRECAO_INCORRETA.getMensagem());
-        }
-        PageRequest pageRequest = PageRequest.of(pagina,quantidadeRegistro, optionalDirecao.get(),ordenar);
-        Page<SaqueViewDTO> saques = consultaService.saquesPorUsuario(id,pageRequest);
+        Page<SaqueViewDTO> saques = consultaService.saquesPorUsuario(id,pagina, quantidadeRegistro, sort);
         return ResponseEntity.ok().body(saques);
     }
 }
