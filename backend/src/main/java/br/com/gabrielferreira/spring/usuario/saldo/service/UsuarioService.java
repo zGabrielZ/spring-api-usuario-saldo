@@ -16,6 +16,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrad
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 import com.querydsl.core.types.Projections;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,6 +108,11 @@ public class UsuarioService {
         usuario.setSaldoTotal(valor);
         usuarioRepositorio.save(usuario);
         return usuario.getSaldoTotal();
+    }
+
+    @Cacheable(value = "dominioPorId")
+    public Usuario buscarUsuarioAutenticado(Long id){
+        return usuarioRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontrado("Usuário não encontrado"));
     }
 
     private Usuario buscarUsuario(Long id){

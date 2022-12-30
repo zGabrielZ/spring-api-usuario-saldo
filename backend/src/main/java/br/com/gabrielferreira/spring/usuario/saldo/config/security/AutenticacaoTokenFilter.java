@@ -1,8 +1,7 @@
 package br.com.gabrielferreira.spring.usuario.saldo.config.security;
 
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
-import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
+import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +21,7 @@ public class AutenticacaoTokenFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
 
-    private final UsuarioRepositorio usuarioRepositorio;
+    private final UsuarioService usuarioService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -56,7 +55,7 @@ public class AutenticacaoTokenFilter extends OncePerRequestFilter {
 
     private void autenticarUsuario(String token){
         Long idUsuario = recuperarUsuario(token);
-        Usuario usuario = usuarioRepositorio.findById(idUsuario).orElseThrow(() -> new RecursoNaoEncontrado("Usuário não encontrado"));
+        Usuario usuario = usuarioService.buscarUsuarioAutenticado(idUsuario);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getPerfis());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
