@@ -17,6 +17,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositori
 import com.querydsl.core.types.Projections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,9 +111,14 @@ public class UsuarioService {
         return usuario.getSaldoTotal();
     }
 
-    @Cacheable(value = "dominioPorId")
+    @Cacheable(value = "buscarUsuarioAutenticadoPorId")
     public Usuario buscarUsuarioAutenticado(Long id){
-        return usuarioRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontrado("Usuário não encontrado"));
+        return usuarioRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
+    }
+
+    @Cacheable(value = "buscarUsuarioEmailAutenticadoPorEmail")
+    public Usuario buscarUsuarioEmailAutenticado(String email){
+        return usuarioRepositorio.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
     private Usuario buscarUsuario(Long id){
