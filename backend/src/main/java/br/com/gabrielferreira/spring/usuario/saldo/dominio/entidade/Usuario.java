@@ -60,7 +60,7 @@ public class Usuario implements Serializable, UserDetails {
 
     @Builder.Default
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "USUARIOS_PERFIL",
+    @JoinTable(name = "USUARIOS_PERFIL", schema = "dbo",
                 joinColumns = @JoinColumn(name = "USUARIO_ID", referencedColumnName = "ID", table = "USUARIO"),
                 inverseJoinColumns = @JoinColumn(name = "PERFIL_ID", referencedColumnName = "ID", table = "PERFIL"))
     private List<Perfil> perfis = new ArrayList<>();
