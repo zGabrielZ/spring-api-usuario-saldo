@@ -111,12 +111,13 @@ public class UsuarioService {
         return usuario.getSaldoTotal();
     }
 
-    @Cacheable(value = "buscarUsuarioAutenticadoPorId")
+    @Cacheable(cacheNames = "Usuario", key = "#id")
+    // key = "#root.method.name"
     public Usuario buscarUsuarioAutenticado(Long id){
         return usuarioRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
-    @Cacheable(value = "buscarUsuarioEmailAutenticadoPorEmail")
+    @Cacheable(cacheNames = "Usuario", key = "#email")
     public Usuario buscarUsuarioEmailAutenticado(String email){
         return usuarioRepositorio.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
