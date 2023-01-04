@@ -1,5 +1,4 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
-import br.com.gabrielferreira.spring.usuario.saldo.dao.QueryDslDAO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.SaldoDTOFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.UsuarioDTOFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilInsertFormDTO;
@@ -7,15 +6,14 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalV
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.QUsuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.RoleEnum;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.UsuarioEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
-import com.querydsl.core.types.Projections;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -39,9 +38,8 @@ public class UsuarioService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final QueryDslDAO queryDslDAO;
-
     @Transactional
+    @CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioViewDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
         usuarioInsertFormDTO.setCpf(limparMascaraCpf(usuarioInsertFormDTO.getCpf()));
 
@@ -77,6 +75,7 @@ public class UsuarioService {
     }
 
     @Transactional
+    @CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public void deletarPorId(Long id){
 
         Usuario usuarioEncontrado = buscarUsuario(id);
@@ -91,6 +90,7 @@ public class UsuarioService {
     }
 
     @Transactional
+    @CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioViewDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
         Usuario usuarioEncontrado = buscarUsuario(id);
 
@@ -104,6 +104,7 @@ public class UsuarioService {
     }
 
     @Transactional
+    @CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public BigDecimal atualizarSaldoTotal(Long id, BigDecimal valor){
         Usuario usuario = buscarUsuario(id);
         usuario.setSaldoTotal(valor);
@@ -111,13 +112,12 @@ public class UsuarioService {
         return usuario.getSaldoTotal();
     }
 
-    @Cacheable(cacheNames = "Usuario", key = "#id")
-    // key = "#root.method.name"
+    @Cacheable(cacheNames = USUARIO_AUTENTICADO, key = "#id")
     public Usuario buscarUsuarioAutenticado(Long id){
         return usuarioRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
-    @Cacheable(cacheNames = "Usuario", key = "#email")
+    @Cacheable(cacheNames = USUARIO_AUTENTICADO_EMAIL, key = "#email")
     public Usuario buscarUsuarioEmailAutenticado(String email){
         return usuarioRepositorio.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
@@ -127,25 +127,15 @@ public class UsuarioService {
     }
 
     private void verificarEmail(String email){
-        QUsuario qUsuario = QUsuario.usuario;
-        queryDslDAO.query(q -> q.select(Projections.constructor(
-                        String.class,
-                        qUsuario.email
-                ))).from(qUsuario).where(qUsuario.email.eq(email)).fetch()
-                .stream().findFirst().ifPresent(usuario -> {
-                    throw new ExcecaoPersonalizada(EMAIL_CADASTRADO.getMensagem());
-                });
+        usuarioRepositorio.existsEmail(email).ifPresent(usuario -> {
+            throw new ExcecaoPersonalizada(EMAIL_CADASTRADO.getMensagem());
+        });
     }
 
     private void verificarCpf(String cpf) {
-        QUsuario qUsuario = QUsuario.usuario;
-        queryDslDAO.query(q -> q.select(Projections.constructor(
-                        String.class,
-                        qUsuario.cpf
-                ))).from(qUsuario).where(qUsuario.cpf.eq(cpf)).fetch()
-                .stream().findFirst().ifPresent(usuario -> {
-                    throw new ExcecaoPersonalizada(CPF_CADASTRADO.getMensagem());
-                });
+        usuarioRepositorio.existsCpf(cpf).ifPresent(usuario -> {
+            throw new ExcecaoPersonalizada(CPF_CADASTRADO.getMensagem());
+        });
     }
 
     private void verificarPerfil(List<PerfilInsertFormDTO> perfis, Usuario usuarioLogado, boolean isUsuarioLogadoPerfilAdmin){
