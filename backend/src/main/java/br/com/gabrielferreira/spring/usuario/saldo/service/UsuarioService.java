@@ -4,6 +4,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.UsuarioDT
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertResponseDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
@@ -13,7 +14,6 @@ import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizad
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,8 +39,8 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    @CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
-    public UsuarioViewDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
+    //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
+    public UsuarioInsertResponseDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
         usuarioInsertFormDTO.setCpf(limparMascaraCpf(usuarioInsertFormDTO.getCpf()));
 
         verificarEmail(usuarioInsertFormDTO.getEmail());
@@ -51,11 +51,11 @@ public class UsuarioService {
         verificarPerfil(usuarioInsertFormDTO.getPerfis(), usuarioLogado, isUsuarioLogadoPerfilAdmin);
 
         List<PerfilInsertFormDTO> perfisDtos = validarPerfis(usuarioInsertFormDTO.getPerfis(), isUsuarioLogadoPerfilAdmin);
-        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisDtos);
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisDtos, BigDecimal.ZERO);
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         usuario = usuarioRepositorio.save(usuario);
 
-        return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
+        return UsuarioDTOFactory.toUsuarioInsertResponseDTO(usuario, "SECRETO");
     }
 
     public UsuarioViewDTO buscarPorId(Long id){
@@ -75,7 +75,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    @CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
+    //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public void deletarPorId(Long id){
 
         Usuario usuarioEncontrado = buscarUsuario(id);
@@ -90,7 +90,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    @CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
+    //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioViewDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
         Usuario usuarioEncontrado = buscarUsuario(id);
 
@@ -104,7 +104,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    @CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
+    //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public BigDecimal atualizarSaldoTotal(Long id, BigDecimal valor){
         Usuario usuario = buscarUsuario(id);
         usuario.setSaldoTotal(valor);
@@ -185,12 +185,6 @@ public class UsuarioService {
         if(!usuarioLogado.getId().equals(usuarioEncontrado.getId()) && !isUsuarioLogadoPerfilAdmin){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
         }
-    }
-
-    private String limparMascaraCpf(String cpf){
-        cpf = cpf.replace(".","");
-        cpf = cpf.replace("-","");
-        return cpf;
     }
 
 }

@@ -29,10 +29,12 @@ public class UsuarioInsertFormDTO implements Serializable {
     @ApiModelProperty(value = "E-mail do usuário", example = "ferreiragabriel2612@gmail.com")
     @NotBlank(message = "E-mail não pode ser vazio.")
     @Email(message = "E-mail inválido.")
+    @Size(min = 5, max = 150, message = "O campo e-mail deve ter no mínimo 5 até 150 caracteres.")
     private String email;
 
     @ApiModelProperty(value = "Senha do usuário", example = "123")
     @NotBlank(message = "Senha não pode ser vazio.")
+    @Size(max = 150, message = "O campo senha deve ter no máximo 150 caracteres.")
     private String senha;
 
     @ApiModelProperty(value = "CPF do usuário", example = "84269756071")

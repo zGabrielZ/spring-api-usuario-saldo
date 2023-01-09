@@ -6,6 +6,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDT
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertResponseDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.service.ConsultaService;
@@ -43,9 +44,9 @@ public class UsuarioController {
             @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
     })
     @PostMapping
-    public ResponseEntity<UsuarioViewDTO> inserir(@Valid @RequestBody UsuarioInsertFormDTO usuarioInsertFormDTO, UriComponentsBuilder uriComponentsBuilder){
-        UsuarioViewDTO usuario = usuarioService.inserir(usuarioInsertFormDTO);
-        URI uri = uriComponentsBuilder.path("/usuarios/{id}").buildAndExpand(usuario.id()).toUri();
+    public ResponseEntity<UsuarioInsertResponseDTO> inserir(@Valid @RequestBody UsuarioInsertFormDTO usuarioInsertFormDTO, UriComponentsBuilder uriComponentsBuilder){
+        UsuarioInsertResponseDTO usuario = usuarioService.inserir(usuarioInsertFormDTO);
+        URI uri = uriComponentsBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
         return ResponseEntity.created(uri).body(usuario);
     }
 
