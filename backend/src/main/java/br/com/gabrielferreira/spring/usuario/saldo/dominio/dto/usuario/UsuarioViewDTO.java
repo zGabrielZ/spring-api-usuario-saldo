@@ -3,7 +3,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilViewD
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 public record UsuarioViewDTO (
 
@@ -24,7 +24,7 @@ public record UsuarioViewDTO (
         LocalDate dataNascimento,
 
         @ApiModelProperty(value = "Lista de perfis")
-        List<PerfilViewDTO> perfis
+        Set<PerfilViewDTO> perfis
 ) {
 
 }

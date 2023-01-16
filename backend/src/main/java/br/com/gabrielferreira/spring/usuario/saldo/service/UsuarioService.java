@@ -1,18 +1,23 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
+import br.com.gabrielferreira.spring.usuario.saldo.dao.QueryDslDAO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.SaldoDTOFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.UsuarioDTOFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilInsertFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertResponseDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.*;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.RoleEnum;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.UsuarioEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,11 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.*;
+import static com.querydsl.core.group.GroupBy.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +41,8 @@ public class UsuarioService {
     private final UsuarioRepositorio usuarioRepositorio;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final QueryDslDAO queryDslDAO;
 
     @Transactional
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
@@ -60,16 +66,42 @@ public class UsuarioService {
 
     public UsuarioViewDTO buscarPorId(Long id){
 
-        Usuario usuarioEncontrado = buscarUsuario(id);
-        verificarUsuarioLogado(usuarioEncontrado);
 
-        return UsuarioDTOFactory.toUsuarioViewDTO(usuarioEncontrado);
+        QUsuario qUsuario = QUsuario.usuario;
+        QPerfil qPerfil = QPerfil.perfil;
+        QSaldo qSaldo = QSaldo.saldo;
+        QSaque qSaque = QSaque.saque;
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(qUsuario.id.eq(id));
+
+        UsuarioViewDTO usuarioViewDTO = queryDslDAO.query(JPAQuery::select)
+                .from(qUsuario).innerJoin(qUsuario.perfis, qPerfil).leftJoin(qUsuario.saldos, qSaldo).leftJoin(qUsuario.saques, qSaque)
+                .where(booleanBuilder).
+                transform(groupBy(qUsuario.id)
+                        .as(Projections.constructor(
+                                UsuarioViewDTO.class,
+                                qUsuario.id,
+                                qUsuario.nome,
+                                qUsuario.email,
+                                qUsuario.cpf,
+                                qUsuario.dataNascimento,
+                                set(Projections.constructor(
+                                        PerfilViewDTO.class,
+                                        qPerfil.id,
+                                        qPerfil.descricao
+                                ).skipNulls())
+                        ))).get(id);
+
+        UsuarioViewDTO usuarioEncontrado = Optional.ofNullable(usuarioViewDTO).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
+        verificarUsuarioLogado(usuarioEncontrado.id());
+        return usuarioViewDTO;
     }
 
     public SaldoTotalViewDTO buscarSaldoTotal(Long id){
 
         Usuario usuarioEncontrado = buscarUsuario(id);
-        verificarUsuarioLogado(usuarioEncontrado);
+        verificarUsuarioLogado(usuarioEncontrado.getId());
 
         return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
     }
@@ -100,7 +132,8 @@ public class UsuarioService {
 
         Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado, usuarioUpdateFormDTO.getPerfis());
         usuarioRepositorio.save(usuario);
-        return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
+        //return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
+        return null;
     }
 
     @Transactional
@@ -178,11 +211,11 @@ public class UsuarioService {
         }
     }
 
-    private void verificarUsuarioLogado(Usuario usuarioEncontrado){
+    private void verificarUsuarioLogado(Long idUsuarioEncontrado){
         Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
         boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
 
-        if(!usuarioLogado.getId().equals(usuarioEncontrado.getId()) && !isUsuarioLogadoPerfilAdmin){
+        if(!usuarioLogado.getId().equals(idUsuarioEncontrado) && !isUsuarioLogadoPerfilAdmin){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
         }
     }
