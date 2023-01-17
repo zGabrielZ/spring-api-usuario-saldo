@@ -52,16 +52,17 @@ public class UsuarioService {
         verificarEmail(usuarioInsertFormDTO.getEmail());
         verificarCpf(usuarioInsertFormDTO.getCpf());
 
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
-        verificarPerfil(usuarioInsertFormDTO.getPerfis(), usuarioLogado, isUsuarioLogadoPerfilAdmin);
+//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+//        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
+//        verificarPerfil(usuarioInsertFormDTO.getPerfis(), usuarioLogado, isUsuarioLogadoPerfilAdmin);
 
-        List<PerfilInsertFormDTO> perfisDtos = validarPerfis(usuarioInsertFormDTO.getPerfis(), isUsuarioLogadoPerfilAdmin);
-        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisDtos, BigDecimal.ZERO);
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-        usuario = usuarioRepositorio.save(usuario);
-
-        return UsuarioDTOFactory.toUsuarioInsertResponseDTO(usuario, "SECRETO");
+//        List<PerfilInsertFormDTO> perfisDtos = validarPerfis(usuarioInsertFormDTO.getPerfis(), isUsuarioLogadoPerfilAdmin);
+//        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisDtos, BigDecimal.ZERO);
+//        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+//        usuario = usuarioRepositorio.save(usuario);
+//
+//        return UsuarioDTOFactory.toUsuarioInsertResponseDTO(usuario, "SECRETO");
+        return null;
     }
 
     public UsuarioViewDTO buscarPorId(Long id){
@@ -112,11 +113,11 @@ public class UsuarioService {
 
         Usuario usuarioEncontrado = buscarUsuario(id);
 
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-
-        if(usuarioLogado.getId().equals(usuarioEncontrado.getId())){
-            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DELETAR_ADMIN_PROPRIO.getMensagem());
-        }
+//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+//
+//        if(usuarioLogado.getId().equals(usuarioEncontrado.getId())){
+//            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DELETAR_ADMIN_PROPRIO.getMensagem());
+//        }
 
         usuarioRepositorio.deleteById(usuarioEncontrado.getId());
     }
@@ -126,9 +127,9 @@ public class UsuarioService {
     public UsuarioViewDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
         Usuario usuarioEncontrado = buscarUsuario(id);
 
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
-        verificarUsuarioLogado(usuarioLogado, usuarioEncontrado, isUsuarioLogadoPerfilAdmin, usuarioUpdateFormDTO.getPerfis());
+//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+//        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
+//        verificarUsuarioLogado(usuarioLogado, usuarioEncontrado, isUsuarioLogadoPerfilAdmin, usuarioUpdateFormDTO.getPerfis());
 
         Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado, usuarioUpdateFormDTO.getPerfis());
         usuarioRepositorio.save(usuario);
@@ -212,12 +213,12 @@ public class UsuarioService {
     }
 
     private void verificarUsuarioLogado(Long idUsuarioEncontrado){
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
-
-        if(!usuarioLogado.getId().equals(idUsuarioEncontrado) && !isUsuarioLogadoPerfilAdmin){
-            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
-        }
+//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+//        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
+//
+//        if(!usuarioLogado.getId().equals(idUsuarioEncontrado) && !isUsuarioLogadoPerfilAdmin){
+//            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
+//        }
     }
 
 }

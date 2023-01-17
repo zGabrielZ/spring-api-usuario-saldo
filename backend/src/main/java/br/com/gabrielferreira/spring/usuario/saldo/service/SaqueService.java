@@ -62,9 +62,9 @@ public class SaqueService {
     }
 
     private void verificarUsuarioLogado(Long idUsuario){
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-        if(!usuarioLogado.getId().equals(idUsuario)){
-            throw new ExcecaoPersonalizada(SAQUE_CONTA_PROPRIA.getMensagem());
-        }
+//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+//        if(!usuarioLogado.getId().equals(idUsuario)){
+//            throw new ExcecaoPersonalizada(SAQUE_CONTA_PROPRIA.getMensagem());
+//        }
     }
 }

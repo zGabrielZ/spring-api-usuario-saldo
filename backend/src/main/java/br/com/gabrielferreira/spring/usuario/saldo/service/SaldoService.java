@@ -92,10 +92,10 @@ public class SaldoService {
     }
 
     private void verificarUsuarioLogado(Long idUsuarioEncontrado){
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-        if(usuarioLogado.getId().equals(idUsuarioEncontrado)){
-            throw new ExcecaoPersonalizada(USUARIO_INCLUIR_DEPOSITO_ADMIN.getMensagem());
-        }
+//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+//        if(usuarioLogado.getId().equals(idUsuarioEncontrado)){
+//            throw new ExcecaoPersonalizada(USUARIO_INCLUIR_DEPOSITO_ADMIN.getMensagem());
+//        }
     }
 
 }

@@ -1,37 +1,32 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
-
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.RoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import static br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.RoleEnum.*;
+
 @Service
 @RequiredArgsConstructor
 public class PerfilService {
 
-    public Usuario recuperarUsuarioLogado(){
+    public Optional<Usuario> recuperarUsuarioLogado(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.getPrincipal() != null && !authentication.getPrincipal().equals("anonymousUser")){
-            return (Usuario) authentication.getPrincipal();
-        }
-        return null;
+        return Optional.ofNullable((Usuario) authentication.getPrincipal());
     }
 
-    public boolean isContemPerfilAdminUsuarioLogado(){
-        Usuario usuario = recuperarUsuarioLogado();
-        if(usuario != null){
-            return usuario.getPerfis().stream().anyMatch(f -> f.getId().equals(RoleEnum.ROLE_ADMIN.getId()));
-        }
-        return false;
-    }
-
-    public boolean isContemPerfilClienteUsuarioLogado(){
-        Usuario usuario = recuperarUsuarioLogado();
-        if(usuario != null){
-            return usuario.getPerfis().stream().anyMatch(f -> f.getId().equals(RoleEnum.ROLE_CLIENTE.getId()));
-        }
-        return false;
+    public Map<String, Boolean> isPerfilUsuarioLogado(){
+        Map<String, Boolean> map = new HashMap<>();
+        recuperarUsuarioLogado().ifPresent(usuario -> usuario.getPerfis().forEach(perfil -> {
+            map.put(ROLE_ADMIN.getRole(), perfil.getId().equals(ROLE_ADMIN.getId()));
+            map.put(ROLE_FUNCIONARIO.getRole(), perfil.getId().equals(ROLE_FUNCIONARIO.getId()));
+            map.put(ROLE_CLIENTE.getRole(), perfil.getId().equals(ROLE_CLIENTE.getId()));
+        }));
+        return map;
     }
 }

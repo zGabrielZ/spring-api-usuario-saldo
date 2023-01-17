@@ -44,11 +44,11 @@ public class ConsultaService {
 
     public Page<SaldoViewDTO> saldosPorUsuario(Long idUsuario, Integer pagina, Integer quantidadeRegistro, String[] sort) {
 
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-        boolean isUsuarioLogadoPerfilCliente = perfilService.isContemPerfilClienteUsuarioLogado();
-        if(isUsuarioLogadoPerfilCliente && !usuarioLogado.getId().equals(idUsuario)){
-            throw new ExcecaoPersonalizada(LISTA_SALDOS.getMensagem());
-        }
+//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+//        boolean isUsuarioLogadoPerfilCliente = perfilService.isContemPerfilClienteUsuarioLogado();
+//        if(isUsuarioLogadoPerfilCliente && !usuarioLogado.getId().equals(idUsuario)){
+//            throw new ExcecaoPersonalizada(LISTA_SALDOS.getMensagem());
+//        }
 
         List<Sort.Order> orders = getOrders(sort);
         PageRequest pageRequest = PageRequest.of(pagina, quantidadeRegistro, Sort.by(orders));
@@ -78,9 +78,9 @@ public class ConsultaService {
 
     public Page<SaqueViewDTO> saquesPorUsuario(Long idUsuario, Integer pagina, Integer quantidadeRegistro, String[] sort){
 
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
-        verificarUsuarioLogado(usuarioLogado, isUsuarioLogadoPerfilAdmin, idUsuario);
+//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
+//        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
+//        verificarUsuarioLogado(usuarioLogado, isUsuarioLogadoPerfilAdmin, idUsuario);
 
         QSaque qSaque = QSaque.saque;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
