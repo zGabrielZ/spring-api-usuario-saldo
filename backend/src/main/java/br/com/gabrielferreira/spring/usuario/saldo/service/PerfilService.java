@@ -22,11 +22,11 @@ public class PerfilService {
 
     public Map<String, Boolean> isPerfilUsuarioLogado(){
         Map<String, Boolean> map = new HashMap<>();
-        recuperarUsuarioLogado().ifPresent(usuario -> usuario.getPerfis().forEach(perfil -> {
-            map.put(ROLE_ADMIN.getRole(), perfil.getId().equals(ROLE_ADMIN.getId()));
-            map.put(ROLE_FUNCIONARIO.getRole(), perfil.getId().equals(ROLE_FUNCIONARIO.getId()));
-            map.put(ROLE_CLIENTE.getRole(), perfil.getId().equals(ROLE_CLIENTE.getId()));
-        }));
+        recuperarUsuarioLogado().ifPresent(usuario -> {
+            map.put(ROLE_ADMIN.getRole(), usuario.getPerfis().stream().anyMatch(perfil -> perfil.getNome().equals(ROLE_ADMIN.getRole())));
+            map.put(ROLE_FUNCIONARIO.getRole(), usuario.getPerfis().stream().anyMatch(perfil -> perfil.getNome().equals(ROLE_FUNCIONARIO.getRole())));
+            map.put(ROLE_CLIENTE.getRole(), usuario.getPerfis().stream().anyMatch(perfil -> perfil.getNome().equals(ROLE_CLIENTE.getRole())));
+        });
         return map;
     }
 }
