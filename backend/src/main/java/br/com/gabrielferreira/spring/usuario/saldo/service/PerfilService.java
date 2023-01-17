@@ -17,15 +17,18 @@ public class PerfilService {
 
     public Optional<Usuario> recuperarUsuarioLogado(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal() != null && authentication.getPrincipal().equals("anonymousUser")){
+            return Optional.empty();
+        }
         return Optional.ofNullable((Usuario) authentication.getPrincipal());
     }
 
     public Map<String, Boolean> isPerfilUsuarioLogado(){
         Map<String, Boolean> map = new HashMap<>();
         recuperarUsuarioLogado().ifPresent(usuario -> {
-            map.put(ROLE_ADMIN.getRole(), usuario.getPerfis().stream().anyMatch(perfil -> perfil.getNome().equals(ROLE_ADMIN.getRole())));
-            map.put(ROLE_FUNCIONARIO.getRole(), usuario.getPerfis().stream().anyMatch(perfil -> perfil.getNome().equals(ROLE_FUNCIONARIO.getRole())));
-            map.put(ROLE_CLIENTE.getRole(), usuario.getPerfis().stream().anyMatch(perfil -> perfil.getNome().equals(ROLE_CLIENTE.getRole())));
+            map.put(ROLE_ADMIN.getRoleCompleta(), usuario.getPerfis().stream().anyMatch(perfil -> perfil.getNome().equals(ROLE_ADMIN.getRoleCompleta())));
+            map.put(ROLE_FUNCIONARIO.getRoleCompleta(), usuario.getPerfis().stream().anyMatch(perfil -> perfil.getNome().equals(ROLE_FUNCIONARIO.getRoleCompleta())));
+            map.put(ROLE_CLIENTE.getRoleResumida(), usuario.getPerfis().stream().anyMatch(perfil -> perfil.getNome().equals(ROLE_CLIENTE.getRoleCompleta())));
         });
         return map;
     }

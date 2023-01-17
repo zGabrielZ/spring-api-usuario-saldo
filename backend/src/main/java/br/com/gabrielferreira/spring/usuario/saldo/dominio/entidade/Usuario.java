@@ -61,11 +61,11 @@ public class Usuario implements Serializable, UserDetails {
     @Column(name = "DATA_INCLUSAO", nullable = false)
     private ZonedDateTime dataInclusao;
 
-    @JoinColumn(name = "USUARIO_ALTERACAO_ID", nullable = false)
+    @JoinColumn(name = "USUARIO_ALTERACAO_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuarioAlteracao;
 
-    @Column(name = "DATA_ALTERACAO", nullable = false)
+    @Column(name = "DATA_ALTERACAO")
     private ZonedDateTime dataAlteracao;
 
     @Builder.Default

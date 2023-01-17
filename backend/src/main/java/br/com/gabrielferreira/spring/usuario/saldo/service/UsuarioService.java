@@ -58,22 +58,12 @@ public class UsuarioService {
         List<PerfilInsertFormDTO> perfis = perfilValidacaoService.validarPerfilUsuarioInsert(usuarioLogado, usuarioInsertFormDTO.getPerfis());
         List<PerfilInsertFormDTO> perfisVerificado = perfilValidacaoService.validarPerfilInformadoUsuarioInsert(perfis);
 
-        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisVerificado, BigDecimal.ZERO, usuarioLogado);
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisVerificado, BigDecimal.ZERO);
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        verificarUsuarioLogado(usuarioLogado, usuario);
         usuario = usuarioRepositorio.save(usuario);
 
         return UsuarioDTOFactory.toUsuarioInsertResponseDTO(usuario, "SECRETO");
-
-//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-//        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
-//        verificarPerfil(usuarioInsertFormDTO.getPerfis(), usuarioLogado, isUsuarioLogadoPerfilAdmin);
-
-//        List<PerfilInsertFormDTO> perfisDtos = validarPerfis(usuarioInsertFormDTO.getPerfis(), isUsuarioLogadoPerfilAdmin);
-//        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisDtos, BigDecimal.ZERO);
-//        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-//        usuario = usuarioRepositorio.save(usuario);
-//
-//        return UsuarioDTOFactory.toUsuarioInsertResponseDTO(usuario, "SECRETO");
     }
 
     public UsuarioViewDTO buscarPorId(Long id){
@@ -183,36 +173,6 @@ public class UsuarioService {
         });
     }
 
-    private void verificarPerfil(List<PerfilInsertFormDTO> perfis, Usuario usuarioLogado, boolean isUsuarioLogadoPerfilAdmin){
-        if(usuarioLogado != null && isUsuarioLogadoPerfilAdmin && perfis.isEmpty()){
-            throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
-        } else if(usuarioLogado != null && !isUsuarioLogadoPerfilAdmin){
-            throw new ExcecaoPersonalizada(PERFIL_USUARIO_ADMIN.getMensagem());
-        }
-
-        verificarPerfisDuplicados(perfis);
-    }
-
-    private void verificarPerfisDuplicados(List<PerfilInsertFormDTO> perfis){
-        perfis.forEach(perfilInsertFormDTO -> {
-            int duplicados = Collections.frequency(perfis, perfilInsertFormDTO);
-
-            if (duplicados > 1) {
-                throw new ExcecaoPersonalizada(PERFIL_USUARIO_ADMIN_REPETIDO.getMensagem());
-            }
-        });
-    }
-
-    private List<PerfilInsertFormDTO> validarPerfis(List<PerfilInsertFormDTO> perfis, boolean isUsuarioLogadoPerfilAdmin){
-        List<PerfilInsertFormDTO> perfilInsertFormDTOS = new ArrayList<>();
-        if(isUsuarioLogadoPerfilAdmin){
-            perfilInsertFormDTOS = perfis;
-        } else {
-            perfilInsertFormDTOS.add(PerfilInsertFormDTO.builder().id(RoleEnum.ROLE_CLIENTE.getId()).build());
-        }
-        return perfilInsertFormDTOS;
-    }
-
     private void verificarUsuarioLogado(Usuario usuarioLogado, Usuario usuarioEncontrado, boolean isUsuarioLogadoPerfilAdmin, List<PerfilInsertFormDTO> perfis){
         if(!isUsuarioLogadoPerfilAdmin && !usuarioLogado.equals(usuarioEncontrado)){
             throw new ExcecaoPersonalizada(USUARIO_ATUALIZAR_PERMISSAO.getMensagem());
@@ -230,6 +190,15 @@ public class UsuarioService {
 //        if(!usuarioLogado.getId().equals(idUsuarioEncontrado) && !isUsuarioLogadoPerfilAdmin){
 //            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
 //        }
+    }
+
+    private void verificarUsuarioLogado(Usuario usuarioLogado, Usuario usuarioAoInserir){
+        if(usuarioLogado != null){
+            usuarioAoInserir.setUsuarioInclusao(usuarioLogado);
+        } else {
+            usuarioAoInserir.setUsuarioInclusao(usuarioAoInserir);
+            usuarioAoInserir.setUsuarioAlteracao(usuarioAoInserir);
+        }
     }
 
 }
