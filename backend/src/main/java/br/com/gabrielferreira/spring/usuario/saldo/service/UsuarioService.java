@@ -38,6 +38,8 @@ public class UsuarioService {
 
     private final PerfilService perfilService;
 
+    private final PerfilValidacaoService perfilValidacaoService;
+
     private final UsuarioRepositorio usuarioRepositorio;
 
     private final PasswordEncoder passwordEncoder;
@@ -47,10 +49,20 @@ public class UsuarioService {
     @Transactional
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioInsertResponseDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
-        usuarioInsertFormDTO.setCpf(limparMascaraCpf(usuarioInsertFormDTO.getCpf()));
+        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado().orElse(null);
 
+        usuarioInsertFormDTO.setCpf(limparMascaraCpf(usuarioInsertFormDTO.getCpf()));
         verificarEmail(usuarioInsertFormDTO.getEmail());
         verificarCpf(usuarioInsertFormDTO.getCpf());
+
+        List<PerfilInsertFormDTO> perfis = perfilValidacaoService.validarPerfilUsuarioInsert(usuarioLogado, usuarioInsertFormDTO.getPerfis());
+        List<PerfilInsertFormDTO> perfisVerificado = perfilValidacaoService.validarPerfilInformadoUsuarioInsert(perfis);
+
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisVerificado, BigDecimal.ZERO, usuarioLogado);
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        usuario = usuarioRepositorio.save(usuario);
+
+        return UsuarioDTOFactory.toUsuarioInsertResponseDTO(usuario, "SECRETO");
 
 //        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
 //        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
@@ -62,7 +74,6 @@ public class UsuarioService {
 //        usuario = usuarioRepositorio.save(usuario);
 //
 //        return UsuarioDTOFactory.toUsuarioInsertResponseDTO(usuario, "SECRETO");
-        return null;
     }
 
     public UsuarioViewDTO buscarPorId(Long id){
