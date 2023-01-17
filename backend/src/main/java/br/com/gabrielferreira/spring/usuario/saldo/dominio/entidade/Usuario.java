@@ -9,9 +9,13 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.*;
 
 @Data
 @Builder
@@ -47,12 +51,26 @@ public class Usuario implements Serializable, UserDetails {
     @Column(name = "DATA_NASCIMENTO", nullable = false)
     private LocalDate dataNascimento;
 
+    @Column(name = "SALDO_TOTAL", nullable = false)
+    private BigDecimal saldoTotal;
+
+    @JoinColumn(name = "USUARIO_INCLUSAO_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Usuario usuarioInclusao;
+
+    @Column(name = "DATA_INCLUSAO", nullable = false)
+    private ZonedDateTime dataInclusao;
+
+    @JoinColumn(name = "USUARIO_ALTERACAO_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Usuario usuarioAlteracao;
+
+    @Column(name = "DATA_ALTERACAO", nullable = false)
+    private ZonedDateTime dataAlteracao;
+
     @Builder.Default
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<Saldo> saldos = new ArrayList<>();
-
-    @Column(name = "SALDO_TOTAL")
-    private BigDecimal saldoTotal;
 
     @Builder.Default
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "usuario", fetch = FetchType.LAZY)
@@ -64,6 +82,16 @@ public class Usuario implements Serializable, UserDetails {
                 joinColumns = @JoinColumn(name = "USUARIO_ID", referencedColumnName = "ID", table = "USUARIO"),
                 inverseJoinColumns = @JoinColumn(name = "PERFIL_ID", referencedColumnName = "ID", table = "PERFIL"))
     private List<Perfil> perfis = new ArrayList<>();
+
+    @PrePersist
+    private void preInsercao(){
+        dataInclusao = ZonedDateTime.now(ZoneId.of(AMERICA_SAO_PAULO));
+    }
+
+    @PreUpdate
+    private void preUpdate(){
+        dataAlteracao = ZonedDateTime.now(ZoneId.of(AMERICA_SAO_PAULO));
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

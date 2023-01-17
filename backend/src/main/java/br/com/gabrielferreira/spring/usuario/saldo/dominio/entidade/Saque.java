@@ -32,8 +32,8 @@ public class Saque implements Serializable {
     @Column(name = "DATA_SAQUE", nullable = false)
     private LocalDateTime dataSaque;
 
-    @JoinColumn(name = "USUARIO_ID")
-    @ManyToOne
+    @JoinColumn(name = "USUARIO_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
 
 }

@@ -47,8 +47,8 @@ public class SaldoService {
         verificarValorDeposito(saldoFormDTO.getDeposito());
         LocalDateTime dataAtual = LocalDateTime.now(clock);
         Saldo saldo = SaldoEntidadeFactory.toSaldoInsertEntidade(saldoFormDTO, dataAtual);
-        verificarDataAtualDeposito(saldo.getDataDeposito());
-        verificarFeriadoNacional(saldo.getDataDeposito());
+        //verificarDataAtualDeposito(saldo.getDataDeposito());
+        //verificarFeriadoNacional(saldo.getDataDeposito());
         saldo = saldoRepositorio.save(saldo);
 
         BigDecimal valorTotal = saldoTotalPorUsuario(usuario.id());

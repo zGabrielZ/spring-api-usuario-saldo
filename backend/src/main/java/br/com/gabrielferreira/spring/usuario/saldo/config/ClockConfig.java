@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import java.time.Clock;
 import java.time.ZoneId;
 
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.*;
+
 @Configuration
 public class ClockConfig {
-
-    private static final String AMERICA_SAO_PAULO = "America/Sao_Paulo";
 
     @Bean
     public Clock getClock(){

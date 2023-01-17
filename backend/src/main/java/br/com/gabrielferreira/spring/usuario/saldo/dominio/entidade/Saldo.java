@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @Builder
@@ -30,10 +30,14 @@ public class Saldo implements Serializable {
     private BigDecimal deposito;
 
     @Column(name = "DATA_DEPOSITO", nullable = false)
-    private LocalDateTime dataDeposito;
+    private ZonedDateTime dataDeposito;
 
-    @JoinColumn(name = "USUARIO_ID")
-    @ManyToOne
+    @JoinColumn(name = "USUARIO_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
+
+    @JoinColumn(name = "USUARIO_DEPOSITANTE_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Usuario usuarioDepositante;
 
 }
