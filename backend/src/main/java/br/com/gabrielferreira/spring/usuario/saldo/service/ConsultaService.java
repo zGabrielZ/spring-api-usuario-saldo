@@ -12,6 +12,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioVi
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.modelo.ConsultaUsuario;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
+import br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -36,7 +37,7 @@ import static com.querydsl.core.group.GroupBy.list;
 @Service
 public class ConsultaService {
 
-    private final PerfilService perfilService;
+    private final LoginUsuarioUtils loginUsuarioUtils;
 
     private final QueryDslDAO queryDslDAO;
 

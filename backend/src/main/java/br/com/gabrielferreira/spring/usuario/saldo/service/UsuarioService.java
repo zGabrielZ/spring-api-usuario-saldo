@@ -10,7 +10,6 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioIn
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.*;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.RoleEnum;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.UsuarioEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.RecursoNaoEncontrado;
@@ -19,7 +18,6 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.*;
 import static com.querydsl.core.group.GroupBy.*;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -35,8 +34,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
-
-    private final PerfilService perfilService;
 
     private final PerfilValidacaoService perfilValidacaoService;
 
@@ -49,13 +46,13 @@ public class UsuarioService {
     @Transactional
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioInsertResponseDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado().orElse(null);
+        Usuario usuarioLogado = getRecuperarUsuarioLogado();
 
         usuarioInsertFormDTO.setCpf(limparMascaraCpf(usuarioInsertFormDTO.getCpf()));
         verificarEmail(usuarioInsertFormDTO.getEmail());
         verificarCpf(usuarioInsertFormDTO.getCpf());
 
-        List<PerfilInsertFormDTO> perfis = perfilValidacaoService.validarPerfilUsuarioInsert(usuarioLogado, usuarioInsertFormDTO.getPerfis());
+        List<PerfilInsertFormDTO> perfis = perfilValidacaoService.validarPerfilUsuarioInsert(usuarioInsertFormDTO.getPerfis());
         List<PerfilInsertFormDTO> perfisVerificado = perfilValidacaoService.validarPerfilInformadoUsuarioInsert(perfis);
 
         Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisVerificado, BigDecimal.ZERO);
@@ -67,8 +64,6 @@ public class UsuarioService {
     }
 
     public UsuarioViewDTO buscarPorId(Long id){
-        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado().orElse(null);
-
         QUsuario qUsuario = QUsuario.usuario;
         QPerfil qPerfil = QPerfil.perfil;
 
@@ -94,7 +89,7 @@ public class UsuarioService {
                         ))).get(id);
 
         UsuarioViewDTO usuarioEncontrado = Optional.ofNullable(usuarioViewDTO).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
-        perfilValidacaoService.validarPerfilUsuarioVisualizacao(usuarioEncontrado.id(), usuarioLogado);
+        perfilValidacaoService.validarPerfilUsuarioVisualizacao(usuarioEncontrado.id());
         return usuarioViewDTO;
     }
 

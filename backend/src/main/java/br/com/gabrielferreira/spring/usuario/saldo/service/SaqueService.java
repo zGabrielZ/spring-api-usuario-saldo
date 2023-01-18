@@ -3,10 +3,10 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.SaqueDTOF
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.SaqueEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
+import br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ public class SaqueService {
 
     private final UsuarioService usuarioService;
 
-    private final PerfilService perfilService;
+    private final LoginUsuarioUtils loginUsuarioUtils;
 
     @Transactional
     public SacarViewDTO sacar(SacarFormDTO sacarFormDTO){

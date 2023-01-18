@@ -6,12 +6,12 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioVi
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.SaldoEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.client.FeriadoNacionalClient;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaldoRepositorio;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
+import br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ public class SaldoService {
 
     private final Clock clock;
 
-    private final PerfilService perfilService;
+    private final LoginUsuarioUtils loginUsuarioUtils;
 
     private final FeriadoNacionalClient nacionalClient;
 
