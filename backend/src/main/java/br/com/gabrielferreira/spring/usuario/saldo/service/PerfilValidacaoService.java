@@ -45,6 +45,15 @@ public class PerfilValidacaoService {
         }
     }
 
+    public void validarPerfilUsuarioVisualizacao(Long idUsuarioEncontrado, Usuario usuarioLogado){
+        boolean isAdmin = perfilService.isPerfilUsuarioLogado().get(ROLE_ADMIN.getRoleCompleta());
+        setAdminUsuarioLogado(isAdmin);
+
+        if(usuarioLogado != null && !usuarioLogado.getId().equals(idUsuarioEncontrado) && !isAdminUsuarioLogado()){
+            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
+        }
+    }
+
     private List<PerfilInsertFormDTO> verificarPerfisDuplicados(List<PerfilInsertFormDTO> perfis){
         perfis.forEach(perfilInsertFormDTO -> {
             int duplicados = Collections.frequency(perfis, perfilInsertFormDTO);

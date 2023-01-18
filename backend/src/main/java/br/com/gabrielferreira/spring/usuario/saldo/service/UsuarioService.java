@@ -67,18 +67,16 @@ public class UsuarioService {
     }
 
     public UsuarioViewDTO buscarPorId(Long id){
-
+        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado().orElse(null);
 
         QUsuario qUsuario = QUsuario.usuario;
         QPerfil qPerfil = QPerfil.perfil;
-        QSaldo qSaldo = QSaldo.saldo;
-        QSaque qSaque = QSaque.saque;
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(qUsuario.id.eq(id));
 
         UsuarioViewDTO usuarioViewDTO = queryDslDAO.query(JPAQuery::select)
-                .from(qUsuario).innerJoin(qUsuario.perfis, qPerfil).leftJoin(qUsuario.saldos, qSaldo).leftJoin(qUsuario.saques, qSaque)
+                .from(qUsuario).innerJoin(qUsuario.perfis, qPerfil)
                 .where(booleanBuilder).
                 transform(groupBy(qUsuario.id)
                         .as(Projections.constructor(
@@ -96,14 +94,14 @@ public class UsuarioService {
                         ))).get(id);
 
         UsuarioViewDTO usuarioEncontrado = Optional.ofNullable(usuarioViewDTO).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
-        verificarUsuarioLogado(usuarioEncontrado.id());
+        perfilValidacaoService.validarPerfilUsuarioVisualizacao(usuarioEncontrado.id(), usuarioLogado);
         return usuarioViewDTO;
     }
 
     public SaldoTotalViewDTO buscarSaldoTotal(Long id){
 
         Usuario usuarioEncontrado = buscarUsuario(id);
-        verificarUsuarioLogado(usuarioEncontrado.getId());
+        //verificarUsuarioLogado(usuarioEncontrado.getId());
 
         return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
     }
@@ -181,15 +179,6 @@ public class UsuarioService {
         } else if(isUsuarioLogadoPerfilAdmin && perfis.isEmpty()){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
         }
-    }
-
-    private void verificarUsuarioLogado(Long idUsuarioEncontrado){
-//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-//        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
-//
-//        if(!usuarioLogado.getId().equals(idUsuarioEncontrado) && !isUsuarioLogadoPerfilAdmin){
-//            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
-//        }
     }
 
     private void verificarUsuarioLogado(Usuario usuarioLogado, Usuario usuarioAoInserir){
