@@ -52,7 +52,8 @@ public class PerfilValidacaoService {
     }
 
     public void validarPerfilUsuarioVisualizacao(Long idUsuarioEncontrado){
-        if(getRecuperarUsuarioLogado() != null && !getRecuperarUsuarioLogado().getId().equals(idUsuarioEncontrado) && !isAdmin()){
+        Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        if(usuarioLogado != null && !usuarioLogado.getId().equals(idUsuarioEncontrado) && !isAdmin()){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
         }
     }
