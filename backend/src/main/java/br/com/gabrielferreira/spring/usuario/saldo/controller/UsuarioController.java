@@ -54,6 +54,7 @@ public class UsuarioController {
     @ApiResponses(value = {
             @ApiResponse(code = 200,message = "Retornou um usuário"),
             @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado")
     })
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioViewDTO> buscarPorId(@PathVariable Long id){
