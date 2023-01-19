@@ -29,13 +29,11 @@ public class PerfilValidacaoService {
     }
 
     public void validarPerfilUsuarioUpdate(List<PerfilInsertFormDTO> perfis, Usuario usuarioEncontrado){
-
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        boolean isNaoAdmin = (isCliente() || isFuncionario()) && isAdmin();
         if(usuarioLogado != null){
-            if(isNaoAdmin && !usuarioLogado.getId().equals(usuarioEncontrado.getId())){
+            if(!isAdmin() && !usuarioLogado.getId().equals(usuarioEncontrado.getId())){
                 throw new ExcecaoPersonalizada(USUARIO_ATUALIZAR_PERMISSAO.getMensagem());
-            } else if (usuarioLogado.getId().equals(usuarioEncontrado.getId()) && isNaoAdmin && !perfis.isEmpty()){
+            } else if (!isAdmin() && usuarioLogado.getId().equals(usuarioEncontrado.getId()) && !perfis.isEmpty()){
                 throw new ExcecaoPersonalizada(USUARIO_INCLUIR_ALTERAR.getMensagem());
             } else if(isAdmin() && perfis.isEmpty()){
                 throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
