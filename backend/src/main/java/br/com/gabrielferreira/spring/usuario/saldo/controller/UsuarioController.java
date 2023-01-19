@@ -77,6 +77,7 @@ public class UsuarioController {
     @ApiResponses(value = {
             @ApiResponse(code = 204,message = "Deletou um usuário"),
             @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarPorId(@PathVariable Long id){

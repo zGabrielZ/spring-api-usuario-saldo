@@ -112,18 +112,12 @@ public class UsuarioService {
         return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
     }
 
+    //:TODO PRECISAMOS FAZER UM EXCLUSAO LOGICO NO BANCO DE DADOS
     @Transactional
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public void deletarPorId(Long id){
-
         Usuario usuarioEncontrado = buscarUsuario(id);
-
-//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-//
-//        if(usuarioLogado.getId().equals(usuarioEncontrado.getId())){
-//            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DELETAR_ADMIN_PROPRIO.getMensagem());
-//        }
-
+        perfilValidacaoService.validarPerfilUsuarioDelete(usuarioEncontrado);
         usuarioRepositorio.deleteById(usuarioEncontrado.getId());
     }
 

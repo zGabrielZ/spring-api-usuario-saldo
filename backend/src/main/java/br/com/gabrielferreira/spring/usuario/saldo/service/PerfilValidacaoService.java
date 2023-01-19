@@ -41,6 +41,13 @@ public class PerfilValidacaoService {
         }
     }
 
+    public void validarPerfilUsuarioDelete(Usuario usuarioEncontrado){
+        Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        if (usuarioLogado != null && usuarioLogado.getId().equals(usuarioEncontrado.getId())) {
+            throw new ExcecaoPersonalizada(PERFIL_USUARIO_DELETAR_ADMIN_PROPRIO.getMensagem());
+        }
+    }
+
     public List<PerfilInsertFormDTO> validarPerfilInformadoUsuarioInsert(List<PerfilInsertFormDTO> perfis){
         if(isAdmin()){
             return perfis;
