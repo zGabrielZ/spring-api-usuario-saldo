@@ -5,10 +5,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.UsuarioDT
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertResponseDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.*;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.*;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.UsuarioEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
@@ -93,6 +90,20 @@ public class UsuarioService {
         return usuarioViewDTO;
     }
 
+    @Transactional
+    //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
+    public UsuarioUpdateResponseDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
+        Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        Usuario usuarioEncontrado = buscarUsuario(id);
+
+        perfilValidacaoService.validarPerfilUsuarioUpdate(usuarioUpdateFormDTO.getPerfis(), usuarioEncontrado);
+
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado, usuarioUpdateFormDTO.getPerfis(), usuarioLogado);
+        usuarioRepositorio.save(usuario);
+
+        return UsuarioDTOFactory.toUsuarioUpdateResponseDTO(usuario);
+    }
+
     public SaldoTotalViewDTO buscarSaldoTotal(Long id){
 
         Usuario usuarioEncontrado = buscarUsuario(id);
@@ -114,21 +125,6 @@ public class UsuarioService {
 //        }
 
         usuarioRepositorio.deleteById(usuarioEncontrado.getId());
-    }
-
-    @Transactional
-    //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
-    public UsuarioViewDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
-        Usuario usuarioEncontrado = buscarUsuario(id);
-
-//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-//        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
-//        verificarUsuarioLogado(usuarioLogado, usuarioEncontrado, isUsuarioLogadoPerfilAdmin, usuarioUpdateFormDTO.getPerfis());
-
-        Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado, usuarioUpdateFormDTO.getPerfis());
-        usuarioRepositorio.save(usuario);
-        //return UsuarioDTOFactory.toUsuarioViewDTO(usuario);
-        return null;
     }
 
     @Transactional
@@ -164,16 +160,6 @@ public class UsuarioService {
         usuarioRepositorio.existsCpf(cpf).ifPresent(usuario -> {
             throw new ExcecaoPersonalizada(CPF_CADASTRADO.getMensagem());
         });
-    }
-
-    private void verificarUsuarioLogado(Usuario usuarioLogado, Usuario usuarioEncontrado, boolean isUsuarioLogadoPerfilAdmin, List<PerfilInsertFormDTO> perfis){
-        if(!isUsuarioLogadoPerfilAdmin && !usuarioLogado.equals(usuarioEncontrado)){
-            throw new ExcecaoPersonalizada(USUARIO_ATUALIZAR_PERMISSAO.getMensagem());
-        } else if (usuarioLogado.equals(usuarioEncontrado) && !isUsuarioLogadoPerfilAdmin && !perfis.isEmpty()){
-            throw new ExcecaoPersonalizada(USUARIO_INCLUIR_ALTERAR.getMensagem());
-        } else if(isUsuarioLogadoPerfilAdmin && perfis.isEmpty()){
-            throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
-        }
     }
 
     private void verificarUsuarioLogado(Usuario usuarioLogado, Usuario usuarioAoInserir){

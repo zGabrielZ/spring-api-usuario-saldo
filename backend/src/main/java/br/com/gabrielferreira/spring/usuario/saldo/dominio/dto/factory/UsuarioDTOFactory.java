@@ -1,6 +1,7 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertResponseDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateResponseDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.utils.MascarasUtils;
 
@@ -26,6 +27,16 @@ public class UsuarioDTOFactory implements Serializable {
         usuarioInsertResponseDTO.setPerfis(perfis);
         usuarioInsertResponseDTO.setCpf(MascarasUtils.toCpfFormatado(usuario.getCpf()));
         return usuarioInsertResponseDTO;
+    }
+
+    public static UsuarioUpdateResponseDTO toUsuarioUpdateResponseDTO(Usuario usuario){
+        List<PerfilInsertFormDTO> perfis = PerfilDTOFactory.toPerfisInsert(usuario.getPerfis());
+        UsuarioUpdateResponseDTO usuarioUpdateResponseDTO = new UsuarioUpdateResponseDTO();
+        usuarioUpdateResponseDTO.setId(usuario.getId());
+        usuarioUpdateResponseDTO.setNome(usuario.getNome());
+        usuarioUpdateResponseDTO.setDataNascimento(usuario.getDataNascimento());
+        usuarioUpdateResponseDTO.setPerfis(perfis);
+        return usuarioUpdateResponseDTO;
     }
 
 }

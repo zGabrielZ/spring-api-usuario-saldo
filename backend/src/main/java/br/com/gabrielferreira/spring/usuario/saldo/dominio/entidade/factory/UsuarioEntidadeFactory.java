@@ -29,7 +29,7 @@ public class UsuarioEntidadeFactory implements Serializable {
                 .build();
     }
 
-    public static Usuario toUsuarioUpdateEntidade(UsuarioUpdateFormDTO usuarioUpdateFormDTO, Usuario usuario, List<PerfilInsertFormDTO> perfisDtos){
+    public static Usuario toUsuarioUpdateEntidade(UsuarioUpdateFormDTO usuarioUpdateFormDTO, Usuario usuario, List<PerfilInsertFormDTO> perfisDtos, Usuario usuarioLogado){
         List<Perfil> perfis = PerfilEntidadeFactory.toPerfis(perfisDtos);
 
         if(!perfis.isEmpty()){
@@ -38,6 +38,7 @@ public class UsuarioEntidadeFactory implements Serializable {
 
         usuario.setNome(usuarioUpdateFormDTO.getNome().trim());
         usuario.setDataNascimento(usuarioUpdateFormDTO.getDataNascimento());
+        usuario.setUsuarioAlteracao(usuarioLogado);
         return usuario;
     }
 }

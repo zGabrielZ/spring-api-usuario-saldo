@@ -5,10 +5,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDT
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioInsertResponseDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioUpdateFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.*;
 import br.com.gabrielferreira.spring.usuario.saldo.service.ConsultaService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaqueService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
@@ -62,6 +59,19 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuario);
     }
 
+    @ApiOperation("Atualizar usuário")
+    @ResponseStatus(code = HttpStatus.OK)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "Atualizou um usuário"),
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
+            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioUpdateResponseDTO> atualizarDados(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateFormDTO usuarioUpdateFormDTO){
+        UsuarioUpdateResponseDTO usuario = usuarioService.atualizar(id, usuarioUpdateFormDTO);
+        return ResponseEntity.ok().body(usuario);
+    }
+
     @ApiOperation("Deletar usuário por ID")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
@@ -72,19 +82,6 @@ public class UsuarioController {
     public ResponseEntity<Void> deletarPorId(@PathVariable Long id){
         usuarioService.deletarPorId(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ApiOperation("Atualizar usuário")
-    @ResponseStatus(code = HttpStatus.OK)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200,message = "Atualizou um usuário"),
-            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
-            @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<UsuarioViewDTO> atualizarDados(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateFormDTO usuarioUpdateFormDTO){
-        UsuarioViewDTO usuario = usuarioService.atualizar(id, usuarioUpdateFormDTO);
-        return ResponseEntity.ok().body(usuario);
     }
 
     @ApiOperation(value = "Lista de usuários")
