@@ -2,10 +2,12 @@ package br.com.gabrielferreira.spring.usuario.saldo.utils;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.RoleEnum;
-import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.RoleEnum.*;
 
@@ -23,31 +25,32 @@ public class LoginUsuarioUtils {
     }
 
     public static boolean isAdmin(){
-        return getRoleEnum().equals(ROLE_ADMIN);
+        return getRolesEnuns().contains(ROLE_ADMIN);
     }
 
     public static boolean isFuncionario(){
-        return getRoleEnum().equals(ROLE_FUNCIONARIO);
+        return getRolesEnuns().contains(ROLE_FUNCIONARIO);
     }
 
     public static boolean isCliente(){
-        return getRoleEnum().equals(ROLE_CLIENTE);
+        return getRolesEnuns().contains(ROLE_CLIENTE);
     }
 
-    private static RoleEnum getRoleEnum(){
+    private static List<RoleEnum> getRolesEnuns(){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        List<RoleEnum> roles = new ArrayList<>();
         if(usuarioLogado != null && usuarioLogado.getPerfis() != null){
             for (Perfil perfil : usuarioLogado.getPerfis()) {
                 if(perfil.getNome().equals(ROLE_ADMIN.getRoleCompleta())){
-                    return ROLE_ADMIN;
+                    roles.add(ROLE_ADMIN);
                 } else if(perfil.getNome().equals(ROLE_FUNCIONARIO.getRoleCompleta())){
-                    return ROLE_FUNCIONARIO;
+                    roles.add(ROLE_FUNCIONARIO);
                 } else if(perfil.getNome().equals(ROLE_CLIENTE.getRoleCompleta())){
-                    return ROLE_CLIENTE;
+                    roles.add(ROLE_CLIENTE);
                 }
             }
         }
-        throw new ExcecaoPersonalizada("Nenhum perfil encaixado ao usuario");
+        return roles;
     }
 
 }
