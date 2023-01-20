@@ -26,7 +26,11 @@ import static com.querydsl.core.group.GroupBy.*;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils.*;
 
 import java.math.BigDecimal;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
+
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -112,13 +116,18 @@ public class UsuarioService {
         return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
     }
 
-    //:TODO PRECISAMOS FAZER UM EXCLUSAO LOGICO NO BANCO DE DADOS
     @Transactional
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public void deletarPorId(Long id){
+        Usuario usuarioLogado = getRecuperarUsuarioLogado();
         Usuario usuarioEncontrado = buscarUsuario(id);
-        perfilValidacaoService.validarPerfilUsuarioDelete(usuarioEncontrado);
-        usuarioRepositorio.deleteById(usuarioEncontrado.getId());
+
+        perfilValidacaoService.validarPerfilUsuarioDelete(usuarioEncontrado, usuarioLogado);
+
+        usuarioEncontrado.setUsuarioExclusao(usuarioLogado);
+        usuarioEncontrado.setDataExclusao(ZonedDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)));
+        usuarioEncontrado.setExcluido(true);
+        usuarioRepositorio.save(usuarioEncontrado);
     }
 
     @Transactional

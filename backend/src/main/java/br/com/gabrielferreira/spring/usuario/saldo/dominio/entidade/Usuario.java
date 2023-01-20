@@ -1,6 +1,7 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -67,6 +68,18 @@ public class Usuario implements Serializable, UserDetails {
 
     @Column(name = "DATA_ALTERACAO")
     private ZonedDateTime dataAlteracao;
+
+    @JoinColumn(name = "USUARIO_EXCLUSAO_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Usuario usuarioExclusao;
+
+    @Column(name = "DATA_EXCLUSAO")
+    private ZonedDateTime dataExclusao;
+
+    // :TODO COLOCAR EM ENUM
+    @Type(type = "numeric_boolean")
+    @Column(name = "EXCLUIDO", nullable = false)
+    private Boolean excluido;
 
     @Builder.Default
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "usuario", fetch = FetchType.LAZY)

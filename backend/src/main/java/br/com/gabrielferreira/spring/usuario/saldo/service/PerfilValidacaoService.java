@@ -41,8 +41,7 @@ public class PerfilValidacaoService {
         }
     }
 
-    public void validarPerfilUsuarioDelete(Usuario usuarioEncontrado){
-        Usuario usuarioLogado = getRecuperarUsuarioLogado();
+    public void validarPerfilUsuarioDelete(Usuario usuarioEncontrado, Usuario usuarioLogado){
         if (usuarioLogado != null && usuarioLogado.getId().equals(usuarioEncontrado.getId())) {
             throw new ExcecaoPersonalizada(PERFIL_USUARIO_DELETAR_ADMIN_PROPRIO.getMensagem());
         }
