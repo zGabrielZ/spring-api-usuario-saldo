@@ -65,11 +65,14 @@ public class UsuarioService {
     }
 
     public UsuarioViewDTO buscarPorId(Long id){
+        Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        perfilValidacaoService.validarPerfilUsuarioVisualizacao(id, usuarioLogado, isAdmin());
+
         QUsuario qUsuario = QUsuario.usuario;
         QPerfil qPerfil = QPerfil.perfil;
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        booleanBuilder.and(qUsuario.id.eq(id));
+        booleanBuilder.and(qUsuario.id.eq(id)).and(qUsuario.excluido.eq(false));
 
         UsuarioViewDTO usuarioViewDTO = queryDslDAO.query(JPAQuery::select)
                 .from(qUsuario).innerJoin(qUsuario.perfis, qPerfil)
@@ -89,9 +92,7 @@ public class UsuarioService {
                                 ).skipNulls())
                         ))).get(id);
 
-        UsuarioViewDTO usuarioEncontrado = Optional.ofNullable(usuarioViewDTO).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
-        perfilValidacaoService.validarPerfilUsuarioVisualizacao(usuarioEncontrado.id());
-        return usuarioViewDTO;
+        return Optional.ofNullable(usuarioViewDTO).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
     @Transactional
