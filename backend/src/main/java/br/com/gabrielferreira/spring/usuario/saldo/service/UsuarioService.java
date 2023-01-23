@@ -53,10 +53,10 @@ public class UsuarioService {
         verificarEmail(usuarioInsertFormDTO.getEmail());
         verificarCpf(usuarioInsertFormDTO.getCpf());
 
-        List<PerfilInsertFormDTO> perfis = perfilValidacaoService.validarPerfilUsuarioInsert(usuarioInsertFormDTO.getPerfis());
-        List<PerfilInsertFormDTO> perfisVerificado = perfilValidacaoService.validarPerfilInformadoUsuarioInsert(perfis);
+        List<PerfilInsertFormDTO> perfis = perfilValidacaoService.validarPerfilUsuarioInsert(usuarioInsertFormDTO.getPerfis(), usuarioLogado);
+        List<PerfilInsertFormDTO> perfisVerificado = perfilValidacaoService.validarPerfilInformadoUsuarioInsert(perfis, isAdmin());
 
-        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisVerificado, BigDecimal.ZERO);
+        Usuario usuario = UsuarioEntidadeFactory.toUsuarioInsertEntidade(usuarioInsertFormDTO, perfisVerificado, BigDecimal.ZERO, false);
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         verificarUsuarioLogado(usuarioLogado, usuario);
         usuario = usuarioRepositorio.save(usuario);
@@ -166,7 +166,9 @@ public class UsuarioService {
     }
 
     private void verificarUsuarioLogado(Usuario usuarioLogado, Usuario usuarioAoInserir){
-        if(usuarioLogado != null){
+        if(usuarioLogado != null && usuarioLogado.isExcluido()){
+            throw new ExcecaoPersonalizada(OPERACAO_USUARIO_NAO_ENCONTRADO.getMensagem());
+        } else if(usuarioLogado != null && !usuarioLogado.isExcluido()){
             usuarioAoInserir.setUsuarioInclusao(usuarioLogado);
         } else {
             usuarioAoInserir.setUsuarioInclusao(usuarioAoInserir);

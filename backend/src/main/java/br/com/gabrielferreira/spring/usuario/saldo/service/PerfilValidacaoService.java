@@ -14,9 +14,7 @@ import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 @Service
 public class PerfilValidacaoService {
 
-    public List<PerfilInsertFormDTO> validarPerfilUsuarioInsert(List<PerfilInsertFormDTO> perfis){
-        Usuario usuarioLogado = getRecuperarUsuarioLogado();
-
+    public List<PerfilInsertFormDTO> validarPerfilUsuarioInsert(List<PerfilInsertFormDTO> perfis, Usuario usuarioLogado){
         if(usuarioLogado != null){
             if(isAdmin() && perfis.isEmpty()){
                 throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
@@ -24,7 +22,6 @@ public class PerfilValidacaoService {
                 throw new ExcecaoPersonalizada(PERFIL_USUARIO_ADMIN.getMensagem());
             }
         }
-
         return verificarPerfisDuplicados(perfis);
     }
 
@@ -47,8 +44,8 @@ public class PerfilValidacaoService {
         }
     }
 
-    public List<PerfilInsertFormDTO> validarPerfilInformadoUsuarioInsert(List<PerfilInsertFormDTO> perfis){
-        if(isAdmin()){
+    public List<PerfilInsertFormDTO> validarPerfilInformadoUsuarioInsert(List<PerfilInsertFormDTO> perfis, boolean isAdmin){
+        if(isAdmin){
             return perfis;
         } else {
             return List.of(PerfilInsertFormDTO.builder().id(RoleEnum.ROLE_CLIENTE.getId()).build());

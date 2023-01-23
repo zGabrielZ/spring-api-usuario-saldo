@@ -16,7 +16,7 @@ public class UsuarioEntidadeFactory implements Serializable {
 
     private UsuarioEntidadeFactory(){}
 
-    public static Usuario toUsuarioInsertEntidade(UsuarioInsertFormDTO usuarioInsertFormDTO, List<PerfilInsertFormDTO> perfisDtos, BigDecimal valor){
+    public static Usuario toUsuarioInsertEntidade(UsuarioInsertFormDTO usuarioInsertFormDTO, List<PerfilInsertFormDTO> perfisDtos, BigDecimal valor, boolean excluiodo){
         List<Perfil> perfis = PerfilEntidadeFactory.toPerfis(perfisDtos);
         return Usuario.builder()
                 .nome(usuarioInsertFormDTO.getNome().trim())
@@ -26,6 +26,7 @@ public class UsuarioEntidadeFactory implements Serializable {
                 .dataNascimento(usuarioInsertFormDTO.getDataNascimento())
                 .saldoTotal(valor)
                 .perfis(perfis)
+                .excluido(excluiodo)
                 .build();
     }
 
