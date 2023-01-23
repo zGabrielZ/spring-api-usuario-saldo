@@ -1,7 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade;
 
 import lombok.*;
-import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -76,9 +75,7 @@ public class Usuario implements Serializable, UserDetails {
     @Column(name = "DATA_EXCLUSAO")
     private ZonedDateTime dataExclusao;
 
-    // :TODO COLOCAR EM ENUM
-    @Type(type = "numeric_boolean")
-    @Column(name = "EXCLUIDO", nullable = false)
+    @Column(name = "FLAG_EXCLUIDO", nullable = false)
     private Boolean excluido;
 
     @Builder.Default

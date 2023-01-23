@@ -30,7 +30,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -108,14 +108,6 @@ public class UsuarioService {
         return UsuarioDTOFactory.toUsuarioUpdateResponseDTO(usuario);
     }
 
-    public SaldoTotalViewDTO buscarSaldoTotal(Long id){
-
-        Usuario usuarioEncontrado = buscarUsuario(id);
-        //verificarUsuarioLogado(usuarioEncontrado.getId());
-
-        return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
-    }
-
     @Transactional
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public void deletarPorId(Long id){
@@ -128,6 +120,14 @@ public class UsuarioService {
         usuarioEncontrado.setDataExclusao(ZonedDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)));
         usuarioEncontrado.setExcluido(true);
         usuarioRepositorio.save(usuarioEncontrado);
+    }
+
+    public SaldoTotalViewDTO buscarSaldoTotal(Long id){
+
+        Usuario usuarioEncontrado = buscarUsuario(id);
+        //verificarUsuarioLogado(usuarioEncontrado.getId());
+
+        return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
     }
 
     @Transactional
