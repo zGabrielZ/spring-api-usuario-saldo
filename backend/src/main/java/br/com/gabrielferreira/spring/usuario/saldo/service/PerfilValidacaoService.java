@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils.*;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils.isAdmin;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
@@ -25,14 +24,13 @@ public class PerfilValidacaoService {
         return verificarPerfisDuplicados(perfis);
     }
 
-    public void validarPerfilUsuarioUpdate(List<PerfilInsertFormDTO> perfis, Usuario usuarioEncontrado){
-        Usuario usuarioLogado = getRecuperarUsuarioLogado();
+    public void validarPerfilUsuarioUpdate(List<PerfilInsertFormDTO> perfis, Usuario usuarioLogado, Long idUsuarioEncontrado, boolean isAdmin){
         if(usuarioLogado != null){
-            if(!isAdmin() && !usuarioLogado.getId().equals(usuarioEncontrado.getId())){
+            if(!isAdmin && !usuarioLogado.getId().equals(idUsuarioEncontrado)){
                 throw new ExcecaoPersonalizada(USUARIO_ATUALIZAR_PERMISSAO.getMensagem());
-            } else if (!isAdmin() && usuarioLogado.getId().equals(usuarioEncontrado.getId()) && !perfis.isEmpty()){
+            } else if (!isAdmin && !perfis.isEmpty()){
                 throw new ExcecaoPersonalizada(USUARIO_INCLUIR_ALTERAR.getMensagem());
-            } else if(isAdmin() && perfis.isEmpty()){
+            } else if(isAdmin && perfis.isEmpty()){
                 throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
             }
         }

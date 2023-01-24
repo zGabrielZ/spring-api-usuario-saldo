@@ -99,10 +99,9 @@ public class UsuarioService {
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioUpdateResponseDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        Usuario usuarioEncontrado = buscarUsuario(id);
+        perfilValidacaoService.validarPerfilUsuarioUpdate(usuarioUpdateFormDTO.getPerfis(), usuarioLogado, id, isAdmin());
 
-        perfilValidacaoService.validarPerfilUsuarioUpdate(usuarioUpdateFormDTO.getPerfis(), usuarioEncontrado);
-
+        Usuario usuarioEncontrado = buscarUsuario(id, false);
         Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado, usuarioUpdateFormDTO.getPerfis(), usuarioLogado);
         usuarioRepositorio.save(usuario);
 
@@ -113,7 +112,7 @@ public class UsuarioService {
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public void deletarPorId(Long id){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        Usuario usuarioEncontrado = buscarUsuario(id);
+        Usuario usuarioEncontrado = buscarUsuario(id, false);
 
         perfilValidacaoService.validarPerfilUsuarioDelete(usuarioEncontrado, usuarioLogado);
 
@@ -125,7 +124,7 @@ public class UsuarioService {
 
     public SaldoTotalViewDTO buscarSaldoTotal(Long id){
 
-        Usuario usuarioEncontrado = buscarUsuario(id);
+        Usuario usuarioEncontrado = buscarUsuario(id, false);
         //verificarUsuarioLogado(usuarioEncontrado.getId());
 
         return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
@@ -134,7 +133,7 @@ public class UsuarioService {
     @Transactional
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public BigDecimal atualizarSaldoTotal(Long id, BigDecimal valor){
-        Usuario usuario = buscarUsuario(id);
+        Usuario usuario = buscarUsuario(id, false);
         usuario.setSaldoTotal(valor);
         usuarioRepositorio.save(usuario);
         return usuario.getSaldoTotal();
@@ -150,8 +149,8 @@ public class UsuarioService {
         return usuarioRepositorio.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
-    private Usuario buscarUsuario(Long id){
-        return usuarioRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
+    private Usuario buscarUsuario(Long id, boolean excluido){
+        return usuarioRepositorio.findByIdUsuario(id, excluido).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
     private void verificarEmail(String email){
