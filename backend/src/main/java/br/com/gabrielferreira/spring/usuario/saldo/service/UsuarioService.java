@@ -113,6 +113,8 @@ public class UsuarioService {
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public void deletarPorId(Long id){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        verificarSituacaoUsuarioLogado(usuarioLogado);
+
         Usuario usuarioEncontrado = buscarUsuario(id, false);
 
         perfilValidacaoService.validarPerfilUsuarioDelete(usuarioEncontrado, usuarioLogado);
