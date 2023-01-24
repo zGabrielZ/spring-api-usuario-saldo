@@ -102,6 +102,7 @@ public class UsuarioService {
         perfilValidacaoService.validarPerfilUsuarioUpdate(usuarioUpdateFormDTO.getPerfis(), usuarioLogado, id, isAdmin());
 
         Usuario usuarioEncontrado = buscarUsuario(id, false);
+        verificarSituacaoUsuarioLogado(usuarioLogado);
         Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado, usuarioUpdateFormDTO.getPerfis(), usuarioLogado);
         usuarioRepositorio.save(usuario);
 
@@ -166,13 +167,18 @@ public class UsuarioService {
     }
 
     private void verificarUsuarioLogado(Usuario usuarioLogado, Usuario usuarioAoInserir){
-        if(usuarioLogado != null && usuarioLogado.isExcluido()){
-            throw new ExcecaoPersonalizada(OPERACAO_USUARIO_NAO_ENCONTRADO.getMensagem());
-        } else if(usuarioLogado != null && !usuarioLogado.isExcluido()){
+        verificarSituacaoUsuarioLogado(usuarioLogado);
+        if(usuarioLogado != null && !usuarioLogado.isExcluido()){
             usuarioAoInserir.setUsuarioInclusao(usuarioLogado);
         } else {
             usuarioAoInserir.setUsuarioInclusao(usuarioAoInserir);
             usuarioAoInserir.setUsuarioAlteracao(usuarioAoInserir);
+        }
+    }
+
+    private void verificarSituacaoUsuarioLogado(Usuario usuarioLogado){
+        if(usuarioLogado != null && usuarioLogado.isExcluido()){
+            throw new ExcecaoPersonalizada(OPERACAO_USUARIO_NAO_ENCONTRADO.getMensagem());
         }
     }
 
