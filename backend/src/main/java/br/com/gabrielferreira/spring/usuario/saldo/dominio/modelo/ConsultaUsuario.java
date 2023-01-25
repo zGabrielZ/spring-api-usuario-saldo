@@ -11,8 +11,6 @@ public class ConsultaUsuario implements Consulta {
     public static final String EMAIL_ALIAS = "emailUsuario";
     public static final String CPF_ALIAS = "cpfUsuario";
     public static final String DATA_NASCIMENTO_ALIAS = "nascimentoUsuario";
-    public static final String ID_PERFIL_ALIAS = "idPerfil";
-    public static final String PERFIL_DESCRICAO = "descricaoPerfil";
 
     @Override
     public AbstractConsulta getBuscarConsulta(String atributo) {
@@ -32,8 +30,6 @@ public class ConsultaUsuario implements Consulta {
         consultas.add(AbstractConsulta.builder().atributo("email").alias(EMAIL_ALIAS).path(Expressions.stringPath(EMAIL_ALIAS)).build());
         consultas.add(AbstractConsulta.builder().atributo("cpf").alias(CPF_ALIAS).path(Expressions.stringPath(CPF_ALIAS)).build());
         consultas.add(AbstractConsulta.builder().atributo("dataNascimento").alias(DATA_NASCIMENTO_ALIAS).path(Expressions.datePath(LocalDate.class, DATA_NASCIMENTO_ALIAS)).build());
-        consultas.add(AbstractConsulta.builder().atributo("perfis.id").alias(ID_PERFIL_ALIAS).path(Expressions.numberPath(Long.class, ID_PERFIL_ALIAS)).build());
-        consultas.add(AbstractConsulta.builder().atributo("perfis.descricao").alias(PERFIL_DESCRICAO).path(Expressions.stringPath(PERFIL_DESCRICAO)).build());
         return consultas;
     }
 }

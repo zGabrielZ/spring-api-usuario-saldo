@@ -15,6 +15,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,8 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
 
     private final QueryDslDAO queryDslDAO;
+
+    private final ConsultaService consultaService;
 
     @Transactional
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
@@ -123,6 +126,12 @@ public class UsuarioService {
         usuarioEncontrado.setDataExclusao(ZonedDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)));
         usuarioEncontrado.setExcluido(true);
         usuarioRepositorio.save(usuarioEncontrado);
+    }
+
+    public Page<UsuarioViewDTO> buscarUsuarioPaginado(Integer pagina, Integer quantidadeRegistro, String[] sort){
+        Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        verificarSituacaoUsuarioLogado(usuarioLogado);
+        return consultaService.listagem(pagina, quantidadeRegistro, sort);
     }
 
     public SaldoTotalViewDTO buscarSaldoTotal(Long id){

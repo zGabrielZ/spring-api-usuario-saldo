@@ -4,6 +4,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.consulta.Consulta
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.ConsultaDTOFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.*;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.modelo.ConsultaPerfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.modelo.ConsultaSaldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.modelo.ConsultaSaque;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
@@ -14,10 +15,10 @@ import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizad
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 import br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.*;
+import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.*;
@@ -29,8 +30,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.list;
+import static com.querydsl.core.group.GroupBy.*;
 
 
 @RequiredArgsConstructor
@@ -111,34 +111,53 @@ public class ConsultaService {
 
     public Page<UsuarioViewDTO> listagem(Integer pagina, Integer quantidadeRegistro, String[] sort){
 
-        QUsuario qUsuario = QUsuario.usuario;
-        QPerfil qPerfil = QPerfil.perfil;
-
         List<Sort.Order> orders = getOrders(sort);
         PageRequest pageRequest = PageRequest.of(pagina, quantidadeRegistro, Sort.by(orders));
 
+        QUsuario qUsuario = QUsuario.usuario;
+        QUsuario qUsuarioSubQuery = QUsuario.usuario;
+        QPerfil qPerfil = QPerfil.perfil;
+
         List<ConsultaDTO> dadosConsulta = ConsultaDTOFactory.getConsultas("Usuario", pageRequest.getSort().toList());
 
-        List<UsuarioViewDTO> result = queryDslDAO.query(q -> q.select()
-                        .offset(pageRequest.getOffset())
-                        .limit(pageRequest.getPageSize())
-                        .orderBy(getSort(dadosConsulta)))
+        Expression<Long> usuarioId = ExpressionUtils.as(qUsuarioSubQuery.id, ConsultaUsuario.ID_ALIAS);
+        Expression<String> usuarioNome = ExpressionUtils.as(qUsuarioSubQuery.nome, ConsultaUsuario.NOME_ALIAS);
+        Expression<String> usuarioEmail = ExpressionUtils.as(qUsuarioSubQuery.email, ConsultaUsuario.EMAIL_ALIAS);
+        Expression<String> usuarioCpf = ExpressionUtils.as(qUsuarioSubQuery.cpf, ConsultaUsuario.CPF_ALIAS);
+        Expression<LocalDate> usuarioNascimento = ExpressionUtils.as(qUsuarioSubQuery.dataNascimento, ConsultaUsuario.DATA_NASCIMENTO_ALIAS);
+
+        List<Tuple> tuplesUsuarioSubQuery = queryDslDAO.query(q -> q.select(usuarioId, usuarioNome, usuarioEmail, usuarioCpf ,usuarioNascimento)).from(qUsuarioSubQuery)
+                .where(qUsuarioSubQuery.excluido.eq(false))
+                .offset(pageRequest.getOffset()).limit(pageRequest.getPageSize()).orderBy(getSort(dadosConsulta)).fetch();
+
+        List<Long> ids = new ArrayList<>();
+        tuplesUsuarioSubQuery.forEach(tuple -> ids.add(tuple.get(0, Long.class)));
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(qUsuario.id.in(ids));
+
+        List<ConsultaDTO> dadosConsulta2 = ConsultaDTOFactory.getConsultas("Perfil", pageRequest.getSort().toList());
+        dadosConsulta.addAll(dadosConsulta2);
+
+        List<UsuarioViewDTO> result = queryDslDAO.query(JPAQuery::select)
                 .from(qUsuario)
                 .innerJoin(qUsuario.perfis, qPerfil)
+                .where(booleanBuilder)
+                .orderBy(getSort(dadosConsulta))
                 .transform(
                         groupBy(qUsuario.id)
                                 .list(Projections.constructor(
                                         UsuarioViewDTO.class,
-                                        qUsuario.id.as(ConsultaUsuario.ID_ALIAS),
-                                        qUsuario.nome.as(ConsultaUsuario.NOME_ALIAS),
-                                        qUsuario.email.as(ConsultaUsuario.EMAIL_ALIAS),
-                                        qUsuario.cpf.as(ConsultaUsuario.CPF_ALIAS),
-                                        qUsuario.dataNascimento.as(ConsultaUsuario.DATA_NASCIMENTO_ALIAS),
-                                        list(
+                                        usuarioId,
+                                        usuarioNome,
+                                        usuarioEmail,
+                                        usuarioCpf,
+                                        usuarioNascimento,
+                                        set(
                                                 Projections.constructor(
                                                         PerfilViewDTO.class,
-                                                        qPerfil.id.as(ConsultaUsuario.ID_PERFIL_ALIAS),
-                                                        qPerfil.descricao.as(ConsultaUsuario.PERFIL_DESCRICAO)
+                                                        qPerfil.id.as(ConsultaPerfil.ID_PERFIL_ALIAS),
+                                                        qPerfil.descricao.as(ConsultaPerfil.PERFIL_DESCRICAO)
                                                 )
                                         )
                                 ))

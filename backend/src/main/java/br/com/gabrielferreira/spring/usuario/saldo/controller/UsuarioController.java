@@ -94,9 +94,9 @@ public class UsuarioController {
     public ResponseEntity<Page<UsuarioViewDTO>> listagem(
             @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
             @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-            @RequestParam(value = "sort", required = false) String[] sort){
+            @RequestParam(value = "sort", required = false, defaultValue = "id,asc") String[] sort){
 
-        Page<UsuarioViewDTO> usuarios = consultaService.listagem(pagina, quantidadeRegistro, sort);
+        Page<UsuarioViewDTO> usuarios = usuarioService.buscarUsuarioPaginado(pagina, quantidadeRegistro, sort);
         return ResponseEntity.ok().body(usuarios);
     }
 
