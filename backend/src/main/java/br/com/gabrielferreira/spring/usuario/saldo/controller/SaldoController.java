@@ -1,6 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoInsertFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoInsertResponseDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,9 +31,9 @@ public class SaldoController {
             @ApiResponse(code = 404,message = "Usuário não foi encontrado")
     })
     @PostMapping("/depositar")
-    public ResponseEntity<SaldoViewDTO> depositar(@Valid @RequestBody SaldoFormDTO saldoFormDTO, UriComponentsBuilder uriComponentsBuilder){
-        SaldoViewDTO saldo = saldoService.depositar(saldoFormDTO);
-        URI uri = uriComponentsBuilder.path("/saldos/{id}").buildAndExpand(saldo.id()).toUri();
+    public ResponseEntity<SaldoInsertResponseDTO> depositar(@Valid @RequestBody SaldoInsertFormDTO saldoInsertFormDTO, UriComponentsBuilder uriComponentsBuilder){
+        SaldoInsertResponseDTO saldo = saldoService.depositar(saldoInsertFormDTO);
+        URI uri = uriComponentsBuilder.path("/saldos/{id}").buildAndExpand(saldo.getId()).toUri();
         return ResponseEntity.created(uri).body(saldo);
     }
 

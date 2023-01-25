@@ -1,11 +1,11 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoInsertFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public class SaldoEntidadeFactory implements Serializable {
 
@@ -14,11 +14,9 @@ public class SaldoEntidadeFactory implements Serializable {
 
     private SaldoEntidadeFactory(){}
 
-    public static Saldo toSaldoInsertEntidade(SaldoFormDTO saldoFormDTO, LocalDateTime dataDeposito){
-        Usuario usuario = Usuario.builder().id(saldoFormDTO.getIdUsuario()).build();
-//        return Saldo.builder().deposito(saldoFormDTO.getDeposito()).dataDeposito(dataDeposito)
-//                .usuario(usuario).build();
-        return null;
+    public static Saldo toSaldoInsertEntidade(SaldoInsertFormDTO saldoInsertFormDTO, ZonedDateTime dataDeposito, Usuario usuarioEncontrado, Usuario usuarioLogado){
+        return Saldo.builder().deposito(saldoInsertFormDTO.getDeposito()).dataDeposito(dataDeposito)
+                .usuario(usuarioEncontrado).usuarioDepositante(usuarioLogado).build();
     }
 
 }

@@ -4,7 +4,7 @@
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
-//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDTO;
+//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoInsertFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 //import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
@@ -69,7 +69,7 @@
 //        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Marcos da Silva"));
 //
 //        // Mock para retornar um saldo quando tiver salvo
-//        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder()
+//        SaldoInsertFormDTO saldoFormDTO = SaldoInsertFormDTO.builder()
 //                .deposito(BigDecimal.valueOf(500.00))
 //                .idUsuario(idUsuarioInformado).build();
 //
@@ -108,7 +108,7 @@
 //        // Recuperar Usuário logado como Admin
 //        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 40L, "José da Silva"));
 //
-//        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(-500.00))
+//        SaldoInsertFormDTO saldoFormDTO = SaldoInsertFormDTO.builder().deposito(BigDecimal.valueOf(-500.00))
 //                .idUsuario(idUsuarioInformado).build();
 //
 //        // Executando e verificando
@@ -129,7 +129,7 @@
 //        // Recuperar Usuário logado como Admin
 //        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 20L, "Gabriel da Silva"));
 //
-//        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(0.0))
+//        SaldoInsertFormDTO saldoFormDTO = SaldoInsertFormDTO.builder().deposito(BigDecimal.valueOf(0.0))
 //                .idUsuario(idUsuarioInformado).build();
 //
 //        // Executando e verificando
@@ -150,7 +150,7 @@
 //        // Recuperar Usuário logado como Admin
 //        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 4L, "Thiago da Silva"));
 //
-//        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(100.0))
+//        SaldoInsertFormDTO saldoFormDTO = SaldoInsertFormDTO.builder().deposito(BigDecimal.valueOf(100.0))
 //                .idUsuario(idUsuarioInformado).build();
 //
 //        // Mock para data atual fixa
@@ -177,7 +177,7 @@
 //        // Recuperar Usuário logado como Admin
 //        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 11L, "Maria Souza"));
 //
-//        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(100.0))
+//        SaldoInsertFormDTO saldoFormDTO = SaldoInsertFormDTO.builder().deposito(BigDecimal.valueOf(100.0))
 //                .idUsuario(idUsuarioInformado).build();
 //
 //        // Mock para data atual fixa
@@ -265,7 +265,7 @@
 //        // Recuperar Usuário logado como Admin
 //        when(perfilService.recuperarUsuarioLogado()).thenReturn(gerarUsuarioLogado(1L, ROLE_ADMIN, 1L, "Josué"));
 //
-//        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(-500.00))
+//        SaldoInsertFormDTO saldoFormDTO = SaldoInsertFormDTO.builder().deposito(BigDecimal.valueOf(-500.00))
 //                .idUsuario(idUsuarioInformado).build();
 //
 //        // Executando e verificando

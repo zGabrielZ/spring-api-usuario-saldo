@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaldoFormDTO implements Serializable {
+public class SaldoInsertFormDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -2398120816295097002L;

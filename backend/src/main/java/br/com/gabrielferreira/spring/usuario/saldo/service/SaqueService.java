@@ -41,9 +41,10 @@ public class SaqueService {
         LocalDateTime dataAtual = LocalDateTime.now(clock);
         saqueRepositorio.save(SaqueEntidadeFactory.toSaqueInsertEntidade(sacarFormDTO, dataAtual));
 
-        BigDecimal saldoTotal = usuarioService.atualizarSaldoTotal(sacarFormDTO.getIdUsuario(),saldoTotalAtual);
+        //BigDecimal saldoTotal = usuarioService.atualizarSaldoTotal(sacarFormDTO.getIdUsuario(),saldoTotalAtual);
 
-        return SaqueDTOFactory.toSacarViewDTO(saldoTotal);
+        //return SaqueDTOFactory.toSacarViewDTO(saldoTotal);
+        return null;
     }
 
     private void verificarSaque(BigDecimal saldoTotal, BigDecimal saque){

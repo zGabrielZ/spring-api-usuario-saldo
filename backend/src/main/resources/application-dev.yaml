@@ -22,3 +22,7 @@ cache:
 redis:
   host: localhost
   port: 6379
+
+feriados:
+  nacionais:
+    url: https://brasilapi.com.br

@@ -20,6 +20,7 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario,Long> {
     Optional<String> existsCpf(@Param("cpf") String cpf);
 
     @Query("SELECT u FROM Usuario u " +
+            "JOIN FETCH u.perfis " +
             "WHERE u.excluido = :excluido and u.id = :id")
     Optional<Usuario> findByIdUsuario(@Param("id") Long id, @Param("excluido") boolean excluido);
 

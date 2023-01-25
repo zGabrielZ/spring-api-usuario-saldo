@@ -1,6 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoInsertResponseDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 
 import java.io.Serial;
@@ -14,9 +14,12 @@ public class SaldoDTOFactory implements Serializable {
 
     private SaldoDTOFactory(){}
 
-    public static SaldoViewDTO toSaldoViewDTO(Saldo saldo){
-        return null;
-        //return new SaldoViewDTO(saldo.getId(), saldo.getDeposito(), saldo.getDataDeposito());
+    public static SaldoInsertResponseDTO toSaldoInsertResonseDTO(Saldo saldo){
+        SaldoInsertResponseDTO saldoInsertResponseDTO = new SaldoInsertResponseDTO();
+        saldoInsertResponseDTO.setId(saldo.getId());
+        saldoInsertResponseDTO.setDeposito(saldo.getDeposito());
+        saldoInsertResponseDTO.setIdUsuario(saldo.getUsuario().getId());
+        return saldoInsertResponseDTO;
     }
 
     public static SaldoTotalViewDTO toSaldoTotalViewDTO(BigDecimal saldoTotal){

@@ -12,3 +12,7 @@ spring:
       hibernate:
         dialect: ${API_DATABASE_DIALECT}
         format_sql: ${API_DATABASE_FORMAT_SQL}
+
+feriados:
+  nacionais:
+    url: https://brasilapi.com.br

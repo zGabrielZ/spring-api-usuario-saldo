@@ -142,15 +142,6 @@ public class UsuarioService {
         return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
     }
 
-    @Transactional
-    //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
-    public BigDecimal atualizarSaldoTotal(Long id, BigDecimal valor){
-        Usuario usuario = buscarUsuario(id, false);
-        usuario.setSaldoTotal(valor);
-        usuarioRepositorio.save(usuario);
-        return usuario.getSaldoTotal();
-    }
-
     //@Cacheable(cacheNames = USUARIO_AUTENTICADO, key = "#id")
     public Usuario buscarUsuarioAutenticado(Long id){
         return usuarioRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
@@ -161,7 +152,7 @@ public class UsuarioService {
         return usuarioRepositorio.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
-    private Usuario buscarUsuario(Long id, boolean excluido){
+    public Usuario buscarUsuario(Long id, boolean excluido){
         return usuarioRepositorio.findByIdUsuario(id, excluido).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 

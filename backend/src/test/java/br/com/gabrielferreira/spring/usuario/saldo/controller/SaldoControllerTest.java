@@ -1,6 +1,6 @@
 //package br.com.gabrielferreira.spring.usuario.saldo.controller;
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
-//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDTO;
+//import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoInsertFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -52,7 +52,7 @@
 //        // Cenário
 //
 //        // Form do Saldo
-//        SaldoFormDTO saldoFormDTO = SaldoFormDTO.builder().deposito(BigDecimal.valueOf(500.00))
+//        SaldoInsertFormDTO saldoFormDTO = SaldoInsertFormDTO.builder().deposito(BigDecimal.valueOf(500.00))
 //                .idUsuario(1L).build();
 //
 //        // Mock para retornar um saldo quando tiver salvo

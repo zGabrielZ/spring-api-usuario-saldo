@@ -62,6 +62,12 @@ public class PerfilValidacaoService {
         }
     }
 
+    public void validarPerfilUsuarioSaldo(Usuario usuarioLogado, Long idUsuarioEncontrado){
+        if (usuarioLogado != null && usuarioLogado.getId().equals(idUsuarioEncontrado)) {
+            throw new ExcecaoPersonalizada(USUARIO_INCLUIR_DEPOSITO_ADMIN.getMensagem());
+        }
+    }
+
     public void verificarSituacaoUsuarioLogado(Usuario usuarioLogado){
         if(usuarioLogado != null && usuarioLogado.isExcluido()){
             throw new ExcecaoPersonalizada(OPERACAO_USUARIO_NAO_ENCONTRADO.getMensagem());

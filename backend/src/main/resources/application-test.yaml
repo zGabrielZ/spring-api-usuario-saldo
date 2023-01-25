@@ -15,3 +15,7 @@ spring:
         format_sql: true
   flyway:
     enabled: false
+
+feriados:
+  nacionais:
+    url: https://brasilapi.com.br
