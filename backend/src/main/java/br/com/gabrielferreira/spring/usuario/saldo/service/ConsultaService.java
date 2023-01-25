@@ -51,6 +51,7 @@ public class ConsultaService {
         QSaldo qSaldo = QSaldo.saldo;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(qSaldo.usuario.id.eq(idUsuario));
+        booleanBuilder.and(qSaldo.usuario.excluido.eq(false));
 
         List<ConsultaDTO> dadosConsulta = ConsultaDTOFactory.getConsultas("Saldo", pageRequest.getSort().toList());
 

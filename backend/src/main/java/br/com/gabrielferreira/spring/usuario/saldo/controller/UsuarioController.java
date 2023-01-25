@@ -112,7 +112,7 @@ public class UsuarioController {
     public ResponseEntity<Page<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id,
          @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
          @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-         @RequestParam(value = "sort", required = false) String[] sort) {
+         @RequestParam(value = "sort", required = false, defaultValue = "id,asc") String[] sort) {
 
         Page<SaldoViewDTO> saldos = saldoService.buscarSaldosPorUsuarioPaginado(id, pagina, quantidadeRegistro, sort);
         return ResponseEntity.ok(saldos);
