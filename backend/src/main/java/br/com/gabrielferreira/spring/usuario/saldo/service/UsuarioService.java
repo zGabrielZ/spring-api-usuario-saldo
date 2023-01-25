@@ -105,7 +105,7 @@ public class UsuarioService {
         perfilValidacaoService.validarPerfilUsuarioUpdate(usuarioUpdateFormDTO.getPerfis(), usuarioLogado, id, isAdmin());
 
         Usuario usuarioEncontrado = buscarUsuario(id, false);
-        verificarSituacaoUsuarioLogado(usuarioLogado);
+        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado, usuarioUpdateFormDTO.getPerfis(), usuarioLogado);
         usuarioRepositorio.save(usuario);
 
@@ -116,7 +116,7 @@ public class UsuarioService {
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public void deletarPorId(Long id){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        verificarSituacaoUsuarioLogado(usuarioLogado);
+        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
 
         Usuario usuarioEncontrado = buscarUsuario(id, false);
 
@@ -130,7 +130,7 @@ public class UsuarioService {
 
     public Page<UsuarioViewDTO> buscarUsuarioPaginado(Integer pagina, Integer quantidadeRegistro, String[] sort){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        verificarSituacaoUsuarioLogado(usuarioLogado);
+        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         return consultaService.listagem(pagina, quantidadeRegistro, sort);
     }
 
@@ -178,18 +178,12 @@ public class UsuarioService {
     }
 
     private void verificarUsuarioLogado(Usuario usuarioLogado, Usuario usuarioAoInserir){
-        verificarSituacaoUsuarioLogado(usuarioLogado);
+        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         if(usuarioLogado != null && !usuarioLogado.isExcluido()){
             usuarioAoInserir.setUsuarioInclusao(usuarioLogado);
         } else {
             usuarioAoInserir.setUsuarioInclusao(usuarioAoInserir);
             usuarioAoInserir.setUsuarioAlteracao(usuarioAoInserir);
-        }
-    }
-
-    private void verificarSituacaoUsuarioLogado(Usuario usuarioLogado){
-        if(usuarioLogado != null && usuarioLogado.isExcluido()){
-            throw new ExcecaoPersonalizada(OPERACAO_USUARIO_NAO_ENCONTRADO.getMensagem());
         }
     }
 

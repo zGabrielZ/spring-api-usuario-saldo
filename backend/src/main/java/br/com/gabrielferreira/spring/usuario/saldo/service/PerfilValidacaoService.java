@@ -56,6 +56,18 @@ public class PerfilValidacaoService {
         }
     }
 
+    public void validarPerfilBuscarSaldoPorUsuario(Usuario usuarioLogado, boolean isCliente, Long idUsuarioEncontrado){
+        if(isCliente && !usuarioLogado.getId().equals(idUsuarioEncontrado)){
+            throw new ExcecaoPersonalizada(LISTA_SALDOS.getMensagem());
+        }
+    }
+
+    public void verificarSituacaoUsuarioLogado(Usuario usuarioLogado){
+        if(usuarioLogado != null && usuarioLogado.isExcluido()){
+            throw new ExcecaoPersonalizada(OPERACAO_USUARIO_NAO_ENCONTRADO.getMensagem());
+        }
+    }
+
     private List<PerfilInsertFormDTO> verificarPerfisDuplicados(List<PerfilInsertFormDTO> perfis){
         perfis.forEach(perfilInsertFormDTO -> {
             int duplicados = Collections.frequency(perfis, perfilInsertFormDTO);

@@ -6,13 +6,14 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioVi
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.SaldoEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.client.FeriadoNacionalClient;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaldoRepositorio;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
-import br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.*;
 import java.util.List;
 
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils.*;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 @Service
@@ -28,8 +30,6 @@ public class SaldoService {
 
     private final Clock clock;
 
-    private final LoginUsuarioUtils loginUsuarioUtils;
-
     private final FeriadoNacionalClient nacionalClient;
 
     private final UsuarioService usuarioService;
@@ -37,6 +37,10 @@ public class SaldoService {
     private final SaldoRepositorio saldoRepositorio;
 
     private final SaqueRepositorio saqueRepositorio;
+
+    private final ConsultaService consultaService;
+
+    private final PerfilValidacaoService perfilValidacaoService;
 
     @Transactional
     public SaldoViewDTO depositar(SaldoFormDTO saldoFormDTO){
@@ -66,6 +70,13 @@ public class SaldoService {
         List<Saque> saques = saqueRepositorio.findByUsuarioId(idUsuario);
         BigDecimal valorTotalSaqueRegistrado = BigDecimal.valueOf(saques.stream().mapToDouble(s->s.getValor().doubleValue()).sum());
         return valorTotal.subtract(valorTotalSaqueRegistrado);
+    }
+
+    public Page<SaldoViewDTO> buscarSaldosPorUsuarioPaginado(Long idUsuario, Integer pagina, Integer quantidadeRegistro, String[] sort){
+        Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
+        perfilValidacaoService.validarPerfilBuscarSaldoPorUsuario(usuarioLogado, isCliente(), idUsuario);
+        return consultaService.saldosPorUsuario(idUsuario, pagina, quantidadeRegistro, sort);
     }
 
     private void verificarValorDeposito(BigDecimal deposito){

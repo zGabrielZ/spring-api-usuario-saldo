@@ -7,6 +7,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDT
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.*;
 import br.com.gabrielferreira.spring.usuario.saldo.service.ConsultaService;
+import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaqueService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
 import io.swagger.annotations.Api;
@@ -33,6 +34,8 @@ public class UsuarioController {
     private final SaqueService saqueService;
 
     private final ConsultaService consultaService;
+
+    private final SaldoService saldoService;
 
     @ApiOperation("Inserir um usuário")
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -105,13 +108,13 @@ public class UsuarioController {
             @ApiResponse(code = 200, message = "Retornou uma lista de saldos"),
             @ApiResponse(code = 400, message = "Ocorreu um erro personalizado"),
     })
-    @GetMapping("/saldos/{id}")
+    @GetMapping("/{id}/saldos")
     public ResponseEntity<Page<SaldoViewDTO>> listaDeSaldosPorUsuario(@PathVariable Long id,
          @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
          @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
          @RequestParam(value = "sort", required = false) String[] sort) {
 
-        Page<SaldoViewDTO> saldos = consultaService.saldosPorUsuario(id, pagina, quantidadeRegistro, sort);
+        Page<SaldoViewDTO> saldos = saldoService.buscarSaldosPorUsuarioPaginado(id, pagina, quantidadeRegistro, sort);
         return ResponseEntity.ok(saldos);
     }
 

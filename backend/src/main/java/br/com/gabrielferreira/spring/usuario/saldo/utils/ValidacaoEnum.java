@@ -23,7 +23,7 @@ public enum ValidacaoEnum {
     SAQUE_CONTA_PROPRIA("Somente é póssivel sacar o valor com a própria conta."),
     LISTA_SAQUES("Para ver os saques é preciso logar na conta da adminstração."),
     ERRO_MASCARA("Erro na máscara."),
-    LISTA_SALDOS("Para ver os saldos é preciso logar na conta da adminstração."),
+    LISTA_SALDOS("Para ver os saldos é preciso logar na conta da adminstração ou de um funcionário."),
     DIRECAO_VAZIA("É necessário informar a direção (ASC ou DESC)"),
     REALIZAR_CONSULTA("Erro Inesperado ao realizar a consulta"),
     OPERACAO_USUARIO_NAO_ENCONTRADO("Não é possível realizar esta ação pois o usuário informado já foi removido");
