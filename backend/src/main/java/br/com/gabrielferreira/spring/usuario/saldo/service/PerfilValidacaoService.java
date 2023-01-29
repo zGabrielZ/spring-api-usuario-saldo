@@ -68,6 +68,12 @@ public class PerfilValidacaoService {
         }
     }
 
+    public void validarPerfilUsuarioVisualizacaoSaldo(Usuario usuarioLogado, boolean isAdmin, Usuario usuarioEncontrado){
+        if(!isAdmin && !usuarioLogado.getId().equals(usuarioEncontrado.getId())){
+            throw new ExcecaoPersonalizada(VISUALIZAR_SALDO_TOTAL.getMensagem());
+        }
+    }
+
     public void verificarSituacaoUsuarioLogado(Usuario usuarioLogado){
         if(usuarioLogado != null && usuarioLogado.isExcluido()){
             throw new ExcecaoPersonalizada(OPERACAO_USUARIO_NAO_ENCONTRADO.getMensagem());

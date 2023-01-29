@@ -135,9 +135,11 @@ public class UsuarioService {
     }
 
     public SaldoTotalViewDTO buscarSaldoTotal(Long id){
+        Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
 
         Usuario usuarioEncontrado = buscarUsuario(id, false);
-        //verificarUsuarioLogado(usuarioEncontrado.getId());
+        perfilValidacaoService.validarPerfilUsuarioVisualizacaoSaldo(usuarioLogado, isAdmin(), usuarioEncontrado);
 
         return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
     }
