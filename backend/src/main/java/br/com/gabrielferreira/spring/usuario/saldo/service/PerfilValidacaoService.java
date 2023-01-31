@@ -4,20 +4,21 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.RoleEnum;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
-
-import static br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils.isAdmin;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 @Service
 public class PerfilValidacaoService {
 
-    public List<PerfilInsertFormDTO> validarPerfilUsuarioInsert(List<PerfilInsertFormDTO> perfis, Usuario usuarioLogado){
+    public List<PerfilInsertFormDTO> validarPerfilUsuarioInsert(List<PerfilInsertFormDTO> perfis, Usuario usuarioLogado, boolean isAdmin, boolean isFuncionario, boolean isCliente){
         if(usuarioLogado != null){
-            if(isAdmin() && perfis.isEmpty()){
+            if(isAdmin && perfis.isEmpty()){
                 throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
-            } else if(!isAdmin() && !perfis.isEmpty()){
+            }
+
+            boolean isNaoAdminLogado = (isCliente || isFuncionario) && !isAdmin;
+
+            if(isNaoAdminLogado && !perfis.isEmpty()){
                 throw new ExcecaoPersonalizada(PERFIL_USUARIO_ADMIN.getMensagem());
             }
         }
