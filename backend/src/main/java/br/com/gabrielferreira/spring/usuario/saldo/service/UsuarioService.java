@@ -102,7 +102,7 @@ public class UsuarioService {
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioUpdateResponseDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        perfilValidacaoService.validarPerfilUsuarioUpdate(usuarioUpdateFormDTO.getPerfis(), usuarioLogado, id, isAdmin());
+        perfilValidacaoService.validarPerfilUsuarioUpdate(usuarioUpdateFormDTO.getPerfis(), usuarioLogado, id, isAdmin(), isFuncionario(), isCliente());
 
         Usuario usuarioEncontrado = buscarUsuario(id, false);
         perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);

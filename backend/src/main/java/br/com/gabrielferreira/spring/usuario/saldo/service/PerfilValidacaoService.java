@@ -25,11 +25,12 @@ public class PerfilValidacaoService {
         return verificarPerfisDuplicados(perfis);
     }
 
-    public void validarPerfilUsuarioUpdate(List<PerfilInsertFormDTO> perfis, Usuario usuarioLogado, Long idUsuarioEncontrado, boolean isAdmin){
+    public void validarPerfilUsuarioUpdate(List<PerfilInsertFormDTO> perfis, Usuario usuarioLogado, Long idUsuarioEncontrado, boolean isAdmin, boolean isFuncionario, boolean isCliente){
         if(usuarioLogado != null){
-            if(!isAdmin && !usuarioLogado.getId().equals(idUsuarioEncontrado)){
+            boolean isNaoAdminLogado = isNaoAdmin(isAdmin, isFuncionario, isCliente);
+            if(isNaoAdminLogado && !usuarioLogado.getId().equals(idUsuarioEncontrado)){
                 throw new ExcecaoPersonalizada(USUARIO_ATUALIZAR_PERMISSAO.getMensagem());
-            } else if (!isAdmin && !perfis.isEmpty()){
+            } else if (isNaoAdminLogado && !perfis.isEmpty()){
                 throw new ExcecaoPersonalizada(USUARIO_INCLUIR_ALTERAR.getMensagem());
             } else if(isAdmin && perfis.isEmpty()){
                 throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
