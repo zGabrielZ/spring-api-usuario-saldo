@@ -79,7 +79,7 @@ public class SaldoService {
     public Page<SaldoViewDTO> buscarSaldosPorUsuarioPaginado(Long idUsuario, Integer pagina, Integer quantidadeRegistro, String[] sort){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
         perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
-        perfilValidacaoService.validarPerfilBuscarSaldoPorUsuario(usuarioLogado, isAdmin(), isFuncionario(), idUsuario);
+        perfilValidacaoService.validarPerfilBuscarSaldoPorUsuario(usuarioLogado, idUsuario, isAdmin(), isFuncionario(), isCliente());
         return consultaService.saldosPorUsuario(idUsuario, pagina, quantidadeRegistro, sort);
     }
 

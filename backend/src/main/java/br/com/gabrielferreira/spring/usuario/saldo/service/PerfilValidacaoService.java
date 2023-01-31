@@ -59,8 +59,9 @@ public class PerfilValidacaoService {
         }
     }
 
-    public void validarPerfilBuscarSaldoPorUsuario(Usuario usuarioLogado, boolean isAdmin, boolean isFuncionario, Long idUsuarioEncontrado){
-        if(!(isAdmin || isFuncionario) && !usuarioLogado.getId().equals(idUsuarioEncontrado)){
+    public void validarPerfilBuscarSaldoPorUsuario(Usuario usuarioLogado, Long idUsuarioEncontrado, boolean isAdmin, boolean isFuncionario, boolean isCliente){
+        boolean isNaoAdminFuncionarioLogado = isCliente && (!isAdmin && !isFuncionario);
+        if(isNaoAdminFuncionarioLogado && !usuarioLogado.getId().equals(idUsuarioEncontrado)){
             throw new ExcecaoPersonalizada(LISTA_SALDOS.getMensagem());
         }
     }
