@@ -16,7 +16,7 @@ public class PerfilValidacaoService {
                 throw new ExcecaoPersonalizada(PERFIL_USUARIO.getMensagem());
             }
 
-            boolean isNaoAdminLogado = (isCliente || isFuncionario) && !isAdmin;
+            boolean isNaoAdminLogado = isNaoAdmin(isAdmin, isFuncionario, isCliente);
 
             if(isNaoAdminLogado && !perfis.isEmpty()){
                 throw new ExcecaoPersonalizada(PERFIL_USUARIO_ADMIN.getMensagem());
@@ -51,8 +51,9 @@ public class PerfilValidacaoService {
         }
     }
 
-    public void validarPerfilUsuarioVisualizacao(Long idUsuarioEncontrado, Usuario usuarioLogado, boolean isAdmin){
-        if(usuarioLogado != null && !usuarioLogado.getId().equals(idUsuarioEncontrado) && !isAdmin){
+    public void validarPerfilUsuarioVisualizacao(Long idUsuarioEncontrado, Usuario usuarioLogado, boolean isAdmin, boolean isFuncionario, boolean isCliente){
+        boolean isNaoAdminLogado = isNaoAdmin(isAdmin, isFuncionario, isCliente);
+        if(usuarioLogado != null && !usuarioLogado.getId().equals(idUsuarioEncontrado) && isNaoAdminLogado){
             throw new ExcecaoPersonalizada(PERFIL_USUARIO_DADOS_ADMIN.getMensagem());
         }
     }
@@ -91,5 +92,9 @@ public class PerfilValidacaoService {
         });
 
         return perfis;
+    }
+
+    private boolean isNaoAdmin(boolean isAdmin, boolean isFuncionario, boolean isCliente){
+        return (isCliente || isFuncionario) && !isAdmin;
     }
 }

@@ -69,7 +69,7 @@ public class UsuarioService {
 
     public UsuarioViewDTO buscarPorId(Long id){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        perfilValidacaoService.validarPerfilUsuarioVisualizacao(id, usuarioLogado, isAdmin());
+        perfilValidacaoService.validarPerfilUsuarioVisualizacao(id, usuarioLogado, isAdmin(), isFuncionario(), isCliente());
 
         QUsuario qUsuario = QUsuario.usuario;
         QPerfil qPerfil = QPerfil.perfil;
