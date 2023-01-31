@@ -121,6 +121,7 @@ public class UsuarioController {
     @ApiOperation("Saldo total do usuário")
     @ApiResponses(value = {
             @ApiResponse(code = 200,message = "Retornou um saldo total do usuário"),
+            @ApiResponse(code = 400, message = "Ocorreu um erro personalizado"),
             @ApiResponse(code = 404,message = "Usuário não foi encontrado"),
     })
     @GetMapping("/saldo-total/{id}")

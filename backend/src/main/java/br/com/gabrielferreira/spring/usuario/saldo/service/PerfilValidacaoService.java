@@ -60,7 +60,7 @@ public class PerfilValidacaoService {
     }
 
     public void validarPerfilBuscarSaldoPorUsuario(Usuario usuarioLogado, Long idUsuarioEncontrado, boolean isAdmin, boolean isFuncionario, boolean isCliente){
-        boolean isNaoAdminFuncionarioLogado = isCliente && (!isAdmin && !isFuncionario);
+        boolean isNaoAdminFuncionarioLogado = isNaoAdminFuncionarioLogado(isAdmin, isFuncionario, isCliente);
         if(isNaoAdminFuncionarioLogado && !usuarioLogado.getId().equals(idUsuarioEncontrado)){
             throw new ExcecaoPersonalizada(LISTA_SALDOS.getMensagem());
         }
@@ -72,8 +72,9 @@ public class PerfilValidacaoService {
         }
     }
 
-    public void validarPerfilUsuarioVisualizacaoSaldo(Usuario usuarioLogado, boolean isAdmin, Usuario usuarioEncontrado){
-        if(!isAdmin && !usuarioLogado.getId().equals(usuarioEncontrado.getId())){
+    public void validarPerfilUsuarioVisualizacaoSaldo(Usuario usuarioLogado, Usuario usuarioEncontrado, boolean isAdmin, boolean isFuncionario, boolean isCliente){
+        boolean isNaoAdminLogado = isNaoAdmin(isAdmin, isFuncionario, isCliente);
+        if(isNaoAdminLogado && !usuarioLogado.getId().equals(usuarioEncontrado.getId())){
             throw new ExcecaoPersonalizada(VISUALIZAR_SALDO_TOTAL.getMensagem());
         }
     }
@@ -98,5 +99,9 @@ public class PerfilValidacaoService {
 
     private boolean isNaoAdmin(boolean isAdmin, boolean isFuncionario, boolean isCliente){
         return (isCliente || isFuncionario) && !isAdmin;
+    }
+
+    private boolean isNaoAdminFuncionarioLogado(boolean isAdmin, boolean isFuncionario, boolean isCliente){
+        return isCliente && (!isAdmin && !isFuncionario);
     }
 }
