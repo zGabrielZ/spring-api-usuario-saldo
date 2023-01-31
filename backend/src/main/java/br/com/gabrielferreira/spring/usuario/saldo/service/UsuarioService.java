@@ -51,6 +51,7 @@ public class UsuarioService {
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioInsertResponseDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
 
         usuarioInsertFormDTO.setCpf(limparMascaraCpf(usuarioInsertFormDTO.getCpf()));
         verificarEmail(usuarioInsertFormDTO.getEmail());
@@ -69,6 +70,7 @@ public class UsuarioService {
 
     public UsuarioViewDTO buscarPorId(Long id){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         perfilValidacaoService.validarPerfilUsuarioVisualizacao(id, usuarioLogado, isAdmin(), isFuncionario(), isCliente());
 
         QUsuario qUsuario = QUsuario.usuario;
@@ -102,10 +104,10 @@ public class UsuarioService {
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioUpdateResponseDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         perfilValidacaoService.validarPerfilUsuarioUpdate(usuarioUpdateFormDTO.getPerfis(), usuarioLogado, id, isAdmin(), isFuncionario(), isCliente());
 
         Usuario usuarioEncontrado = buscarUsuario(id, false);
-        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado, usuarioUpdateFormDTO.getPerfis(), usuarioLogado);
         usuarioRepositorio.save(usuario);
 
