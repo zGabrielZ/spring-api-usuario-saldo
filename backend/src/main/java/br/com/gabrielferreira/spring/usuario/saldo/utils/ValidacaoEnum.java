@@ -20,7 +20,6 @@ public enum ValidacaoEnum {
     USUARIO_INCLUIR_ALTERAR("Você não tem permissão de incluir ou alterar perfil do usuário."),
     USUARIO_INCLUIR_DEPOSITO_ADMIN("Vocẽ não pode depositar saldo na própria conta."),
     SAQUE_MENOR_IGUAL_ZERO("Não é possível sacar com valor negativo ou valor zerado."),
-    SAQUE_CONTA_PROPRIA("Somente é póssivel sacar o valor com a própria conta."),
     LISTA_SAQUES("Para ver os saques é preciso logar na conta da adminstração."),
     ERRO_MASCARA("Erro na máscara."),
     LISTA_SALDOS("Para ver os saldos é preciso logar na conta da adminstração ou de um funcionário."),

@@ -134,8 +134,7 @@ public class UsuarioController {
     @ResponseStatus(code = HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = 201,message = "Sacou um valor do saldo total do usuário"),
-            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
-            @ApiResponse(code = 404,message = "Usuário não foi encontrado")
+            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado")
     })
     @PostMapping("/sacar")
     public ResponseEntity<SacarViewDTO> sacarSaldoPorUsuario(@Valid @RequestBody SacarFormDTO sacarFormDTO){

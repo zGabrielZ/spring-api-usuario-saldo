@@ -17,4 +17,5 @@ public class SacarViewDTO implements Serializable {
 
     @ApiModelProperty(value = "Saldo total do usuário", example = "200.00")
     private BigDecimal saldoTotal;
+
 }

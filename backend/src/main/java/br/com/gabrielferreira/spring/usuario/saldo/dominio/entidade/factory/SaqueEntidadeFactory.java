@@ -5,7 +5,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public class SaqueEntidadeFactory implements Serializable {
 
@@ -14,10 +14,9 @@ public class SaqueEntidadeFactory implements Serializable {
 
     private SaqueEntidadeFactory(){}
 
-    public static Saque toSaqueInsertEntidade(SacarFormDTO sacarFormDTO, LocalDateTime dataAtual){
-        Usuario usuario = Usuario.builder().id(sacarFormDTO.getIdUsuario()).build();
+    public static Saque toSaqueInsertEntidade(SacarFormDTO sacarFormDTO, ZonedDateTime dataAtual, Usuario usuarioLogado){
         return Saque.builder().dataSaque(dataAtual).valor(sacarFormDTO.getQuantidade())
-                .usuario(usuario).build();
+                .usuario(usuarioLogado).build();
     }
 
 }

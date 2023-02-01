@@ -1,21 +1,23 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.SaqueDTOFactory;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoTotalViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.SaqueEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
-import br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils;
+import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
+import br.com.gabrielferreira.spring.usuario.saldo.utils.MascarasUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils.getRecuperarUsuarioLogado;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -25,26 +27,28 @@ public class SaqueService {
 
     private final SaqueRepositorio saqueRepositorio;
 
-    private final UsuarioService usuarioService;
+    private final UsuarioRepositorio usuarioRepositorio;
 
-    private final LoginUsuarioUtils loginUsuarioUtils;
+    private final PerfilValidacaoService perfilValidacaoService;
 
     @Transactional
     public SacarViewDTO sacar(SacarFormDTO sacarFormDTO){
+        Usuario usuarioLogado = getRecuperarUsuarioLogado();
+        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
 
-        verificarUsuarioLogado(sacarFormDTO.getIdUsuario());
+        BigDecimal saldoTotalAtual = BigDecimal.ZERO;
+        if(usuarioLogado != null){
+            verificarSaque(usuarioLogado.getSaldoTotal(), sacarFormDTO.getQuantidade());
+            saldoTotalAtual = saldoTotalUsuario(usuarioLogado.getSaldoTotal(), sacarFormDTO.getQuantidade());
 
-        SaldoTotalViewDTO saldoTotalViewDTO = usuarioService.buscarSaldoTotal(sacarFormDTO.getIdUsuario());
-        verificarSaque(saldoTotalViewDTO.getSaldoTotal(), sacarFormDTO.getQuantidade());
-        BigDecimal saldoTotalAtual = saldoTotalUsuario(saldoTotalViewDTO.getSaldoTotal(),sacarFormDTO.getQuantidade());
+            ZonedDateTime dataAtual = ZonedDateTime.now(clock);
+            saqueRepositorio.save(SaqueEntidadeFactory.toSaqueInsertEntidade(sacarFormDTO, dataAtual, usuarioLogado));
 
-        LocalDateTime dataAtual = LocalDateTime.now(clock);
-        saqueRepositorio.save(SaqueEntidadeFactory.toSaqueInsertEntidade(sacarFormDTO, dataAtual));
+            usuarioLogado.setSaldoTotal(saldoTotalAtual);
+            usuarioRepositorio.save(usuarioLogado);
+        }
 
-        //BigDecimal saldoTotal = usuarioService.atualizarSaldoTotal(sacarFormDTO.getIdUsuario(),saldoTotalAtual);
-
-        //return SaqueDTOFactory.toSacarViewDTO(saldoTotal);
-        return null;
+        return SaqueDTOFactory.toSacarViewDTO(saldoTotalAtual);
     }
 
     private void verificarSaque(BigDecimal saldoTotal, BigDecimal saque){
@@ -57,15 +61,9 @@ public class SaqueService {
 
     private BigDecimal saldoTotalUsuario(BigDecimal saldoTotal, BigDecimal quantidade){
         if(quantidade.compareTo(saldoTotal) > 0){
-            throw new ExcecaoPersonalizada(SALDO_TOTAL_USUARIO.getMensagem() + saldoTotal);
+            throw new ExcecaoPersonalizada(SALDO_TOTAL_USUARIO.getMensagem() + MascarasUtils.toSaldoFormatado(saldoTotal));
         }
         return saldoTotal.subtract(quantidade);
     }
 
-    private void verificarUsuarioLogado(Long idUsuario){
-//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-//        if(!usuarioLogado.getId().equals(idUsuario)){
-//            throw new ExcecaoPersonalizada(SAQUE_CONTA_PROPRIA.getMensagem());
-//        }
-    }
 }

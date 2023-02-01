@@ -21,7 +21,4 @@ public class SacarFormDTO implements Serializable {
     @NotNull(message = "É necessário informar a quantidade do saque.")
     private BigDecimal quantidade;
 
-    @ApiModelProperty(value = "ID do usuário", example = "1")
-    @NotNull(message = "É necessário informar o usuário.")
-    private Long idUsuario;
 }
