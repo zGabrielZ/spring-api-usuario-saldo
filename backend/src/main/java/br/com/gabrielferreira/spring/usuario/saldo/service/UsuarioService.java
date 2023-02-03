@@ -107,7 +107,7 @@ public class UsuarioService {
         perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         perfilValidacaoService.validarPerfilUsuarioUpdate(usuarioUpdateFormDTO.getPerfis(), usuarioLogado, id, isAdmin(), isFuncionario(), isCliente());
 
-        Usuario usuarioEncontrado = buscarUsuario(id, false);
+        Usuario usuarioEncontrado = buscarUsuario(id);
         Usuario usuario = UsuarioEntidadeFactory.toUsuarioUpdateEntidade(usuarioUpdateFormDTO, usuarioEncontrado, usuarioUpdateFormDTO.getPerfis(), usuarioLogado);
         usuarioRepositorio.save(usuario);
 
@@ -120,7 +120,7 @@ public class UsuarioService {
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
         perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
 
-        Usuario usuarioEncontrado = buscarUsuario(id, false);
+        Usuario usuarioEncontrado = buscarUsuario(id);
 
         perfilValidacaoService.validarPerfilUsuarioDelete(usuarioEncontrado, usuarioLogado);
 
@@ -140,7 +140,7 @@ public class UsuarioService {
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
         perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
 
-        Usuario usuarioEncontrado = buscarUsuario(id, false);
+        Usuario usuarioEncontrado = buscarUsuario(id);
         perfilValidacaoService.validarPerfilUsuarioVisualizacaoSaldo(usuarioLogado, usuarioEncontrado, isAdmin(), isFuncionario(), isCliente());
 
         return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
@@ -148,7 +148,7 @@ public class UsuarioService {
 
     //@Cacheable(cacheNames = USUARIO_AUTENTICADO, key = "#id")
     public Usuario buscarUsuarioAutenticado(Long id){
-        return usuarioRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
+        return usuarioRepositorio.findByIdUsuario(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
     //@Cacheable(cacheNames = USUARIO_AUTENTICADO_EMAIL, key = "#email")
@@ -156,8 +156,8 @@ public class UsuarioService {
         return usuarioRepositorio.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
-    public Usuario buscarUsuario(Long id, boolean excluido){
-        return usuarioRepositorio.findByIdUsuario(id, excluido).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
+    public Usuario buscarUsuario(Long id){
+        return usuarioRepositorio.findByIdUsuario(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
     private void verificarEmail(String email){

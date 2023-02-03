@@ -11,7 +11,10 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepositorio extends JpaRepository<Usuario,Long> {
 
-    Optional<Usuario> findByEmail(String email);
+    @Query("SELECT u FROM Usuario u " +
+            "JOIN FETCH u.perfis p " +
+            "WHERE u.email = :email and u.excluido = false")
+    Optional<Usuario> findByEmail(@Param("email") String email);
 
     @Query("SELECT u.email as email FROM Usuario u where u.email = :email")
     Optional<String> existsEmail(@Param("email") String email);
@@ -21,7 +24,7 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario,Long> {
 
     @Query("SELECT u FROM Usuario u " +
             "JOIN FETCH u.perfis " +
-            "WHERE u.excluido = :excluido and u.id = :id")
-    Optional<Usuario> findByIdUsuario(@Param("id") Long id, @Param("excluido") boolean excluido);
+            "WHERE u.excluido = false and u.id = :id")
+    Optional<Usuario> findByIdUsuario(@Param("id") Long id);
 
 }

@@ -54,7 +54,7 @@ public class SaldoService {
         verificarDataAtualDeposito(dataAtualDeposito);
         verificarFeriadoNacional(dataAtualDeposito);
 
-        Usuario usuarioEncontrado = usuarioRepositorio.findByIdUsuario(saldoInsertFormDTO.getIdUsuario(), false).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
+        Usuario usuarioEncontrado = usuarioRepositorio.findByIdUsuario(saldoInsertFormDTO.getIdUsuario()).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
         Saldo saldo = SaldoEntidadeFactory.toSaldoInsertEntidade(saldoInsertFormDTO, ZonedDateTime.now(clock), usuarioEncontrado, usuarioLogado);
         saldo = saldoRepositorio.save(saldo);
 
