@@ -26,7 +26,8 @@ public enum ValidacaoEnum {
     DIRECAO_VAZIA("É necessário informar a direção (ASC ou DESC)"),
     REALIZAR_CONSULTA("Erro Inesperado ao realizar a consulta"),
     OPERACAO_USUARIO_NAO_ENCONTRADO("Não é possível realizar esta ação pois o usuário informado já foi removido"),
-    VISUALIZAR_SALDO_TOTAL("Não é possível ver o saldo total do usuário pois é preciso logar na conta da adminstração");
+    VISUALIZAR_SALDO_TOTAL("Não é possível ver o saldo total do usuário pois é preciso logar na conta da adminstração"),
+    PERFIL_NAO_ENCONTRADO("Perfil não encontrado");
 
     private final String mensagem;
 
