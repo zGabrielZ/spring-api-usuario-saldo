@@ -102,7 +102,6 @@ public class UsuarioService {
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioUpdateResponseDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         perfilValidacaoService.validarPerfilUsuarioUpdate(usuarioUpdateFormDTO.getPerfis(), usuarioLogado, id, isAdmin(), isFuncionario(), isCliente());
 
         Usuario usuarioEncontrado = buscarUsuario(id);
@@ -116,10 +115,8 @@ public class UsuarioService {
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public void deletarPorId(Long id){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
 
         Usuario usuarioEncontrado = buscarUsuario(id);
-
         perfilValidacaoService.validarPerfilUsuarioDelete(usuarioEncontrado, usuarioLogado);
 
         usuarioEncontrado.setUsuarioExclusao(usuarioLogado);
@@ -129,8 +126,6 @@ public class UsuarioService {
     }
 
     public Page<UsuarioViewDTO> buscarUsuarioPaginado(Integer pagina, Integer quantidadeRegistro, String[] sort){
-        Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         return consultaService.listagem(pagina, quantidadeRegistro, sort);
     }
 

@@ -91,7 +91,6 @@ public class UsuarioController {
     @ApiOperation(value = "Lista de usuários")
     @ApiResponses(value = {
             @ApiResponse(code = 200,message = "Retornou uma lista de usuários"),
-            @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
     })
     @GetMapping
     public ResponseEntity<Page<UsuarioViewDTO>> listagem(
