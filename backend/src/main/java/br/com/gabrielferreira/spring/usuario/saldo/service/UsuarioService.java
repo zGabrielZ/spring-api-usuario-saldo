@@ -51,7 +51,6 @@ public class UsuarioService {
     //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioInsertResponseDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
 
         usuarioInsertFormDTO.setCpf(limparMascaraCpf(usuarioInsertFormDTO.getCpf()));
         verificarEmail(usuarioInsertFormDTO.getEmail());
@@ -70,7 +69,6 @@ public class UsuarioService {
 
     public UsuarioViewDTO buscarPorId(Long id){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         perfilValidacaoService.validarPerfilUsuarioVisualizacao(id, usuarioLogado, isAdmin(), isFuncionario(), isCliente());
 
         QUsuario qUsuario = QUsuario.usuario;
