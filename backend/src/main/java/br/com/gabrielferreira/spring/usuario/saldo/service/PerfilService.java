@@ -19,12 +19,12 @@ public class PerfilService {
 
     private final PerfilRepositorio perfilRepositorio;
 
-    //@Cacheable(cacheNames = LISTAGEM_PERFIS)
+    @Cacheable(value = PERFIS)
     public List<PerfilViewDTO> listagem(){
         return PerfilDTOFactory.toPerfisViewDTO(perfilRepositorio.findAll());
     }
 
-    //@Cacheable(cacheNames = BUSCAR_PERFIL_ID)
+    @Cacheable(value = PERFIS, key = "T(java.lang.String).format('%s_%s_%s', #root.target.Class.simpleName, #root.methodName, #id)")
     public PerfilViewDTO buscarPorId(Long id){
         return PerfilDTOFactory.toPerfilViewDTO(perfilRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontrado(PERFIL_NAO_ENCONTRADO.getMensagem())));
     }
