@@ -46,7 +46,6 @@ public class SaldoService {
     @Transactional
     public SaldoInsertResponseDTO depositar(SaldoInsertFormDTO saldoInsertFormDTO){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         perfilValidacaoService.validarPerfilUsuarioSaldo(usuarioLogado, saldoInsertFormDTO.getIdUsuario());
 
         verificarValorDeposito(saldoInsertFormDTO.getDeposito());
