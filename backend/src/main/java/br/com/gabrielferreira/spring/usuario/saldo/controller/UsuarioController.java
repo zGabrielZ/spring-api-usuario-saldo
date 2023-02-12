@@ -6,7 +6,6 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDT
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.*;
-import br.com.gabrielferreira.spring.usuario.saldo.service.ConsultaService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaldoService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.SaqueService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
@@ -32,8 +31,6 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     private final SaqueService saqueService;
-
-    private final ConsultaService consultaService;
 
     private final SaldoService saldoService;
 
@@ -150,9 +147,9 @@ public class UsuarioController {
     public ResponseEntity<Page<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id,
          @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
          @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,
-         @RequestParam(value = "sort", required = false) String[] sort){
+         @RequestParam(value = "sort", required = false, defaultValue = "id,asc") String[] sort){
 
-        Page<SaqueViewDTO> saques = consultaService.saquesPorUsuario(id,pagina, quantidadeRegistro, sort);
+        Page<SaqueViewDTO> saques = saqueService.buscarSaquesPorUsuarioPaginado(id,pagina, quantidadeRegistro, sort);
         return ResponseEntity.ok().body(saques);
     }
 }

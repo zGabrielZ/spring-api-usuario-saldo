@@ -131,8 +131,6 @@ public class UsuarioService {
 
     public SaldoTotalViewDTO buscarSaldoTotal(Long id){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
-        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
-
         Usuario usuarioEncontrado = buscarUsuario(id);
         perfilValidacaoService.validarPerfilUsuarioVisualizacaoSaldo(usuarioLogado, usuarioEncontrado, isAdmin(), isFuncionario(), isCliente());
 
@@ -166,7 +164,6 @@ public class UsuarioService {
     }
 
     private void verificarUsuarioLogado(Usuario usuarioLogado, Usuario usuarioAoInserir){
-        perfilValidacaoService.verificarSituacaoUsuarioLogado(usuarioLogado);
         if(usuarioLogado != null && !usuarioLogado.isExcluido()){
             usuarioAoInserir.setUsuarioInclusao(usuarioLogado);
         } else {

@@ -74,13 +74,10 @@ public class ConsultaService {
 
     public Page<SaqueViewDTO> saquesPorUsuario(Long idUsuario, Integer pagina, Integer quantidadeRegistro, String[] sort){
 
-//        Usuario usuarioLogado = perfilService.recuperarUsuarioLogado();
-//        boolean isUsuarioLogadoPerfilAdmin = perfilService.isContemPerfilAdminUsuarioLogado();
-//        verificarUsuarioLogado(usuarioLogado, isUsuarioLogadoPerfilAdmin, idUsuario);
-
         QSaque qSaque = QSaque.saque;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.and(qSaque.usuario.id.eq(idUsuario));
+        booleanBuilder.and(qSaque.usuario.excluido.eq(false));
 
         List<Sort.Order> orders = getOrders(sort);
         PageRequest pageRequest = PageRequest.of(pagina, quantidadeRegistro, Sort.by(orders));
@@ -201,12 +198,6 @@ public class ConsultaService {
         }
 
         return orderSpecifiers.toArray(OrderSpecifier[]::new);
-    }
-
-    private void verificarUsuarioLogado(Usuario usuarioLogado, boolean isUsuarioAdmin, Long idUsuario){
-        if(usuarioLogado != null && !isUsuarioAdmin && !usuarioLogado.getId().equals(idUsuario)){
-            throw new ExcecaoPersonalizada(LISTA_SAQUES.getMensagem());
-        }
     }
 
     private List<Sort.Order> getOrders(String[] sorts){
