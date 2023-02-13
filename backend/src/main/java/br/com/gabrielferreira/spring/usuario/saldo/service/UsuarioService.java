@@ -48,7 +48,6 @@ public class UsuarioService {
     private final ConsultaService consultaService;
 
     @Transactional
-    //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioInsertResponseDTO inserir(UsuarioInsertFormDTO usuarioInsertFormDTO){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
 
@@ -99,7 +98,6 @@ public class UsuarioService {
     }
 
     @Transactional
-    //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public UsuarioUpdateResponseDTO atualizar(Long id, UsuarioUpdateFormDTO usuarioUpdateFormDTO){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
         perfilValidacaoService.validarPerfilUsuarioUpdate(usuarioUpdateFormDTO.getPerfis(), usuarioLogado, id, isAdmin(), isFuncionario(), isCliente());
@@ -112,7 +110,6 @@ public class UsuarioService {
     }
 
     @Transactional
-    //@CacheEvict(value = {USUARIO_AUTENTICADO, USUARIO_AUTENTICADO_EMAIL}, allEntries = true)
     public void deletarPorId(Long id){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
 
@@ -137,12 +134,10 @@ public class UsuarioService {
         return SaldoDTOFactory.toSaldoTotalViewDTO(usuarioEncontrado.getSaldoTotal());
     }
 
-    //@Cacheable(cacheNames = USUARIO_AUTENTICADO, key = "#id")
     public Usuario buscarUsuarioAutenticado(Long id){
         return usuarioRepositorio.findByIdUsuario(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
-    //@Cacheable(cacheNames = USUARIO_AUTENTICADO_EMAIL, key = "#email")
     public Usuario buscarUsuarioEmailAutenticado(String email){
         return usuarioRepositorio.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
