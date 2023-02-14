@@ -40,6 +40,7 @@ public abstract class AbstractTests {
                 .dataNascimento(dataNascimento)
                 .saldoTotal(saldoTotal)
                 .excluido(excluido)
+                .perfis(perfis)
                 .build();
     }
 
