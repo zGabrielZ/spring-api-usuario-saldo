@@ -41,34 +41,21 @@ class SaldoRepositorioTest extends AbstractTests {
     void buscarListaDeSaldosPorUsuario(){
         // Cenário
         Perfil perfilAdmin = perfilRepositorio.findById(1L).orElseThrow();
+        Perfil perfilFuncionario = perfilRepositorio.findById(2L).orElseThrow();
 
-        Usuario usuario = Usuario.builder().nome("José Ferreira").email("jose@gmail.com").senha("123")
-                .cpf("73977674005").dataNascimento(LocalDate.parse("10/12/1995",DTF))
-                .dataInclusao(ZonedDateTime.now()).excluido(false)
-                .perfis(List.of(perfilAdmin))
-                .saldoTotal(BigDecimal.ZERO)
-                .build();
+        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "José Ferreira", "jose@gmail.com", "123", "73977674005", LocalDate.parse("10/12/1995",DTF)
+                , BigDecimal.valueOf(10000.00), false);
 
         testEntityManager.persist(usuario);
 
-        Usuario usuario2 = Usuario.builder().nome("Marcos da Silva").email("marcos@gmail.com").senha("123")
-                .cpf("56038504001").dataNascimento(LocalDate.parse("05/01/2000",DTF))
-                .dataInclusao(ZonedDateTime.now()).excluido(false)
-                .perfis(List.of(perfilAdmin))
-                .saldoTotal(BigDecimal.ZERO)
-                .build();
+        Usuario usuario2 = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Marcos da Silva", "marcos@gmail.com", "123", "56038504001", LocalDate.parse("05/01/2000",DTF)
+                , BigDecimal.valueOf(10000.00), false);
 
         testEntityManager.persist(usuario2);
 
-        Saldo saldo1 = Saldo.builder().usuario(usuario).dataDeposito(ZonedDateTime.now()).deposito(BigDecimal.valueOf(500.00))
-                .usuarioDepositante(usuario2)
-                .build();
-        Saldo saldo2 = Saldo.builder().usuario(usuario).dataDeposito(ZonedDateTime.now()).deposito(BigDecimal.valueOf(800.00))
-                .usuarioDepositante(usuario2)
-                .build();
-        Saldo saldo3 = Saldo.builder().usuario(usuario).dataDeposito(ZonedDateTime.now()).deposito(BigDecimal.valueOf(400.00))
-                .usuarioDepositante(usuario2)
-                .build();
+        Saldo saldo1 = gerarSaldo(BigDecimal.valueOf(500.00), ZonedDateTime.now(), usuario, usuario2);
+        Saldo saldo2 = gerarSaldo(BigDecimal.valueOf(800.00), ZonedDateTime.now(), usuario, usuario2);
+        Saldo saldo3 = gerarSaldo(BigDecimal.valueOf(400.00), ZonedDateTime.now(), usuario, usuario2);
 
         List<Saldo> saldos = Arrays.asList(saldo1, saldo2, saldo3);
         saldos.forEach(s -> testEntityManager.persist(s));

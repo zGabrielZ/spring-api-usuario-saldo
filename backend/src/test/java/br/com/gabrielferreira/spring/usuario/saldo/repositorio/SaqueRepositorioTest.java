@@ -40,22 +40,16 @@ class SaqueRepositorioTest extends AbstractTests {
     void buscarListaDeSaquesPorUsuario(){
         // Cenário
         Perfil perfilAdmin = perfilRepositorio.findById(1L).orElseThrow();
+        Perfil perfilFuncionario = perfilRepositorio.findById(2L).orElseThrow();
 
-        Usuario usuario = Usuario.builder().nome("Eduardo Luiz").email("eduardo@gmail.com").senha("123")
-                .cpf("73016620090").dataNascimento(LocalDate.parse("10/12/1995",DTF))
-                .dataInclusao(ZonedDateTime.now()).excluido(false)
-                .perfis(List.of(perfilAdmin))
-                .saldoTotal(BigDecimal.ZERO)
-                .build();
+        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Eduardo Luiz", "eduardo@gmail.com", "123", "73016620090", LocalDate.parse("10/12/1995",DTF)
+                , BigDecimal.valueOf(10000.00), false);
 
         testEntityManager.persist(usuario);
 
-        Saque saque1 = Saque.builder().valor(BigDecimal.valueOf(500.00)).dataSaque(ZonedDateTime.now())
-                .usuario(usuario).build();
-        Saque saque2 = Saque.builder().valor(BigDecimal.valueOf(600.00)).dataSaque(ZonedDateTime.now())
-                .usuario(usuario).build();
-        Saque saque3 = Saque.builder().valor(BigDecimal.valueOf(400.00)).dataSaque(ZonedDateTime.now())
-                .usuario(usuario).build();
+        Saque saque1 = gerarSaque(BigDecimal.valueOf(500.00), ZonedDateTime.now(), usuario);
+        Saque saque2 = gerarSaque(BigDecimal.valueOf(600.00), ZonedDateTime.now(), usuario);
+        Saque saque3 = gerarSaque(BigDecimal.valueOf(400.00), ZonedDateTime.now(), usuario);
 
         List<Saque> saques = Arrays.asList(saque1, saque2, saque3);
         saques.forEach(s -> testEntityManager.persist(s));
