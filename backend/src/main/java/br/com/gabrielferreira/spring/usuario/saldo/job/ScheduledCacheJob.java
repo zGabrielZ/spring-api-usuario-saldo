@@ -16,4 +16,10 @@ public class ScheduledCacheJob {
     public void limparCachePerfil(){
         log.info("Limpando o cache do {}", PERFIS);
     }
+
+    @CacheEvict(value = USUARIOS, allEntries = true)
+    @Scheduled(fixedDelay = 3600000)
+    public void limparCacheUsuariosAutenticados(){
+        log.info("Limpando o cache do {}", USUARIOS);
+    }
 }

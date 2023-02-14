@@ -15,6 +15,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -138,6 +139,7 @@ public class UsuarioService {
         return usuarioRepositorio.findByIdUsuario(id).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
 
+    @Cacheable(value = USUARIOS, key = "T(java.lang.String).format('%s_%s_%s', #root.target.Class.simpleName, #root.methodName, #email)")
     public Usuario buscarUsuarioEmailAutenticado(String email){
         return usuarioRepositorio.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(USUARIO_NAO_ENCONTRADO.getMensagem()));
     }
