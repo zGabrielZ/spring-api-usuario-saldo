@@ -1,8 +1,8 @@
 version: "3.0"
 services:
-  postgresdb:
+  redis-dev:
    image: redis:7.0.7
-   container_name: redis
+   container_name: redis-dev
    ports:
      - 6379:6379
    restart: always
