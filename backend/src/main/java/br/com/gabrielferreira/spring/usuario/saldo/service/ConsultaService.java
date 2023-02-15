@@ -12,8 +12,6 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDT
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.modelo.ConsultaUsuario;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
-import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
-import br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.*;
@@ -37,11 +35,7 @@ import static com.querydsl.core.group.GroupBy.*;
 @Service
 public class ConsultaService {
 
-    private final LoginUsuarioUtils loginUsuarioUtils;
-
     private final QueryDslDAO queryDslDAO;
-
-    private final UsuarioRepositorio usuarioRepositorio;
 
     public Page<SaldoViewDTO> saldosPorUsuario(Long idUsuario, Integer pagina, Integer quantidadeRegistro, String[] sort) {
 

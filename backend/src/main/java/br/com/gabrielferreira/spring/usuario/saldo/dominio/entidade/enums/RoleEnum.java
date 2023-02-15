@@ -18,13 +18,4 @@ public enum RoleEnum {
 
     private final String roleCompleta;
 
-    public static String getDescricao(Long id){
-        for (RoleEnum role : RoleEnum.values()) {
-            if(role.getId().equals(id)){
-                return role.getDescricao();
-            }
-        }
-        return null;
-    }
-
 }
