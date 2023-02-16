@@ -17,11 +17,11 @@ spring:
     baselineOnMigrate: true
     schemas:
       - dbo
-cache:
-  type: redis
-redis:
-  host: localhost
-  port: 6379
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
 
 feriados:
   nacionais:
