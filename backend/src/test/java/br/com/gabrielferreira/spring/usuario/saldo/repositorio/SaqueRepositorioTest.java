@@ -7,10 +7,8 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -25,15 +23,6 @@ import java.util.List;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class SaqueRepositorioTest extends AbstractTests {
-
-    @Autowired
-    private TestEntityManager testEntityManager;
-
-    @Autowired
-    private SaqueRepositorio saqueRepositorio;
-
-    @Autowired
-    private PerfilRepositorio perfilRepositorio;
 
     @Test
     @DisplayName("Buscar lista de saques por usuário deveria retornar dados quando tiver registros salvos no banco de dados.")
