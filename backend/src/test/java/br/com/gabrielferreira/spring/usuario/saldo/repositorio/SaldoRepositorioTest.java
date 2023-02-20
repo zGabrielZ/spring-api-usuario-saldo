@@ -1,13 +1,15 @@
 package br.com.gabrielferreira.spring.usuario.saldo.repositorio;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
-import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -23,7 +25,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class SaldoRepositorioTest extends AbstractTests {
+class SaldoRepositorioTest extends AbstractUtils {
+
+    @Autowired
+    PerfilRepositorio perfilRepositorio;
+
+    @Autowired
+    TestEntityManager testEntityManager;
+
+    @Autowired
+    SaldoRepositorio saldoRepositorio;
 
     @Test
     @DisplayName("Buscar lista de saldos por usuário deveria retornar dados quando tiver registros salvos no banco de dados.")

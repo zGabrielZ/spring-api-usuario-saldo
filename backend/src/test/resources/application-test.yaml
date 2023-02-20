@@ -18,6 +18,8 @@ spring:
         format_sql: true
   flyway:
     enabled: false
+  cache:
+    type: NONE
 
 feriados:
   nacionais:

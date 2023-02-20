@@ -12,7 +12,7 @@
 //import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 //import static org.junit.jupiter.api.Assertions.*;
 //
-//import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
+//import br.com.gabrielferreira.spring.usuario.saldo.controller.AbstractController;
 //import org.junit.jupiter.api.BeforeEach;
 //import static org.mockito.Mockito.*;
 //import static org.assertj.core.api.Assertions.*;
@@ -29,7 +29,7 @@
 //import java.util.Optional;
 //
 //@ExtendWith(SpringExtension.class)
-//class UsuarioServiceTest extends AbstractTests {
+//class UsuarioServiceTest extends AbstractController {
 //
 //    private UsuarioRepositorio usuarioRepositorio;
 //

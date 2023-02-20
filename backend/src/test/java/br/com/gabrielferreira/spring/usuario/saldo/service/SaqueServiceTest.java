@@ -6,7 +6,7 @@
 //import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDTO;
 //import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 //import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
-//import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
+//import br.com.gabrielferreira.spring.usuario.saldo.controller.AbstractController;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@
 //import static org.mockito.Mockito.*;
 //
 //@ExtendWith(SpringExtension.class)
-//class SaqueServiceTest extends AbstractTests {
+//class SaqueServiceTest extends AbstractController {
 //
 //    private SaqueRepositorio saqueRepositorio;
 //

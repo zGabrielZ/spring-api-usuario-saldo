@@ -1,6 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
-import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
+import br.com.gabrielferreira.spring.usuario.saldo.controller.AbstractController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-class ConsultaServiceTest extends AbstractTests {
+class ConsultaServiceTest extends AbstractController {
 
     @InjectMocks
     private ConsultaService consultaService;

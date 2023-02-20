@@ -1,14 +1,16 @@
 package br.com.gabrielferreira.spring.usuario.saldo.repositorio;
-
-import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import static org.assertj.core.api.Assertions.*;
+
+import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -21,7 +23,16 @@ import java.util.Optional;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UsuarioRepositorioTest extends AbstractTests {
+class UsuarioRepositorioTest extends AbstractUtils {
+
+    @Autowired
+    PerfilRepositorio perfilRepositorio;
+
+    @Autowired
+    TestEntityManager testEntityManager;
+
+    @Autowired
+    UsuarioRepositorio usuarioRepositorio;
 
     @Test
     @DisplayName("Buscar por email deveria retornar dado quando tiver registro salvo no banco de dados.")

@@ -13,7 +13,7 @@ public record SaldoViewDTO (
         BigDecimal deposito,
 
         @ApiModelProperty(value = "Data do déposito", example = "26/06/2022 12:00:00")
-        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+        @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm:ssZ")
         ZonedDateTime data
 ) {
 

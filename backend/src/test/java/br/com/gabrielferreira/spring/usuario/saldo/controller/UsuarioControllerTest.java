@@ -12,7 +12,7 @@
 //import br.com.gabrielferreira.spring.usuario.saldo.service.ConsultaService;
 //import br.com.gabrielferreira.spring.usuario.saldo.service.SaqueService;
 //import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
-//import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
+//import br.com.gabrielferreira.spring.usuario.saldo.controller.AbstractController;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 //import org.hamcrest.Matchers;
@@ -44,7 +44,7 @@
 //import java.util.List;
 //
 //@ExtendWith(SpringExtension.class)
-//class UsuarioControllerTest extends AbstractTests {
+//class UsuarioControllerTest extends AbstractController {
 //
 //    private static final String API = "/usuarios";
 //

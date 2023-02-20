@@ -11,7 +11,7 @@
 //import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaldoRepositorio;
 //import static org.assertj.core.api.Assertions.*;
 //import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
-//import br.com.gabrielferreira.spring.usuario.saldo.utils.AbstractTests;
+//import br.com.gabrielferreira.spring.usuario.saldo.controller.AbstractController;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@
 //import java.util.List;
 //
 //@ExtendWith(SpringExtension.class)
-//class SaldoServiceTest extends AbstractTests {
+//class SaldoServiceTest extends AbstractController {
 //
 //    private Clock clock;
 //
