@@ -1,6 +1,5 @@
 package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilInsertFormDTO;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -28,7 +27,6 @@ public class UsuarioUpdateFormDTO implements Serializable {
     @ApiModelProperty(value = "Data nascimento do usuário", example = "31/12/1990")
     @PastOrPresent(message = "Data nascimento não pode ser futura.")
     @NotNull(message = "Data nascimento não pode ser vazio.")
-    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
 
     @ApiModelProperty(value = "Lista de perfis")
