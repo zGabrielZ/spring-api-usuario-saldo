@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.MascarasUtils.*;
+
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DataJpaTest
@@ -41,7 +43,7 @@ class UsuarioRepositorioTest extends AbstractUtils {
         Perfil perfilAdmin = perfilRepositorio.findById(1L).orElseThrow();
         Perfil perfilFuncionario = perfilRepositorio.findById(2L).orElseThrow();
 
-        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Marinho da Silva", "marinho@gmail.com", "123", "41194800033", LocalDate.parse("10/12/1995",DTF)
+        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Marinho da Silva", "marinho@gmail.com", "123", "41194800033", LocalDate.parse("10/12/1995",DATA_FORMATTER)
                 , BigDecimal.valueOf(10000.00), false);
 
         testEntityManager.persist(usuario);
@@ -70,7 +72,7 @@ class UsuarioRepositorioTest extends AbstractUtils {
         Perfil perfilAdmin = perfilRepositorio.findById(1L).orElseThrow();
         Perfil perfilFuncionario = perfilRepositorio.findById(2L).orElseThrow();
 
-        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Josué da Silva", "josuee@gmail.com", "123", "07188077070", LocalDate.parse("10/12/1995",DTF)
+        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Josué da Silva", "josuee@gmail.com", "123", "07188077070", LocalDate.parse("10/12/1995",DATA_FORMATTER)
                 , BigDecimal.valueOf(10000.00), false);
 
         testEntityManager.persist(usuario);
@@ -89,7 +91,7 @@ class UsuarioRepositorioTest extends AbstractUtils {
         Perfil perfilAdmin = perfilRepositorio.findById(1L).orElseThrow();
         Perfil perfilFuncionario = perfilRepositorio.findById(2L).orElseThrow();
 
-        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Mariana da Silva", "mariana@gmail.com", "123", "88013832074", LocalDate.parse("10/12/1995",DTF)
+        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Mariana da Silva", "mariana@gmail.com", "123", "88013832074", LocalDate.parse("10/12/1995",DATA_FORMATTER)
                 , BigDecimal.valueOf(10000.00), false);
 
         testEntityManager.persist(usuario);
@@ -108,7 +110,7 @@ class UsuarioRepositorioTest extends AbstractUtils {
         Perfil perfilAdmin = perfilRepositorio.findById(1L).orElseThrow();
         Perfil perfilFuncionario = perfilRepositorio.findById(2L).orElseThrow();
 
-        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Luana da Silva", "luana@gmail.com", "123", "11824188056", LocalDate.parse("10/12/1995",DTF)
+        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Luana da Silva", "luana@gmail.com", "123", "11824188056", LocalDate.parse("10/12/1995",DATA_FORMATTER)
                 , BigDecimal.valueOf(10000.00), false);
 
         testEntityManager.persist(usuario);

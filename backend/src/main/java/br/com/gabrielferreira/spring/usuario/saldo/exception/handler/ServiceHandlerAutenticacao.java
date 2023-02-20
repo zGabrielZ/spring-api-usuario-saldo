@@ -2,9 +2,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.exception.handler;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.modelo.ErroPadrao;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -17,17 +15,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 
-import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.AMERICA_SAO_PAULO;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.*;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.MascarasUtils.*;
 
 @ControllerAdvice
 @Slf4j
-@RequiredArgsConstructor
 public class ServiceHandlerAutenticacao implements AuthenticationEntryPoint {
 
     private static final String MSG = "Você precisa fazer login primeiro para executar esta função";
-
-    private final ObjectMapper objectMapper;
-
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
@@ -40,8 +35,16 @@ public class ServiceHandlerAutenticacao implements AuthenticationEntryPoint {
         ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)),httpStatus.value(),"Verifique o erro abaixo"
                 ,MSG,new ArrayList<>());
 
-        String json = objectMapper.writeValueAsString(erroPadrao);
+        String json = getObjectMapper().writeValueAsString(erroPadrao);
 
         response.getWriter().write(json);
+    }
+
+    private ObjectMapper getObjectMapper(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addSerializer(new LocalDateTimeSerializer(DATA_HORA_FORMATTER));
+        objectMapper.registerModule(javaTimeModule);
+        return objectMapper;
     }
 }

@@ -8,13 +8,9 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AbstractUtils {
-
-    protected static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    protected static final DateTimeFormatter DTFHORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     protected Usuario gerarUsuario(List<Perfil> perfis, String nome, String email, String senha, String cpf, LocalDate dataNascimento,
                                    BigDecimal saldoTotal, Boolean excluido){

@@ -2,7 +2,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.exception.handler;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.modelo.ErroPadrao;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,15 +16,13 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.AMERICA_SAO_PAULO;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.MascarasUtils.DATA_HORA_FORMATTER;
 
 @ControllerAdvice
 @Slf4j
-@RequiredArgsConstructor
 public class ServiceHandlerPermissao implements AccessDeniedHandler {
 
     private static final String MSG = "Você não tem a permissão de realizar esta ação";
-
-    private final ObjectMapper objectMapper;
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
@@ -37,8 +35,16 @@ public class ServiceHandlerPermissao implements AccessDeniedHandler {
         ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)),httpStatus.value(),"Verifique o erro abaixo"
                 ,MSG,new ArrayList<>());
 
-        String json = objectMapper.writeValueAsString(erroPadrao);
+        String json = getObjectMapper().writeValueAsString(erroPadrao);
 
         response.getWriter().write(json);
+    }
+
+    private ObjectMapper getObjectMapper(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addSerializer(new LocalDateTimeSerializer(DATA_HORA_FORMATTER));
+        objectMapper.registerModule(javaTimeModule);
+        return objectMapper;
     }
 }

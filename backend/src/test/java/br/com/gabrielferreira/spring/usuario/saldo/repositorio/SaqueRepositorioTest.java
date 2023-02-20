@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.MascarasUtils.*;
+
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DataJpaTest
@@ -43,7 +45,7 @@ class SaqueRepositorioTest extends AbstractUtils {
         Perfil perfilAdmin = perfilRepositorio.findById(1L).orElseThrow();
         Perfil perfilFuncionario = perfilRepositorio.findById(2L).orElseThrow();
 
-        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Eduardo Luiz", "eduardo@gmail.com", "123", "73016620090", LocalDate.parse("10/12/1995",DTF)
+        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Eduardo Luiz", "eduardo@gmail.com", "123", "73016620090", LocalDate.parse("10/12/1995",DATA_FORMATTER)
                 , BigDecimal.valueOf(10000.00), false);
 
         testEntityManager.persist(usuario);

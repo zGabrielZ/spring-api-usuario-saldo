@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.MascarasUtils.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
@@ -70,7 +71,7 @@ class UsuarioControllerIntegradoTest extends AbstractController {
         Perfil perfilAdmin = perfilRepositorio.findById(1L).orElseThrow();
         Perfil perfilFuncionario = perfilRepositorio.findById(2L).orElseThrow();
 
-        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Marcio Ferreira", "marcio@gmail.com", "$2a$10$aXn3.Hn6MbnsdEbvBh/OhehvXBo3HMyPIqGoBVRuU2yxxNxqY0tWu", "33288179059", LocalDate.parse("10/12/1995",DTF)
+        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Marcio Ferreira", "marcio@gmail.com", "$2a$10$aXn3.Hn6MbnsdEbvBh/OhehvXBo3HMyPIqGoBVRuU2yxxNxqY0tWu", "33288179059", LocalDate.parse("10/12/1995",DATA_FORMATTER)
                 , BigDecimal.valueOf(10000.00), false);
 
         usuarioRepositorio.save(usuario);

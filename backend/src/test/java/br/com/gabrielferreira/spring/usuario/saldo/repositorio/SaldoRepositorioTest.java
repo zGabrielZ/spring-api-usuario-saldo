@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.MascarasUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -43,12 +44,12 @@ class SaldoRepositorioTest extends AbstractUtils {
         Perfil perfilAdmin = perfilRepositorio.findById(1L).orElseThrow();
         Perfil perfilFuncionario = perfilRepositorio.findById(2L).orElseThrow();
 
-        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "José Ferreira", "jose@gmail.com", "123", "73977674005", LocalDate.parse("10/12/1995",DTF)
+        Usuario usuario = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "José Ferreira", "jose@gmail.com", "123", "73977674005", LocalDate.parse("10/12/1995",DATA_FORMATTER)
                 , BigDecimal.valueOf(10000.00), false);
 
         testEntityManager.persist(usuario);
 
-        Usuario usuario2 = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Marcos da Silva", "marcos@gmail.com", "123", "56038504001", LocalDate.parse("05/01/2000",DTF)
+        Usuario usuario2 = gerarUsuario(Arrays.asList(perfilAdmin, perfilFuncionario), "Marcos da Silva", "marcos@gmail.com", "123", "56038504001", LocalDate.parse("05/01/2000",DATA_FORMATTER)
                 , BigDecimal.valueOf(10000.00), false);
 
         testEntityManager.persist(usuario2);
