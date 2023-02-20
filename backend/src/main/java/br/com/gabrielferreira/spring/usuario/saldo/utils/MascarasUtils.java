@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.swing.text.MaskFormatter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
@@ -13,6 +14,9 @@ import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 public class MascarasUtils {
 
     private MascarasUtils(){}
+
+    public static final DateTimeFormatter DATA_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public static final DateTimeFormatter DATA_HORA_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     public static String toCpfFormatado(String cpf){
         try {

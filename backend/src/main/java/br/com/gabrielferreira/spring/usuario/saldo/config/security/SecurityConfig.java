@@ -3,6 +3,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.exception.handler.ServiceHand
 import br.com.gabrielferreira.spring.usuario.saldo.exception.handler.ServiceHandlerPermissao;
 import br.com.gabrielferreira.spring.usuario.saldo.service.UsuarioService;
 import br.com.gabrielferreira.spring.usuario.saldo.service.security.TokenService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -23,6 +24,8 @@ public class SecurityConfig {
     private final TokenService tokenService;
 
     private final UsuarioService usuarioService;
+
+    private final ObjectMapper objectMapper;
 
     private static final String[] PUBLICO_ENDPOINT_POST = {
             "/autenticacao",
@@ -50,8 +53,8 @@ public class SecurityConfig {
                 .and().csrf().disable() // Disable csrf, via token fica livre disso
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Não é pra criar sessão
                 .and().addFilterBefore(new AutenticacaoTokenFilter(tokenService, usuarioService), UsernamePasswordAuthenticationFilter.class) // Adicionando o filtro antes de qualquer coisa
-                .exceptionHandling().authenticationEntryPoint(new ServiceHandlerAutenticacao()) // Mensagem personalizada quando não for autenticado
-                .and().exceptionHandling().accessDeniedHandler(new ServiceHandlerPermissao()) // Mensagem personalizada quando não tiver permissão
+                .exceptionHandling().authenticationEntryPoint(new ServiceHandlerAutenticacao(objectMapper)) // Mensagem personalizada quando não for autenticado
+                .and().exceptionHandling().accessDeniedHandler(new ServiceHandlerPermissao(objectMapper)) // Mensagem personalizada quando não tiver permissão
                 .and().build();
     }
 
