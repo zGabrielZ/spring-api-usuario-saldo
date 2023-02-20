@@ -143,7 +143,7 @@ public class UsuarioController {
             @ApiResponse(code = 200,message = "Retornou uma lista de saques"),
             @ApiResponse(code = 400,message = "Ocorreu um erro personalizado"),
     })
-    @GetMapping("/saques/{id}")
+    @GetMapping("/{id}/saques")
     public ResponseEntity<Page<SaqueViewDTO>> buscarSaquesPorUsuario(@PathVariable Long id,
          @RequestParam(value = "pagina", required = false, defaultValue = "0") Integer pagina,
          @RequestParam(value = "quantidadeRegistro", required = false, defaultValue = "5") Integer quantidadeRegistro,

@@ -1,11 +1,16 @@
 package br.com.gabrielferreira.spring.usuario.saldo.controller;
 
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Perfil;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saldo;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
+import br.com.gabrielferreira.spring.usuario.saldo.exception.modelo.ErroPadrao;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.PerfilRepositorio;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaldoRepositorio;
+import br.com.gabrielferreira.spring.usuario.saldo.repositorio.SaqueRepositorio;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioRepositorio;
 import br.com.gabrielferreira.spring.usuario.saldo.utils.RestResponsePage;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,17 +52,78 @@ class UsuarioControllerIntegradoTest extends AbstractController {
     @Autowired
     SaldoRepositorio saldoRepositorio;
 
+    @Autowired
+    SaqueRepositorio saqueRepositorio;
+
     @Test
     @DisplayName("Deve realizar a consulta de saldos por usuário")
     void deveRealizarConsultaDeSaldosPorUsuario(){
         // Executando
         String caminho = PORTA.concat(API).concat("/").concat(ID_USUARIO_LOGADO.toString()).concat("/saldos")
-                .concat("?pagina=0").concat("&quantidadeRegistro=5");
+                .concat("?pagina=0").concat("&quantidadeRegistro=5")
+                .concat("&sort=id,desc").concat("&sort=deposito,desc")
+                .concat("&sort=data,desc");
         ParameterizedTypeReference<RestResponsePage<SaldoViewDTO>> responseType = new ParameterizedTypeReference<>() {};
         ResponseEntity<RestResponsePage<SaldoViewDTO>> request = genericRestTemplate.genericRequest(null, responseType, JSON_MEDIATYPE, HttpMethod.GET, caminho, TOKEN_USUARIO_LOGADO, testRestTemplate);
 
         // Verificando
         assertThat(request.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("Deve realizar a consulta de saques por usuário")
+    void deveRealizarConsultaDeSaquesPorUsuario(){
+        // Executando
+        String caminho = PORTA.concat(API).concat("/").concat(ID_USUARIO_LOGADO.toString()).concat("/saques")
+                .concat("?pagina=0").concat("&quantidadeRegistro=5")
+                .concat("&sort=id,desc");
+        ParameterizedTypeReference<RestResponsePage<SaqueViewDTO>> responseType = new ParameterizedTypeReference<>() {};
+        ResponseEntity<RestResponsePage<SaqueViewDTO>> request = genericRestTemplate.genericRequest(null, responseType, JSON_MEDIATYPE, HttpMethod.GET, caminho, TOKEN_USUARIO_LOGADO, testRestTemplate);
+
+        // Verificando
+        assertThat(request.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("Deve realizar a consulta de usuários")
+    void deveRealizarConsultaDeUsuarios(){
+        // Executando
+        String caminho = PORTA.concat(API)
+                .concat("?pagina=0").concat("&quantidadeRegistro=5")
+                .concat("&sort=nome,desc").concat("&sort=dataNascimento,desc");
+        ParameterizedTypeReference<RestResponsePage<UsuarioViewDTO>> responseType = new ParameterizedTypeReference<>() {};
+        ResponseEntity<RestResponsePage<UsuarioViewDTO>> request = genericRestTemplate.genericRequest(null, responseType, JSON_MEDIATYPE, HttpMethod.GET, caminho, TOKEN_USUARIO_LOGADO, testRestTemplate);
+
+        // Verificando
+        assertThat(request.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("Não deve realizar a consulta de saldos por usuário quando não informar a direção")
+    void naoDeveRealizarConsultaDeSaldosPorUsuarioQuandoNaoInformarDirecao(){
+        // Executando
+        String caminho = PORTA.concat(API).concat("/").concat(ID_USUARIO_LOGADO.toString()).concat("/saldos")
+                .concat("?pagina=0").concat("&quantidadeRegistro=5")
+                .concat("&sort=id");
+        ParameterizedTypeReference<ErroPadrao> responseType = new ParameterizedTypeReference<>() {};
+        ResponseEntity<ErroPadrao> request = genericRestTemplate.genericRequest(null, responseType, JSON_MEDIATYPE, HttpMethod.GET, caminho, TOKEN_USUARIO_LOGADO, testRestTemplate);
+
+        // Verificando
+        assertThat(request.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("Não deve realizar a consulta de saldos por usuário quando informar a direção incorreta")
+    void naoDeveRealizarConsultaDeSaldosPorUsuarioQuandoInformarDirecaoIncorreta(){
+        // Executando
+        String caminho = PORTA.concat(API).concat("/").concat(ID_USUARIO_LOGADO.toString()).concat("/saldos")
+                .concat("?pagina=0").concat("&quantidadeRegistro=5")
+                .concat("&sort=id,test");
+        ParameterizedTypeReference<ErroPadrao> responseType = new ParameterizedTypeReference<>() {};
+        ResponseEntity<ErroPadrao> request = genericRestTemplate.genericRequest(null, responseType, JSON_MEDIATYPE, HttpMethod.GET, caminho, TOKEN_USUARIO_LOGADO, testRestTemplate);
+
+        // Verificando
+        assertThat(request.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @BeforeAll
@@ -82,6 +148,9 @@ class UsuarioControllerIntegradoTest extends AbstractController {
 
         List<Saldo> saldos = Arrays.asList(saldo1, saldo2, saldo3);
         saldos.forEach(s -> saldoRepositorio.save(s));
+
+        Saque saque = gerarSaque(BigDecimal.valueOf(150.00), LocalDateTime.now(), usuario);
+        saqueRepositorio.save(saque);
 
         return usuario;
     }
