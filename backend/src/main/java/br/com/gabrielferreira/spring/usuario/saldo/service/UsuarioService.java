@@ -28,8 +28,8 @@ import static com.querydsl.core.group.GroupBy.*;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 
@@ -118,7 +118,7 @@ public class UsuarioService {
         perfilValidacaoService.validarPerfilUsuarioDelete(usuarioEncontrado, usuarioLogado);
 
         usuarioEncontrado.setUsuarioExclusao(usuarioLogado);
-        usuarioEncontrado.setDataExclusao(ZonedDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)));
+        usuarioEncontrado.setDataExclusao(LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)));
         usuarioEncontrado.setExcluido(true);
         usuarioRepositorio.save(usuarioEncontrado);
     }

@@ -7,7 +7,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class AbstractUtils {
                 .build();
     }
 
-    protected Saque gerarSaque(BigDecimal valor, ZonedDateTime dataSaque, Usuario usuario){
+    protected Saque gerarSaque(BigDecimal valor, LocalDateTime dataSaque, Usuario usuario){
         return Saque.builder()
                 .valor(valor)
                 .dataSaque(dataSaque)
@@ -38,7 +38,7 @@ public class AbstractUtils {
                 .build();
     }
 
-    protected Saldo gerarSaldo(BigDecimal deposito, ZonedDateTime dataDeposito, Usuario usuario, Usuario usuarioDepositante){
+    protected Saldo gerarSaldo(BigDecimal deposito, LocalDateTime dataDeposito, Usuario usuario, Usuario usuarioDepositante){
         return Saldo.builder()
                 .deposito(deposito)
                 .dataDeposito(dataDeposito)

@@ -17,7 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,9 +48,9 @@ class SaqueRepositorioTest extends AbstractUtils {
 
         testEntityManager.persist(usuario);
 
-        Saque saque1 = gerarSaque(BigDecimal.valueOf(500.00), ZonedDateTime.now(), usuario);
-        Saque saque2 = gerarSaque(BigDecimal.valueOf(600.00), ZonedDateTime.now(), usuario);
-        Saque saque3 = gerarSaque(BigDecimal.valueOf(400.00), ZonedDateTime.now(), usuario);
+        Saque saque1 = gerarSaque(BigDecimal.valueOf(500.00), LocalDateTime.now(), usuario);
+        Saque saque2 = gerarSaque(BigDecimal.valueOf(600.00), LocalDateTime.now(), usuario);
+        Saque saque3 = gerarSaque(BigDecimal.valueOf(400.00), LocalDateTime.now(), usuario);
 
         List<Saque> saques = Arrays.asList(saque1, saque2, saque3);
         saques.forEach(s -> testEntityManager.persist(s));

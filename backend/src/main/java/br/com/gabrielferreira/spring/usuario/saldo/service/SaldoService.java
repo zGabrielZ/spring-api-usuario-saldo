@@ -49,12 +49,12 @@ public class SaldoService {
         perfilValidacaoService.validarPerfilUsuarioSaldo(usuarioLogado, saldoInsertFormDTO.getIdUsuario());
 
         verificarValorDeposito(saldoInsertFormDTO.getDeposito());
-        ZonedDateTime dataAtualDeposito = ZonedDateTime.now(clock);
+        LocalDateTime dataAtualDeposito = LocalDateTime.now(clock);
         verificarDataAtualDeposito(dataAtualDeposito);
         verificarFeriadoNacional(dataAtualDeposito);
 
         Usuario usuarioEncontrado = usuarioRepositorio.findByIdUsuario(saldoInsertFormDTO.getIdUsuario()).orElseThrow(() -> new RecursoNaoEncontrado(USUARIO_NAO_ENCONTRADO.getMensagem()));
-        Saldo saldo = SaldoEntidadeFactory.toSaldoInsertEntidade(saldoInsertFormDTO, ZonedDateTime.now(clock), usuarioEncontrado, usuarioLogado);
+        Saldo saldo = SaldoEntidadeFactory.toSaldoInsertEntidade(saldoInsertFormDTO, LocalDateTime.now(clock), usuarioEncontrado, usuarioLogado);
         saldo = saldoRepositorio.save(saldo);
 
         BigDecimal valorTotal = saldoTotalPorUsuario(usuarioEncontrado);
@@ -87,14 +87,14 @@ public class SaldoService {
         }
     }
 
-    private void verificarDataAtualDeposito(ZonedDateTime dataDeposito){
+    private void verificarDataAtualDeposito(LocalDateTime dataDeposito){
         DayOfWeek dayOfWeek = dataDeposito.getDayOfWeek();
         if(dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)){
             throw new ExcecaoPersonalizada(FINAL_DE_SEMANA.getMensagem());
         }
     }
 
-    private void verificarFeriadoNacional(ZonedDateTime dataDeposito){
+    private void verificarFeriadoNacional(LocalDateTime dataDeposito){
         LocalDate dataAtualDeposito = dataDeposito.toLocalDate();
         List<FeriadoNacionalDTO> feriadosNacionais = nacionalClient.buscarFeriadosNacionais(dataAtualDeposito.getYear());
         feriadosNacionais.forEach(feriadoNacionalDTO -> {

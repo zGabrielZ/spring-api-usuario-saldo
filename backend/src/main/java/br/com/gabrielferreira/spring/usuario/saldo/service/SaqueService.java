@@ -20,7 +20,7 @@ import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 import java.math.BigDecimal;
 import java.time.Clock;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +45,7 @@ public class SaqueService {
             verificarSaque(usuarioLogado.getSaldoTotal(), sacarFormDTO.getQuantidade());
             saldoTotalAtual = saldoTotalUsuario(usuarioLogado.getSaldoTotal(), sacarFormDTO.getQuantidade());
 
-            ZonedDateTime dataAtual = ZonedDateTime.now(clock);
+            LocalDateTime dataAtual = LocalDateTime.now(clock);
             saqueRepositorio.save(SaqueEntidadeFactory.toSaqueInsertEntidade(sacarFormDTO, dataAtual, usuarioLogado));
 
             usuarioLogado.setSaldoTotal(saldoTotalAtual);

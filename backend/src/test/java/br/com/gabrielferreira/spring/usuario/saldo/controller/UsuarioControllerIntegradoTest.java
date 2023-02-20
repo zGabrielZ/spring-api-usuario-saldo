@@ -22,7 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -75,9 +75,9 @@ class UsuarioControllerIntegradoTest extends AbstractController {
 
         usuarioRepositorio.save(usuario);
 
-        Saldo saldo1 = gerarSaldo(BigDecimal.valueOf(500.00), ZonedDateTime.now(), usuario, usuario);
-        Saldo saldo2 = gerarSaldo(BigDecimal.valueOf(800.00), ZonedDateTime.now(), usuario, usuario);
-        Saldo saldo3 = gerarSaldo(BigDecimal.valueOf(400.00), ZonedDateTime.now(), usuario, usuario);
+        Saldo saldo1 = gerarSaldo(BigDecimal.valueOf(500.00), LocalDateTime.now(), usuario, usuario);
+        Saldo saldo2 = gerarSaldo(BigDecimal.valueOf(800.00), LocalDateTime.now(), usuario, usuario);
+        Saldo saldo3 = gerarSaldo(BigDecimal.valueOf(400.00), LocalDateTime.now(), usuario, usuario);
 
         List<Saldo> saldos = Arrays.asList(saldo1, saldo2, saldo3);
         saldos.forEach(s -> saldoRepositorio.save(s));

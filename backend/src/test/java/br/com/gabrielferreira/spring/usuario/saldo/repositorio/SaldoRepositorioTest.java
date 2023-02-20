@@ -15,7 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,9 +53,9 @@ class SaldoRepositorioTest extends AbstractUtils {
 
         testEntityManager.persist(usuario2);
 
-        Saldo saldo1 = gerarSaldo(BigDecimal.valueOf(500.00), ZonedDateTime.now(), usuario, usuario2);
-        Saldo saldo2 = gerarSaldo(BigDecimal.valueOf(800.00), ZonedDateTime.now(), usuario, usuario2);
-        Saldo saldo3 = gerarSaldo(BigDecimal.valueOf(400.00), ZonedDateTime.now(), usuario, usuario2);
+        Saldo saldo1 = gerarSaldo(BigDecimal.valueOf(500.00), LocalDateTime.now(), usuario, usuario2);
+        Saldo saldo2 = gerarSaldo(BigDecimal.valueOf(800.00), LocalDateTime.now(), usuario, usuario2);
+        Saldo saldo3 = gerarSaldo(BigDecimal.valueOf(400.00), LocalDateTime.now(), usuario, usuario2);
 
         List<Saldo> saldos = Arrays.asList(saldo1, saldo2, saldo3);
         saldos.forEach(s -> testEntityManager.persist(s));

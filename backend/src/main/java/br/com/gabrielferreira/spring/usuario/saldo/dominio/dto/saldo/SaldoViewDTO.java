@@ -2,7 +2,7 @@ package br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 
 public record SaldoViewDTO (
@@ -14,7 +14,7 @@ public record SaldoViewDTO (
 
         @ApiModelProperty(value = "Data do déposito", example = "26/06/2022 12:00:00")
         @JsonFormat(pattern = "dd/MM/yyyy'T'HH:mm:ssZ")
-        ZonedDateTime data
+        LocalDateTime data
 ) {
 
 }

@@ -9,8 +9,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -59,21 +59,21 @@ public class Usuario implements Serializable, UserDetails {
     private Usuario usuarioInclusao;
 
     @Column(name = "DATA_INCLUSAO", nullable = false)
-    private ZonedDateTime dataInclusao;
+    private LocalDateTime dataInclusao;
 
     @JoinColumn(name = "USUARIO_ALTERACAO_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuarioAlteracao;
 
     @Column(name = "DATA_ALTERACAO")
-    private ZonedDateTime dataAlteracao;
+    private LocalDateTime dataAlteracao;
 
     @JoinColumn(name = "USUARIO_EXCLUSAO_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuarioExclusao;
 
     @Column(name = "DATA_EXCLUSAO")
-    private ZonedDateTime dataExclusao;
+    private LocalDateTime dataExclusao;
 
     @Column(name = "FLAG_EXCLUIDO", nullable = false)
     private Boolean excluido;
@@ -95,12 +95,12 @@ public class Usuario implements Serializable, UserDetails {
 
     @PrePersist
     private void preInsercao(){
-        dataInclusao = ZonedDateTime.now(ZoneId.of(AMERICA_SAO_PAULO));
+        dataInclusao = LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO));
     }
 
     @PreUpdate
     private void preUpdate(){
-        dataAlteracao = ZonedDateTime.now(ZoneId.of(AMERICA_SAO_PAULO));
+        dataAlteracao = LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO));
     }
 
     @Override

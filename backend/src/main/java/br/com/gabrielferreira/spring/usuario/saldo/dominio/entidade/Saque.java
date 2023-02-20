@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -30,7 +30,7 @@ public class Saque implements Serializable {
     private BigDecimal valor;
 
     @Column(name = "DATA_SAQUE", nullable = false)
-    private ZonedDateTime dataSaque;
+    private LocalDateTime dataSaque;
 
     @JoinColumn(name = "USUARIO_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
