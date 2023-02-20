@@ -14,8 +14,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.*;
 
 @ControllerAdvice
 @Slf4j
@@ -35,7 +38,7 @@ public class ServiceHandler {
         }
 
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,"Erros encontrados após realizar a requisição",erroFormularios);
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)),httpStatus.value(),ERRO,"Erros encontrados após realizar a requisição",erroFormularios);
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 
@@ -44,7 +47,7 @@ public class ServiceHandler {
         log.warn(e.getMessage());
 
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,e.getMessage(),new ArrayList<>());
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)),httpStatus.value(),ERRO,e.getMessage(),new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 
@@ -53,7 +56,7 @@ public class ServiceHandler {
         log.warn(e.getMessage());
 
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,e.getMessage(),new ArrayList<>());
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)),httpStatus.value(),ERRO,e.getMessage(),new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 
@@ -67,7 +70,7 @@ public class ServiceHandler {
         }
 
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,mensagemErro,new ArrayList<>());
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)),httpStatus.value(),ERRO,mensagemErro,new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 
@@ -81,7 +84,7 @@ public class ServiceHandler {
         }
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),ERRO,mensagemErro,new ArrayList<>());
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)),httpStatus.value(),ERRO,mensagemErro,new ArrayList<>());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
     }
 }

@@ -11,7 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.AMERICA_SAO_PAULO;
 
 @ControllerAdvice
 @Slf4j
@@ -27,7 +30,7 @@ public class ServiceHandlerPermissao implements AccessDeniedHandler {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(httpStatus.value());
 
-        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(),httpStatus.value(),"Verifique o erro abaixo"
+        ErroPadrao erroPadrao = new ErroPadrao(LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO)),httpStatus.value(),"Verifique o erro abaixo"
                 ,MSG,new ArrayList<>());
 
         ObjectMapper objectMapper = new ObjectMapper();
