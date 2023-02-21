@@ -3,14 +3,14 @@ import br.com.gabrielferreira.spring.usuario.saldo.dao.QueryDslDAO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.consulta.ConsultaDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.ConsultaDTOFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.pefil.PerfilViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioDepositoViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioSaldoRelatorioDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioSaldoRelatorioFiltroDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.*;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.modelo.ConsultaPerfil;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.modelo.ConsultaSaldo;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.modelo.ConsultaSaque;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.modelo.*;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioViewDTO;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.modelo.ConsultaUsuario;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
@@ -150,6 +150,95 @@ public class ConsultaService {
                 );
 
         return new PageImpl<>(result, pageRequest, result.size());
+    }
+
+    public Page<UsuarioSaldoRelatorioDTO> consultaUltimosSaldosUsuariosAtivos(UsuarioSaldoRelatorioFiltroDTO filtros, Integer pagina, Integer quantidadeRegistro, String[] sort){
+
+        List<Sort.Order> orders = getOrders(sort);
+        PageRequest pageRequest = PageRequest.of(pagina, quantidadeRegistro, Sort.by(orders));
+
+        QUsuario qUsuario = QUsuario.usuario;
+        QSaldo qSaldo = QSaldo.saldo;
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        verificarFiltroUsuarioAtivos(booleanBuilder, filtros, qUsuario, qSaldo);
+        booleanBuilder.and(qUsuario.excluido.eq(false));
+
+        List<ConsultaDTO> dadosConsulta = ConsultaDTOFactory.getConsultas("Depositos Usuários Ativos", pageRequest.getSort().toList());
+
+        List<UsuarioSaldoRelatorioDTO> result = queryDslDAO.query(q -> q.select(Projections.constructor(
+                        UsuarioSaldoRelatorioDTO.class,
+                        Projections.constructor(
+                                UsuarioDepositoViewDTO.class,
+                                qUsuario.id.as(ConsultaUsuarioDepositos.ID_USUARIO_ALIAS),
+                                qUsuario.nome.as(ConsultaUsuarioDepositos.NOME_USUARIO_ALIAS),
+                                qUsuario.email.as(ConsultaUsuarioDepositos.EMAIL_USUARIO_ALIAS),
+                                qUsuario.cpf.as(ConsultaUsuarioDepositos.CPF_USUARIO_ALIAS)
+                        ),
+                        Projections.constructor(
+                                SaldoViewDTO.class,
+                                qSaldo.id.as(ConsultaUsuarioDepositos.ID_SALDO_ALIAS),
+                                qSaldo.deposito.as(ConsultaUsuarioDepositos.DEPOSITO_SALDO_ALIAS),
+                                qSaldo.dataDeposito.as(ConsultaUsuarioDepositos.DATA_SALDO_ALIAS)
+                        ),
+                        Projections.constructor(
+                                UsuarioDepositoViewDTO.class,
+                                qSaldo.usuarioDepositante.id.as(ConsultaUsuarioDepositos.ID_USUARIO_DEPOSITANTE_ALIAS),
+                                qSaldo.usuarioDepositante.nome.as(ConsultaUsuarioDepositos.NOME_USUARIO_DEPOSITANTE_ALIAS),
+                                qSaldo.usuarioDepositante.email.as(ConsultaUsuarioDepositos.EMAIL_USUARIO_DEPOSITANTE_ALIAS),
+                                qSaldo.usuarioDepositante.cpf.as(ConsultaUsuarioDepositos.CPF_USUARIO_DEPOSITANTE_ALIAS)
+                        )
+                )))
+                .from(qUsuario)
+                .innerJoin(qUsuario.saldos, qSaldo)
+                .innerJoin(qSaldo.usuarioDepositante)
+                .where(booleanBuilder)
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
+                .orderBy(getSort(dadosConsulta))
+                .fetch();
+
+        return new PageImpl<>(result, pageRequest, result.size());
+    }
+
+    private void verificarFiltroUsuarioAtivos(BooleanBuilder booleanBuilder, UsuarioSaldoRelatorioFiltroDTO filtros, QUsuario qUsuario, QSaldo qSaldo){
+        if(filtros.isContemNome()){
+            booleanBuilder.and(qUsuario.nome.likeIgnoreCase(Expressions.asString("%").concat(filtros.getNome().trim()).concat("%")));
+        }
+
+        if(filtros.isContemNomeDepositante()){
+            booleanBuilder.and(qSaldo.usuarioDepositante.nome.likeIgnoreCase(Expressions.asString("%").concat(filtros.getNomeUsuarioDepositante().trim()).concat("%")));
+        }
+
+        if(filtros.isContemEmail()){
+            booleanBuilder.and(qUsuario.email.eq(filtros.getEmail().trim()));
+        }
+
+        if(filtros.isContemEmailDepositante()){
+            booleanBuilder.and(qSaldo.usuarioDepositante.email.eq(filtros.getEmailUsuarioDepositante().trim()));
+        }
+
+        if(filtros.isContemCpf()){
+            booleanBuilder.and(qUsuario.cpf.eq(filtros.getCpf().trim()));
+        }
+
+        if(filtros.isContemCpfDepositante()){
+            booleanBuilder.and(qSaldo.usuarioDepositante.cpf.eq(filtros.getCpfUsuarioDepositante().trim()));
+        }
+
+        if(filtros.isContemSaldoDeposito()){
+            booleanBuilder.and(qSaldo.deposito.goe(filtros.getSaldoDeposito()));
+        }
+
+        if(filtros.isContemDataInicioDeposito()){
+            LocalDateTime dataInicio = filtros.getDataInicioDeposito().atTime(0,0,0,0);
+            booleanBuilder.and(qSaldo.dataDeposito.goe(dataInicio));
+        }
+
+        if(filtros.isContemDataFinalDeposito()){
+            LocalDateTime dataFinal = filtros.getDataFinalDeposito().atTime(23,59,59,999);
+            booleanBuilder.and(qSaldo.dataDeposito.loe(dataFinal));
+        }
     }
 
     private OrderSpecifier<?>[] getSort(List<ConsultaDTO> consultas) {

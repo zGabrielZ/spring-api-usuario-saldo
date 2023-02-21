@@ -20,6 +20,8 @@ public class ConsultaDTOFactory {
             return listagemOrders(orders, new ConsultaUsuario());
         } else if(tipoConsulta.equalsIgnoreCase("Perfil")){
             return listagemOrders(orders, new ConsultaPerfil());
+        } else if (tipoConsulta.equalsIgnoreCase("Depositos Usuários Ativos")) {
+            return listagemOrders(orders, new ConsultaUsuarioDepositos());
         }
         return new ArrayList<>();
     }
