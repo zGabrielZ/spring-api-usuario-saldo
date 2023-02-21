@@ -26,7 +26,17 @@ public enum ValidacaoEnum {
     DIRECAO_VAZIA("É necessário informar a direção (ASC ou DESC)"),
     REALIZAR_CONSULTA("Erro Inesperado ao realizar a consulta"),
     VISUALIZAR_SALDO_TOTAL("Não é possível ver o saldo total do usuário pois é preciso logar na conta da adminstração"),
-    PERFIL_NAO_ENCONTRADO("Perfil não encontrado");
+    PERFIL_NAO_ENCONTRADO("Perfil não encontrado"),
+    NOME_CONSULTA("O campo nome deve ter no mínimo 3 até 150 caracteres"),
+    NOME_DEPOSITANTE_CONSULTA("O campo nome do depositante deve ter no mínimo 3 até 150 caracteres"),
+    EMAIL_CONSULTA("E-mail inválido"),
+    EMAIL_TAMANHO_CONSULTA("O campo e-mail deve ter no mínimo 5 até 150 caracteres"),
+    EMAIL_DEPOSITANTE_CONSULTA("E-mail do depositante inválido"),
+    EMAIL_DEPOSITANTE_TAMANHO_CONSULTA("O campo e-mail do depositante deve ter no mínimo 5 até 150 caracteres"),
+    CPF_CONSULTA("CPF inválido"),
+    CPF_DEPOSITANTE_CONSULTA("CPF do depositante inválido"),
+    DATA_DEPOSITO_INICIO_CONSULTA("A data inicio do déposito não pode ser maior que a data final do déposito"),
+    PERIODO_DEPOSITO_CONSULTA("O período das datas não pode ultrapassar de um ano");
 
     private final String mensagem;
 

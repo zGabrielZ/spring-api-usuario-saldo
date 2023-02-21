@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.*;
+import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,41 +35,41 @@ public class RelatorioService {
 
     private void validarNome(String nome, String nomeDepositante, boolean isContemNome, boolean isContemNomeDepositante){
         if(isContemNome && !isTamanhoCorreto(nome.length(), 3)){
-            throw new ExcecaoPersonalizada("O campo nome deve ter no mínimo 3 até 150 caracteres");
+            throw new ExcecaoPersonalizada(NOME_CONSULTA.getMensagem());
         }
 
         if(isContemNomeDepositante && !isTamanhoCorreto(nomeDepositante.length(), 3)){
-            throw new ExcecaoPersonalizada("O campo nome do depositante deve ter no mínimo 3 até 150 caracteres");
+            throw new ExcecaoPersonalizada(NOME_DEPOSITANTE_CONSULTA.getMensagem());
         }
     }
 
     private void validarEmail(String email, String emailDepositante, boolean isContemEmail, boolean isContemEmailDepositante){
         if(isContemEmail){
-            verificarValidadeEmail(email, "E-mail inválido");
-            verificarTamanhoEmail(email, "O campo e-mail deve ter no mínimo 5 até 150 caracteres");
+            verificarValidadeEmail(email, EMAIL_CONSULTA.getMensagem());
+            verificarTamanhoEmail(email, EMAIL_TAMANHO_CONSULTA.getMensagem());
         }
 
         if(isContemEmailDepositante){
-            verificarValidadeEmail(emailDepositante, "E-mail do depositante inválido");
-            verificarTamanhoEmail(emailDepositante, "O campo e-mail do depositante deve ter no mínimo 5 até 150 caracteres");
+            verificarValidadeEmail(emailDepositante, EMAIL_DEPOSITANTE_CONSULTA.getMensagem());
+            verificarTamanhoEmail(emailDepositante, EMAIL_DEPOSITANTE_TAMANHO_CONSULTA.getMensagem());
         }
     }
 
     private void validarCpf(UsuarioSaldoRelatorioFiltroDTO filtros){
         if(filtros.isContemCpf()){
             filtros.setCpf(limparMascaraCpf(filtros.getCpf()));
-            verificarValidadeCpf(filtros.getCpf(), "CPF inválido");
+            verificarValidadeCpf(filtros.getCpf(), CPF_CONSULTA.getMensagem());
         }
 
         if(filtros.isContemCpfDepositante()){
             filtros.setCpfUsuarioDepositante(limparMascaraCpf(filtros.getCpfUsuarioDepositante()));
-            verificarValidadeCpf(filtros.getCpfUsuarioDepositante(), "CPF do depositante inválido");
+            verificarValidadeCpf(filtros.getCpfUsuarioDepositante(), CPF_DEPOSITANTE_CONSULTA.getMensagem());
         }
     }
 
     private void validarSaldoDeposito(BigDecimal saldoDeposito, boolean isContemSaldo){
         if(isContemSaldo && BigDecimal.ZERO.compareTo(saldoDeposito) >= 0){
-            throw new ExcecaoPersonalizada("O déposito não pode ser menor ou igual ao 0");
+            throw new ExcecaoPersonalizada(DEPOSITO_MENOR_IGUAL_ZERO.getMensagem());
         }
     }
 
@@ -103,13 +104,13 @@ public class RelatorioService {
 
     private void verificarDataInicioDeposito(LocalDate dataInicio, LocalDate dataFim){
         if(dataInicio.isAfter(dataFim)){
-            throw new ExcecaoPersonalizada("A data inicio do déposito não pode ser maior que a data final do déposito");
+            throw new ExcecaoPersonalizada(DATA_DEPOSITO_INICIO_CONSULTA.getMensagem());
         }
     }
 
     private void verificarPeriodoDatas(LocalDate dataInicio, LocalDate dataFim){
         if(ChronoUnit.DAYS.between(dataInicio, dataFim) > 365) {
-            throw new ExcecaoPersonalizada("O período das datas não pode ultrapassar de um ano");
+            throw new ExcecaoPersonalizada(PERIODO_DEPOSITO_CONSULTA.getMensagem());
         }
     }
 
