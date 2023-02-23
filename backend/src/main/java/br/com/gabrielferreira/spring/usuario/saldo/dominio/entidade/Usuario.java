@@ -93,6 +93,10 @@ public class Usuario implements Serializable, UserDetails {
                 inverseJoinColumns = @JoinColumn(name = "PERFIL_ID", referencedColumnName = "ID", table = "PERFIL"))
     private List<Perfil> perfis = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "usuario", fetch = FetchType.LAZY)
+    private List<UsuarioMovimentacao> movimentacoes = new ArrayList<>();
+
     @PrePersist
     private void preInsercao(){
         dataInclusao = LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO));
