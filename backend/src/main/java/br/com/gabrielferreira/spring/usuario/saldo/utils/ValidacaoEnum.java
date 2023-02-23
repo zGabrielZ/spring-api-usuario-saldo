@@ -36,7 +36,8 @@ public enum ValidacaoEnum {
     CPF_CONSULTA("CPF inválido"),
     CPF_DEPOSITANTE_CONSULTA("CPF do depositante inválido"),
     DATA_DEPOSITO_INICIO_CONSULTA("A data inicio do déposito não pode ser maior que a data final do déposito"),
-    PERIODO_DEPOSITO_CONSULTA("O período das datas não pode ultrapassar de um ano");
+    PERIODO_DEPOSITO_CONSULTA("O período das datas não pode ultrapassar de um ano"),
+    SITUACAO_NAO_ENCONTRADA("Situação informada não encontrada");
 
     private final String mensagem;
 
