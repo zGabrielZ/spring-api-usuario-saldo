@@ -2,17 +2,30 @@ package br.com.gabrielferreira.spring.usuario.saldo.service;
 
 import br.com.caelum.stella.ValidationMessage;
 import br.com.caelum.stella.validation.CPFValidator;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saldo.SaldoViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioDepositoViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioSaldoRelatorioDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.UsuarioSaldoRelatorioFiltroDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.usuario.relatorio.UsuarioDepositoRelatorioDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
+import br.com.gabrielferreira.spring.usuario.saldo.utils.ReportEnum;
 import lombok.RequiredArgsConstructor;
+import net.sf.jasperreports.engine.JRException;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ConstantesUtils.*;
@@ -24,6 +37,8 @@ public class RelatorioService {
 
     private final ConsultaService consultaService;
 
+    private final ReportService reportService;
+
     public Page<UsuarioSaldoRelatorioDTO> consultaUltimosSaldosUsuariosAtivos(UsuarioSaldoRelatorioFiltroDTO filtros, Integer pagina, Integer quantidadeRegistro, String[] sort){
         validarNome(filtros.getNome(), filtros.getNomeUsuarioDepositante(), filtros.isContemNome(), filtros.isContemNomeDepositante());
         validarEmail(filtros.getEmail(), filtros.getEmailUsuarioDepositante(), filtros.isContemEmail(), filtros.isContemEmailDepositante());
@@ -31,6 +46,37 @@ public class RelatorioService {
         validarSaldoDeposito(filtros.getSaldoDeposito(), filtros.isContemSaldoDeposito());
         validarDataDeposito(filtros);
         return consultaService.consultaUltimosSaldosUsuariosAtivos(filtros, pagina, quantidadeRegistro, sort);
+    }
+
+    public Resource gerarRelatorioUltimosSaldosUsuariosAtivos() throws JRException, FileNotFoundException {
+        List<UsuarioDepositoRelatorioDTO> usuarioSaldoRelatorioDTOS = getMock();
+        File file = ResourceUtils.getFile("classpath:relatorios/usuarios-ativos-depositos.jrxml");
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("criadorParam", "Gabriel Ferreira");
+        return reportService.gerarRelatorio(parametros, usuarioSaldoRelatorioDTOS, file.getAbsolutePath(), ReportEnum.PDF);
+    }
+
+    private List<UsuarioDepositoRelatorioDTO> getMock(){
+        UsuarioSaldoRelatorioDTO usuarioSaldoRelatorioDTO = new UsuarioSaldoRelatorioDTO(
+                new UsuarioDepositoViewDTO(1L, "José da Silva", "jose@email.com", "73977674005"),
+                new SaldoViewDTO(1L, BigDecimal.valueOf(200.00), LocalDateTime.now()),
+                new UsuarioDepositoViewDTO(2L, "seila da silva", "seila@email.com", "73977674005")
+        );
+
+        List<UsuarioDepositoRelatorioDTO> usuarioDepositoRelatorioDTOS = new ArrayList<>();
+        usuarioDepositoRelatorioDTOS.add(
+                UsuarioDepositoRelatorioDTO.builder()
+                        .nomeUsuario(usuarioSaldoRelatorioDTO.usuario().nome())
+                        .emailUsuario(usuarioSaldoRelatorioDTO.usuario().email())
+                        .cpfUsuario(usuarioSaldoRelatorioDTO.usuario().cpf())
+                        .nomeUsuarioDepositante(usuarioSaldoRelatorioDTO.usuarioDepositante().nome())
+                        .emailUsuarioDepositante(usuarioSaldoRelatorioDTO.usuarioDepositante().email())
+                        .cpfUsuarioDepositante(usuarioSaldoRelatorioDTO.usuarioDepositante().cpf())
+                        .build()
+        );
+
+
+        return usuarioDepositoRelatorioDTOS;
     }
 
     private void validarNome(String nome, String nomeDepositante, boolean isContemNome, boolean isContemNomeDepositante){

@@ -132,6 +132,12 @@
 			<version>2.1.5</version>
 		</dependency>
 
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.20.0</version>
+		</dependency>
+
 
 	</dependencies>
 
