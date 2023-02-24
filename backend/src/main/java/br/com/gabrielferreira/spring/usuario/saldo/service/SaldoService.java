@@ -24,6 +24,7 @@ import java.util.List;
 
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils.*;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
+import static br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.SituacaoEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +44,10 @@ public class SaldoService {
 
     private final PerfilValidacaoService perfilValidacaoService;
 
+    private final SituacaoService situacaoService;
+
+    private final UsuarioMovimentacaoService usuarioMovimentacaoService;
+
     @Transactional
     public SaldoInsertResponseDTO depositar(SaldoInsertFormDTO saldoInsertFormDTO){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
@@ -60,6 +65,10 @@ public class SaldoService {
         BigDecimal valorTotal = saldoTotalPorUsuario(usuarioEncontrado);
         usuarioEncontrado.setSaldoTotal(valorTotal);
         usuarioRepositorio.save(usuarioEncontrado);
+
+        var situacao = situacaoService.buscarPorCodigo(DEPOSITO.name());
+        var descricao = String.format("Inserindo um novo saldo para o %s", usuarioEncontrado.getNome());
+        usuarioMovimentacaoService.adicionarMovimentacao(usuarioEncontrado, saldo.getDeposito(), descricao, situacao);
 
         return SaldoDTOFactory.toSaldoInsertResonseDTO(saldo);
     }
