@@ -94,7 +94,7 @@ public class Usuario implements Serializable, UserDetails {
     private List<Perfil> perfis = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "usuario", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     private List<UsuarioMovimentacao> movimentacoes = new ArrayList<>();
 
     @PrePersist

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.enums.SituacaoEnum.SAQUE;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils.*;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.LoginUsuarioUtils.isCliente;
 import static br.com.gabrielferreira.spring.usuario.saldo.utils.ValidacaoEnum.*;
@@ -36,6 +37,10 @@ public class SaqueService {
 
     private final ConsultaService consultaService;
 
+    private final SituacaoService situacaoService;
+
+    private final UsuarioMovimentacaoService usuarioMovimentacaoService;
+
     @Transactional
     public SacarViewDTO sacar(SacarFormDTO sacarFormDTO){
         Usuario usuarioLogado = getRecuperarUsuarioLogado();
@@ -50,6 +55,10 @@ public class SaqueService {
 
             usuarioLogado.setSaldoTotal(saldoTotalAtual);
             usuarioRepositorio.save(usuarioLogado);
+
+            var situacao = situacaoService.buscarPorCodigo(SAQUE.name());
+            var descricao = String.format("Sacando um novo valor para o %s", usuarioLogado.getNome());
+            usuarioMovimentacaoService.adicionarMovimentacao(usuarioLogado, sacarFormDTO.getQuantidade(), descricao, situacao);
         }
 
         return SaqueDTOFactory.toSacarViewDTO(saldoTotalAtual);
