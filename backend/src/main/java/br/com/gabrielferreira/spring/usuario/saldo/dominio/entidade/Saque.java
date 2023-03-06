@@ -7,6 +7,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -35,5 +37,8 @@ public class Saque implements Serializable {
     @JoinColumn(name = "USUARIO_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
+
+    @OneToMany(mappedBy = "saldo", fetch = FetchType.LAZY)
+    private List<UsuarioMovimentacao> usuariosMovimentacoes = new ArrayList<>();
 
 }

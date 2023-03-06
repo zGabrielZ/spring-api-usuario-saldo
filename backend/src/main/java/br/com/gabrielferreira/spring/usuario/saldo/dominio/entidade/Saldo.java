@@ -7,6 +7,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -39,5 +41,8 @@ public class Saldo implements Serializable {
     @JoinColumn(name = "USUARIO_DEPOSITANTE_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuarioDepositante;
+
+    @OneToMany(mappedBy = "saldo", fetch = FetchType.LAZY)
+    private List<UsuarioMovimentacao> usuariosMovimentacoes = new ArrayList<>();
 
 }

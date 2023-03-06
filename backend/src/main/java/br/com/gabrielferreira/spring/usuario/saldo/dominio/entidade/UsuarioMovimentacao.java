@@ -49,6 +49,14 @@ public class UsuarioMovimentacao implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Situacao situacao;
 
+    @JoinColumn(name = "SALDO_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Saldo saldo;
+
+    @JoinColumn(name = "SAQUE_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Saque saque;
+
     @PrePersist
     private void preInsercao(){
         dataCadastro = LocalDateTime.now(ZoneId.of(AMERICA_SAO_PAULO));

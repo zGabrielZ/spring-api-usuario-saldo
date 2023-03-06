@@ -1,8 +1,6 @@
 package br.com.gabrielferreira.spring.usuario.saldo.service;
 
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Situacao;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
-import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.UsuarioMovimentacao;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.*;
 import br.com.gabrielferreira.spring.usuario.saldo.repositorio.UsuarioMovimentacaoRepositorio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +16,7 @@ public class UsuarioMovimentacaoService {
     private final UsuarioMovimentacaoRepositorio usuarioMovimentacaoRepositorio;
 
     @Transactional
-    public void adicionarMovimentacao(Usuario usuario, BigDecimal novoSaldo, String descricao, Situacao situacao){
+    public void adicionarMovimentacao(Usuario usuario, BigDecimal novoSaldo, String descricao, Situacao situacao, Object obj){
         BigDecimal variacaoNovoSaldoComSaldoTotal = novoSaldo.subtract(usuario.getSaldoTotal());
         BigDecimal quantidadeInformada = usuario.getSaldoTotal().add(variacaoNovoSaldoComSaldoTotal);
 
@@ -33,6 +31,12 @@ public class UsuarioMovimentacaoService {
                 .descricao(descricao)
                 .situacao(situacao)
                 .build();
+
+        if(obj instanceof Saldo saldo){
+            usuarioMovimentacao.setSaldo(saldo);
+        } else {
+            usuarioMovimentacao.setSaque((Saque) obj);
+        }
 
         usuarioMovimentacaoRepositorio.save(usuarioMovimentacao);
     }

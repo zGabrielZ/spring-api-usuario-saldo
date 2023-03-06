@@ -68,7 +68,7 @@ public class SaldoService {
 
         var situacao = situacaoService.buscarPorCodigo(DEPOSITO.name());
         var descricao = String.format("Inserindo um novo saldo para o %s", usuarioEncontrado.getNome());
-        usuarioMovimentacaoService.adicionarMovimentacao(usuarioEncontrado, saldo.getDeposito(), descricao, situacao);
+        usuarioMovimentacaoService.adicionarMovimentacao(usuarioEncontrado, saldo.getDeposito(), descricao, situacao, saldo);
 
         return SaldoDTOFactory.toSaldoInsertResonseDTO(saldo);
     }

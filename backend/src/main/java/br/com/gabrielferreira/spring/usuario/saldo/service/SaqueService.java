@@ -3,6 +3,7 @@ import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.factory.SaqueDTOF
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarViewDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SacarFormDTO;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.dto.saque.SaqueViewDTO;
+import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Saque;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.Usuario;
 import br.com.gabrielferreira.spring.usuario.saldo.dominio.entidade.factory.SaqueEntidadeFactory;
 import br.com.gabrielferreira.spring.usuario.saldo.exception.ExcecaoPersonalizada;
@@ -51,14 +52,15 @@ public class SaqueService {
             saldoTotalAtual = saldoTotalUsuario(usuarioLogado.getSaldoTotal(), sacarFormDTO.getQuantidade());
 
             LocalDateTime dataAtual = LocalDateTime.now(clock);
-            saqueRepositorio.save(SaqueEntidadeFactory.toSaqueInsertEntidade(sacarFormDTO, dataAtual, usuarioLogado));
+            Saque saque = SaqueEntidadeFactory.toSaqueInsertEntidade(sacarFormDTO, dataAtual, usuarioLogado);
+            saqueRepositorio.save(saque);
 
             usuarioLogado.setSaldoTotal(saldoTotalAtual);
             usuarioRepositorio.save(usuarioLogado);
 
             var situacao = situacaoService.buscarPorCodigo(SAQUE.name());
             var descricao = String.format("Sacando um novo valor para o %s", usuarioLogado.getNome());
-            usuarioMovimentacaoService.adicionarMovimentacao(usuarioLogado, sacarFormDTO.getQuantidade(), descricao, situacao);
+            usuarioMovimentacaoService.adicionarMovimentacao(usuarioLogado, sacarFormDTO.getQuantidade(), descricao, situacao, saque);
         }
 
         return SaqueDTOFactory.toSacarViewDTO(saldoTotalAtual);
